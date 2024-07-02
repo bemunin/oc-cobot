@@ -8,7 +8,7 @@
             }
             dictionary Perspective = {
                 double3 position = (-2.3383019250386683, -8.104528931314322, 6.239059812913344)
-                double3 target = (-0.8143730797327369, 2.1385719193202792, 0.2054160678729362)
+                double3 target = (-0.8143730797327366, 2.1385719193202792, 0.20541606787293532)
             }
             dictionary Right = {
                 double3 position = (-1.3390253924285254, -49999.524, 1.6635517444395298)
@@ -45,11 +45,9 @@
         dictionary renderSettings = {
             float3 "rtx:debugView:pixelDebug:textColor" = (0, 1e18, 0)
             float3 "rtx:fog:fogColor" = (0.75, 0.75, 0.75)
+            float3 "rtx:index:backgroundColor" = (0, 0, 0)
             float3 "rtx:index:regionOfInterestMax" = (0, 0, 0)
             float3 "rtx:index:regionOfInterestMin" = (0, 0, 0)
-            float3 "rtx:iray:environment_dome_ground_position" = (0, 0, 0)
-            float3 "rtx:iray:environment_dome_ground_reflectivity" = (0, 0, 0)
-            float3 "rtx:iray:environment_dome_rotation_axis" = (3.4028235e38, 3.4028235e38, 3.4028235e38)
             float3 "rtx:post:backgroundZeroAlpha:backgroundDefaultColor" = (0, 0, 0)
             float3 "rtx:post:colorcorr:contrast" = (1, 1, 1)
             float3 "rtx:post:colorcorr:gain" = (1, 1, 1)
@@ -72,6 +70,7 @@
             float3 "rtx:post:lensFlares:haloFlareRadius" = (75, 75, 75)
             float3 "rtx:post:lensFlares:isotropicFlareFalloff" = (50, 50, 50)
             float3 "rtx:post:tonemap:whitepoint" = (1, 1, 1)
+            float3 "rtx:raytracing:indexdirect:svoBrickSize" = (32, 32, 32)
             float3 "rtx:raytracing:inscattering:singleScatteringAlbedo" = (0.9, 0.9, 0.9)
             float3 "rtx:raytracing:inscattering:transmittanceColor" = (0.5, 0.5, 0.5)
             float3 "rtx:sceneDb:ambientLightColor" = (0.1, 0.1, 0.1)
@@ -82,7 +81,7 @@
     metersPerUnit = 1
     startTimeCode = 0
     subLayers = [
-        @./Environments/default.usda@
+        @./environments/default.usda@
     ]
     timeCodesPerSecond = 60
     upAxis = "Z"
@@ -565,13 +564,13 @@ def Xform "Main"
                     token evaluationMode = "Automatic"
                     token evaluator:type = "execution"
                     token fabricCacheBacking = "Shared"
-                    int2 fileFormatVersion = (1, 7)
+                    int2 fileFormatVersion = (1, 9)
                     token pipelineStage = "pipelineStageSimulation"
 
                     def OmniGraphNode "OnTick"
                     {
                         token node:type = "omni.graph.action.OnPlaybackTick"
-                        int node:typeVersion = 1
+                        int node:typeVersion = 2
                         custom double outputs:deltaSeconds
                         custom double outputs:frame
                         custom uint outputs:tick (
@@ -624,13 +623,13 @@ def Xform "Main"
                     token evaluationMode = "Automatic"
                     token evaluator:type = "execution"
                     token fabricCacheBacking = "Shared"
-                    int2 fileFormatVersion = (1, 7)
+                    int2 fileFormatVersion = (1, 9)
                     token pipelineStage = "pipelineStageSimulation"
 
                     def OmniGraphNode "OnTick"
                     {
                         token node:type = "omni.graph.action.OnPlaybackTick"
-                        int node:typeVersion = 1
+                        int node:typeVersion = 2
                         custom double outputs:deltaSeconds
                         custom double outputs:frame
                         custom uint outputs:tick (

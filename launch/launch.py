@@ -10,16 +10,6 @@ from omni.isaac.kit import SimulationApp
 from utils.path import get_proj_root_path
 
 
-def register_extensions():
-    # add custom extension path
-    manager = omni.kit.app.get_app().get_extension_manager()
-    yolo_cobot_exts_path = f"{os.path.dirname(__file__)}/../exts"
-    manager.add_path(yolo_cobot_exts_path)
-
-    # enable required extensions
-    extensions.enable_extension("omni.isaac.conveyor")
-
-
 def init_world():
     world_settings = {
         "physics_dt": 1.0 / 60.0,
@@ -30,7 +20,11 @@ def init_world():
 
     world = World.instance()
     world.initialize_physics()
-    return world
+
+
+def before_setup_stage():
+    # enable required extensions
+    extensions.enable_extension("omni.isaac.conveyor")
 
 
 def setup_stage(sim_app: SimulationApp):
@@ -46,6 +40,22 @@ def setup_stage(sim_app: SimulationApp):
     stage.add_reference_to_stage(workcell_usd_path, "/Main")
 
     sim_app.update()
+
+
+def after_setup_stage():
+    # add custom extension path
+    manager = omni.kit.app.get_app().get_extension_manager()
+    yolo_cobot_exts_path = f"{os.path.dirname(__file__)}/../exts"
+    manager.add_path(yolo_cobot_exts_path)
+
+    extensions.enable_extension("oc.ex.yolo_cobot")
+
+
+def running_sim(sim_app: SimulationApp):
+    world = World.instance()
+    world.play()
+    while sim_app.is_running():
+        world.step()
 
 
 def clear_world():

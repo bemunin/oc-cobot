@@ -1,0 +1,25 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "0.0.0"
+category = "Simulation"
+title = "Omnicraft Yolo Cobot Example"
+description = "Extension for performing cobot sorting tasks using the YOLO object detection model."
+authors = ["Be Munin (Omnicraft)"]
+repository = ""
+keywords = []
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+
+
+[dependencies]
+"omni.kit.uiapp" = {}
+"omni.isaac.ui" = {}
+"omni.isaac.core" = {}
+
+[[python.module]]
+name = "oc.ex.yolo_cobot"

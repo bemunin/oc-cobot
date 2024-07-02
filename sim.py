@@ -7,22 +7,20 @@ sim_app = SimulationApp(CONFIG)
 
 
 from launch import (  # noqa: E402
+    after_setup_stage,
+    before_setup_stage,
     clear_world,
     init_world,
-    register_extensions,
+    running_sim,
     setup_stage,
 )
 
 
 if __name__ == "__main__":
-    world = init_world()
-    register_extensions()
+    init_world()
+    before_setup_stage()
     setup_stage(sim_app)
-
-    world.play()
-
-    while sim_app.is_running():
-        world.step()
-
+    after_setup_stage()
+    running_sim(sim_app)
     clear_world()
     sim_app.close()
