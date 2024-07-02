@@ -1,4 +1,4 @@
-import isaacsim
+import isaacsim  # noqa: F401
 from omni.isaac.kit import SimulationApp
 
 

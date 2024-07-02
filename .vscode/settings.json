@@ -1,0 +1,14 @@
+{
+    "ruff.lint.args": ["--config=${workspaceFolder}/pyproject.toml"],
+    "ruff.format.args": ["--config=${workspaceFolder}/pyproject.toml"],
+    "autoDocstring.docstringFormat": "google",
+    "autoDocstring.guessTypes": true,
+    "[python]": {
+        // We use "ruff"
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.tabSize": 4
+    },
+    "python.analysis.extraPaths": [
+        "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/exts/omni.isaac.kit"
+    ]
+}
