@@ -9,6 +9,8 @@
         "editor.tabSize": 4
     },
     "python.analysis.extraPaths": [
-        "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/exts/omni.isaac.kit"
+        "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/exts/omni.isaac.kit",
+        "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/exts/omni.isaac.core"
+
     ]
 }

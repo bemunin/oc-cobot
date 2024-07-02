@@ -8,7 +8,7 @@
             }
             dictionary Perspective = {
                 double3 position = (-2.3383019250386683, -8.104528931314322, 6.239059812913344)
-                double3 target = (-0.8143731911118681, 2.138572342026446, 0.20541675735487352)
+                double3 target = (-0.8143730797327369, 2.1385719193202792, 0.2054160678729362)
             }
             dictionary Right = {
                 double3 position = (-1.3390253924285254, -49999.524, 1.6635517444395298)
@@ -33,7 +33,7 @@
             double voxelCeiling = 460
         }
         dictionary omni_layer = {
-            string authoring_layer = "./workcell_v2.usda"
+            string authoring_layer = "./workcell.usda"
             dictionary locked = {
                 bool "./Enviroments/dev_env.usda" = 1
                 bool "./Environments/default.usda" = 1
@@ -133,165 +133,6 @@ def Xform "Main"
             double3 xformOp:scale = (1, 1, 1)
             double3 xformOp:translate = (0.06904686378895371, -4.23903402680438, 3.0698485728196356)
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-        }
-    }
-
-    def OmniGraph "Moveit2Graph"
-    {
-        token evaluationMode = "Automatic"
-        token evaluator:type = "execution"
-        token fabricCacheBacking = "Shared"
-        int2 fileFormatVersion = (1, 7)
-        token pipelineStage = "pipelineStageSimulation"
-
-        def OmniGraphNode "ros2_publish_joint_state" (
-            prepend apiSchemas = ["NodeGraphNodeAPI"]
-        )
-        {
-            custom uint64 inputs:context
-            prepend uint64 inputs:context.connect = </Main/Moveit2Graph/ros2_context.outputs:context>
-            custom uint inputs:execIn
-            prepend uint inputs:execIn.connect = </Main/Moveit2Graph/on_playback_tick.outputs:tick>
-            custom string inputs:nodeNamespace
-            custom uint64 inputs:queueSize
-            custom rel inputs:targetPrim = </Main/PickingUnit/Franka> (
-                customData = {
-                    dictionary omni = {
-                        dictionary graph = {
-                            string relType = "target"
-                        }
-                    }
-                }
-            )
-            custom double inputs:timeStamp
-            prepend double inputs:timeStamp.connect = </Main/Moveit2Graph/isaac_read_simulation_time.outputs:simulationTime>
-            custom string inputs:topicName = "isaac_joint_states"
-            token node:type = "omni.isaac.ros2_bridge.ROS2PublishJointState"
-            int node:typeVersion = 1
-            uniform token ui:nodegraph:node:expansionState = "open"
-            uniform float2 ui:nodegraph:node:pos = (926, 321.8108)
-        }
-
-        def OmniGraphNode "ros2_subscribe_joint_state" (
-            prepend apiSchemas = ["NodeGraphNodeAPI"]
-        )
-        {
-            custom uint64 inputs:context
-            prepend uint64 inputs:context.connect = </Main/Moveit2Graph/ros2_context.outputs:context>
-            custom uint inputs:execIn
-            prepend uint inputs:execIn.connect = </Main/Moveit2Graph/on_playback_tick.outputs:tick>
-            custom string inputs:nodeNamespace
-            custom uint64 inputs:queueSize
-            custom string inputs:topicName = "isaac_joint_commands"
-            token node:type = "omni.isaac.ros2_bridge.ROS2SubscribeJointState"
-            int node:typeVersion = 2
-            custom double[] outputs:effortCommand
-            custom uint outputs:execOut (
-                customData = {
-                    bool isExecution = 1
-                }
-            )
-            custom token[] outputs:jointNames
-            custom double[] outputs:positionCommand
-            custom double outputs:timeStamp
-            custom double[] outputs:velocityCommand
-            uniform token ui:nodegraph:node:expansionState = "open"
-            uniform float2 ui:nodegraph:node:pos = (522.063, 714.6343)
-        }
-
-        def OmniGraphNode "ros2_context" (
-            prepend apiSchemas = ["NodeGraphNodeAPI"]
-        )
-        {
-            custom uchar inputs:domain_id
-            custom bool inputs:useDomainIDEnvVar = 0
-            token node:type = "omni.isaac.ros2_bridge.ROS2Context"
-            int node:typeVersion = 2
-            custom uint64 outputs:context
-            uniform token ui:nodegraph:node:expansionState = "open"
-            uniform float2 ui:nodegraph:node:pos = (136.08057, 571.7583)
-        }
-
-        def OmniGraphNode "ros2_publish_clock" (
-            prepend apiSchemas = ["NodeGraphNodeAPI"]
-        )
-        {
-            custom uint64 inputs:context
-            prepend uint64 inputs:context.connect = </Main/Moveit2Graph/ros2_context.outputs:context>
-            custom uint inputs:execIn
-            prepend uint inputs:execIn.connect = </Main/Moveit2Graph/on_playback_tick.outputs:tick>
-            custom string inputs:nodeNamespace
-            custom uint64 inputs:queueSize
-            custom double inputs:timeStamp
-            prepend double inputs:timeStamp.connect = </Main/Moveit2Graph/isaac_read_simulation_time.outputs:simulationTime>
-            custom string inputs:topicName
-            token node:type = "omni.isaac.ros2_bridge.ROS2PublishClock"
-            int node:typeVersion = 1
-            uniform token ui:nodegraph:node:expansionState = "open"
-            uniform float2 ui:nodegraph:node:pos = (925, 92)
-        }
-
-        def OmniGraphNode "isaac_read_simulation_time" (
-            prepend apiSchemas = ["NodeGraphNodeAPI"]
-        )
-        {
-            custom bool inputs:resetOnStop
-            custom int64 inputs:swhFrameNumber
-            token node:type = "omni.isaac.core_nodes.IsaacReadSimulationTime"
-            int node:typeVersion = 1
-            custom double outputs:simulationTime
-            uniform token ui:nodegraph:node:expansionState = "open"
-            uniform float2 ui:nodegraph:node:pos = (125.56644, 92.16188)
-        }
-
-        def OmniGraphNode "articulation_controller" (
-            prepend apiSchemas = ["NodeGraphNodeAPI"]
-        )
-        {
-            custom double[] inputs:effortCommand
-            prepend double[] inputs:effortCommand.connect = </Main/Moveit2Graph/ros2_subscribe_joint_state.outputs:effortCommand>
-            custom uint inputs:execIn
-            prepend uint inputs:execIn.connect = </Main/Moveit2Graph/on_playback_tick.outputs:tick>
-            custom int[] inputs:jointIndices
-            custom token[] inputs:jointNames
-            prepend token[] inputs:jointNames.connect = </Main/Moveit2Graph/ros2_subscribe_joint_state.outputs:jointNames>
-            custom double[] inputs:positionCommand
-            prepend double[] inputs:positionCommand.connect = </Main/Moveit2Graph/ros2_subscribe_joint_state.outputs:positionCommand>
-            custom string inputs:robotPath = "/Main/Franka"
-            custom rel inputs:targetPrim (
-                customData = {
-                    dictionary omni = {
-                        dictionary graph = {
-                            string relType = "target"
-                        }
-                    }
-                }
-            )
-            custom bool inputs:usePath
-            custom double[] inputs:velocityCommand
-            prepend double[] inputs:velocityCommand.connect = </Main/Moveit2Graph/ros2_subscribe_joint_state.outputs:velocityCommand>
-            token node:type = "omni.isaac.core_nodes.IsaacArticulationController"
-            int node:typeVersion = 1
-            uniform token ui:nodegraph:node:expansionState = "open"
-            uniform float2 ui:nodegraph:node:pos = (933.017, 613.9863)
-        }
-
-        def OmniGraphNode "on_playback_tick" (
-            prepend apiSchemas = ["NodeGraphNodeAPI"]
-        )
-        {
-            token node:type = "omni.graph.action.OnPlaybackTick"
-            int node:typeVersion = 1
-            custom double outputs:deltaSeconds
-            custom double outputs:frame
-            custom uint outputs:tick (
-                customData = {
-                    bool isExecution = 1
-                }
-            )
-            custom double outputs:time
-            uniform token ui:nodegraph:node:expansionState = "open"
-            uniform float2 ui:nodegraph:node:pos = (146.72263, 343.76093)
         }
     }
 
