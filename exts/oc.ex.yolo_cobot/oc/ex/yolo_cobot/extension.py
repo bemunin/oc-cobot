@@ -1,14 +1,18 @@
 import gc
 import weakref
 
+import numpy as np
 import omni
 import omni.ui as ui
 from omni.isaac.core import World
+from omni.isaac.core.objects import DynamicCuboid
 from omni.isaac.ui.menu import make_menu_item_description
 from omni.kit.menu.utils.scripts.utils import add_menu_items, remove_menu_items
 
 import utils.log as log
 from utils.ui import vstack
+
+from .conveyor import Conveyor, conveyor_section_ui
 
 
 EXTENSION_WINDOW_NAME = "YoloCobot Control Panel"
@@ -18,7 +22,7 @@ class Extension(omni.ext.IExt):
     def on_startup(self, ext_id: str):
         self._ext_id = ext_id
         self._window = None
-        self._root_menu = "Omnicraft"
+        self._root_menu = "OmniCraft"
         self._panel_menu_item = None
         self._spawner_task = None
 
@@ -57,7 +61,7 @@ class Extension(omni.ext.IExt):
 
             with self._window.frame:
                 with vstack():
-                    pass
+                    conveyor_section_ui()
 
             return
         except Exception as e:
@@ -68,7 +72,23 @@ class Extension(omni.ext.IExt):
     ##
     def _setup_scene(self):
         world = World.instance()
+        scene = world.scene
 
+        # setup conveyor
+        conveyor = Conveyor("conveyor", "/Main/Conveyor")
+        conveyor.turn_on()
+        scene.add(conveyor)
+
+        # dummy cuboid using for testing/develop conveyor logic
+        scene.add(
+            DynamicCuboid(
+                prim_path="/World/random_cube",
+                name="fancy_cube",
+                position=np.array([-3.72137, 0, 0.8]),
+                scale=np.array([0.1, 0.1, 0.1]),
+                color=np.array([1.0, 0, 0]),
+            )
+        )
         # setup conveyor
 
         # reset world to build task set_up_scene
@@ -77,8 +97,11 @@ class Extension(omni.ext.IExt):
 
     def _cleanup_scene(self):
         world = World.instance()
+        scene = world.scene
 
         # remove objects
+        scene.remove_object("fancy_cube")
+        scene.remove_object("conveyor")
 
         # remove tasks
 
