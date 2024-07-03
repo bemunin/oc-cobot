@@ -9,6 +9,7 @@
         "editor.tabSize": 4
     },
     "python.analysis.extraPaths": [
+        "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/omni/kernel/py/carb",
         "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/exts/omni.exporter.urdf",
         "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/exts/omni.exporter.urdf/pip_prebundle",
         "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/exts/omni.isaac.app.selector",
@@ -510,7 +511,7 @@
         "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/kit/exts/omni.kit.menu.create",
         "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/kit/exts/omni.kit.menu.edit",
         "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/kit/exts/omni.kit.menu.file",
-        "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/kit/exts/omni.kit.menu.utils",
+        "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/extscache/omni.kit.menu.utils",
         "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/kit/exts/omni.kit.multinode",
         "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/kit/exts/omni.kit.notification_manager",
         "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/kit/exts/omni.kit.numpy.common",
@@ -681,7 +682,7 @@
         "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/kit/exts/omni.taskagent",
         "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/kit/exts/omni.timeline",
         "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/kit/exts/omni.timeline.live_session",
-        "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/kit/exts/omni.ui",
+        "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/extscache/omni.ui",
         "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/kit/exts/omni.ui.scene",
         "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/kit/exts/omni.ui_query",
         "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/kit/exts/omni.uiaudio",
