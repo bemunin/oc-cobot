@@ -25,6 +25,10 @@ class Conveyor(XFormPrim):
         self._sensor_default_x_pos = -1.1
         self._sensor_pos = None  # np.array 3d
 
+        # belt
+        self._start_pos = None
+        self._end_pos = None
+
         # callback
         world = World.instance()
         world.add_physics_callback("conveyor:sim_step", self._on_sim_step)
@@ -53,6 +57,44 @@ class Conveyor(XFormPrim):
         sensor_pos, _ = sensor.get_local_pose()
         self._sensor_pos = sensor_pos
         return self._sensor_pos
+
+    @property
+    def start_pos(self) -> np.array:
+        if self._start_pos is not None:
+            return self._start_pos
+
+        belt = XFormPrim(f"{self.prim_path}/Track/ConveyorTrackA/Belt")
+        belt_pos, _ = belt.get_world_pose()
+        conveyor_scale = self.get_world_scale()
+        belt_height = belt_pos[2] * conveyor_scale[2]  # z-axis
+        belt_center = belt_pos[1] * conveyor_scale[1]  # y-axis
+
+        pole = XFormPrim(
+            f"{self.prim_path}/Track/ConveyorTrackA/SM_ConveyorBelt_A06_Decal_02"
+        )
+        pole_pos, _ = pole.get_world_pose()
+        pole_pos_x = pole_pos[0]
+        self._start_pos = np.array([pole_pos_x, belt_center, belt_height])
+        return self._start_pos
+
+    @property
+    def end_pos(self) -> np.array:
+        if self._end_pos is not None:
+            return self._end_pos
+
+        belt = XFormPrim(f"{self.prim_path}/Track/ConveyorTrackB/Belt")
+        belt_pos, _ = belt.get_world_pose()
+        conveyor_scale = self.get_world_scale()
+        belt_height = belt_pos[2] * conveyor_scale[2]  # z-axis
+        belt_center = belt_pos[1] * conveyor_scale[1]  # y-axis
+
+        pole = XFormPrim(
+            f"{self.prim_path}/Track/ConveyorTrackB/SM_ConveyorBelt_A06_Decal_02"
+        )
+        pole_pos, _ = pole.get_world_pose()
+        pole_pos_x = pole_pos[0]
+        self._end_pos = np.array([pole_pos_x, belt_center, belt_height])
+        return self._end_pos
 
     ##
     # Engine Control API

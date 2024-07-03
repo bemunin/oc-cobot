@@ -1,11 +1,9 @@
 import gc
 import weakref
 
-import numpy as np
 import omni
 import omni.ui as ui
 from omni.isaac.core import World
-from omni.isaac.core.objects import DynamicCuboid
 from omni.isaac.ui.menu import make_menu_item_description
 from omni.kit.menu.utils.scripts.utils import add_menu_items, remove_menu_items
 
@@ -13,6 +11,7 @@ import utils.log as log
 from utils.ui import vstack
 
 from .conveyor import Conveyor, conveyor_section_ui
+from .spawner import SpawnerTask
 
 
 EXTENSION_WINDOW_NAME = "YoloCobot Control Panel"
@@ -79,17 +78,9 @@ class Extension(omni.ext.IExt):
         conveyor.turn_on()
         scene.add(conveyor)
 
-        # dummy cuboid using for testing/develop conveyor logic
-        scene.add(
-            DynamicCuboid(
-                prim_path="/World/random_cube",
-                name="fancy_cube",
-                position=np.array([-3.72137, 0, 0.8]),
-                scale=np.array([0.1, 0.1, 0.1]),
-                color=np.array([1.0, 0, 0]),
-            )
-        )
-        # setup conveyor
+        # setup spawner task
+        spawner_task = SpawnerTask()
+        world.add_task(spawner_task)
 
         # reset world to build task set_up_scene
         # must call to make task work
@@ -100,10 +91,12 @@ class Extension(omni.ext.IExt):
         scene = world.scene
 
         # remove objects
-        scene.remove_object("fancy_cube")
         scene.remove_object("conveyor")
 
         # remove tasks
+
+        current_tasks = world.get_current_tasks()
+        del current_tasks[SpawnerTask.name]
 
         # clear callbacks
         world.clear_all_callbacks()
