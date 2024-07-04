@@ -11,7 +11,7 @@ import utils.log as log
 from utils.ui import vstack
 
 from .conveyor import Conveyor, conveyor_section_ui
-from .spawner import SpawnerTask
+from .spawner import SpawnerTask, spawner_task_section_ui
 
 
 EXTENSION_WINDOW_NAME = "YoloCobot Control Panel"
@@ -61,6 +61,7 @@ class Extension(omni.ext.IExt):
             with self._window.frame:
                 with vstack():
                     conveyor_section_ui()
+                    spawner_task_section_ui()
 
             return
         except Exception as e:

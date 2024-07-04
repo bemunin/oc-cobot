@@ -647,7 +647,7 @@
         "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/kit/exts/omni.kit.window.popup_dialog",
         "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/kit/exts/omni.kit.window.preferences",
         "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/kit/exts/omni.kit.window.privacy",
-        "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/kit/exts/omni.kit.window.property",
+        "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/extscache/omni.kit.window.property",
         "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/kit/exts/omni.kit.window.provide_feedback",
         "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/kit/exts/omni.kit.window.reshade_editor",
         "~/anaconda3/envs/env_isaacsim/lib/python3.10/site-packages/isaacsim/kit/exts/omni.kit.window.script_editor",
