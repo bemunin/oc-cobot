@@ -75,7 +75,7 @@ class Extension(omni.ext.IExt):
 
         # setup conveyor
         conveyor = Conveyor("conveyor", "/Main/Conveyor")
-        conveyor.turn_on()
+        conveyor.start()
         scene.add(conveyor)
 
         # setup spawner task

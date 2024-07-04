@@ -2,6 +2,7 @@ import numpy as np
 from omni.isaac.core.prims.xform_prim import XFormPrim
 from omni.isaac.core.utils.prims import set_prim_attribute_value
 from omni.isaac.core.world.world import World
+from pxr import Gf
 
 import utils.log as log
 
@@ -32,6 +33,10 @@ class Conveyor(XFormPrim):
         # callback
         world = World.instance()
         world.add_physics_callback("conveyor:sim_step", self._on_sim_step)
+
+        # init conveyor direction
+        self.set_prim_direction("ConveyorTrackA", 1.0)
+        self.set_prim_direction("ConveyorTrackB", -1.0)
 
     ##
     # Properties
@@ -104,17 +109,8 @@ class Conveyor(XFormPrim):
         if self._is_belt_move:
             return
 
-        set_prim_attribute_value(
-            f"{self._prim_path}/Track/ConveyorTrackA/ConveyorBeltGraph/ConveyorNode",
-            "inputs:velocity",
-            self._speed_m_per_sec,
-        )
-
-        set_prim_attribute_value(
-            f"{self._prim_path}/Track/ConveyorTrackB/ConveyorBeltGraph/ConveyorNode",
-            "inputs:velocity",
-            -self._speed_m_per_sec,
-        )
+        self.set_prim_vel("ConveyorTrackA", self._speed_m_per_sec)
+        self.set_prim_vel("ConveyorTrackB", self._speed_m_per_sec)
 
         self._is_belt_move = True
 
@@ -122,17 +118,8 @@ class Conveyor(XFormPrim):
         if not self._is_belt_move:
             return
 
-        set_prim_attribute_value(
-            f"{self._prim_path}/Track/ConveyorTrackA/ConveyorBeltGraph/ConveyorNode",
-            "inputs:velocity",
-            0,
-        )
-
-        set_prim_attribute_value(
-            f"{self._prim_path}/Track/ConveyorTrackB/ConveyorBeltGraph/ConveyorNode",
-            "inputs:velocity",
-            0,
-        )
+        self.set_prim_vel("ConveyorTrackA", 0.0)
+        self.set_prim_vel("ConveyorTrackB", 0.0)
 
         self._is_belt_move = False
 
@@ -224,3 +211,27 @@ class Conveyor(XFormPrim):
                 return self.stop()
             else:
                 return self.start()
+
+    ##
+    # Utils
+    ##
+
+    def set_prim_vel(self, track: str, vel: float):
+        set_prim_attribute_value(
+            f"{self._prim_path}/Track/{track}/ConveyorBeltGraph/ConveyorNode",
+            "inputs:velocity",
+            vel,
+        )
+
+    def set_prim_direction(self, track: str, x_direction: float):
+        """set direction input to conveyor prim action graph
+
+        Args:
+            track (str): track prim name e.g. ConveyorTrackA
+            x_direction (float): direction in x-axis (1.0 or -1.0)
+        """
+        set_prim_attribute_value(
+            f"{self._prim_path}/Track/{track}/ConveyorBeltGraph/ConveyorNode",
+            "inputs:direction",
+            Gf.Vec3f(x_direction, 0, 0),
+        )

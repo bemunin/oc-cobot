@@ -2,14 +2,12 @@ import random
 from collections import deque
 
 import numpy as np
-import toml
-from omni.isaac.core.prims.xform_prim import XFormPrim
 from omni.isaac.core.scenes.scene import Scene
 from omni.isaac.core.tasks import BaseTask
 from omni.isaac.core.utils.stage import clear_stage
 from omni.isaac.core.world.world import World
 
-from utils.path import get_proj_root_path
+from utils.path import load_config
 
 from ..conveyor import Conveyor
 from .enums import ObjectItem, ObjectType
@@ -21,15 +19,7 @@ class SpawnerTask(BaseTask):
 
     def __init__(self):
         super().__init__(SpawnerTask.name)
-
-        root = get_proj_root_path()
-
-        try:
-            with open(f"{root}/config.dev.toml", "r") as file:
-                config = toml.load(file)
-        except FileNotFoundError:
-            with open(f"{root}/config.toml", "r") as file:
-                config = toml.load(file)
+        config = load_config()
 
         # variables
         self._items_on_belt = deque()
