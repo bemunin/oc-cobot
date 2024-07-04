@@ -14,7 +14,7 @@ from .conveyor import Conveyor, conveyor_section_ui
 from .spawner import SpawnerTask, spawner_task_section_ui
 
 
-EXTENSION_WINDOW_NAME = "YoloCobot Control Panel"
+EXTENSION_WINDOW_NAME = "Control Panel"
 
 
 class Extension(omni.ext.IExt):

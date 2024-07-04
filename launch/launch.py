@@ -45,10 +45,10 @@ def setup_stage(sim_app: SimulationApp):
 def after_setup_stage():
     # add custom extension path
     manager = omni.kit.app.get_app().get_extension_manager()
-    yolo_cobot_exts_path = f"{os.path.dirname(__file__)}/../exts"
-    manager.add_path(yolo_cobot_exts_path)
+    od_cobot_exts_path = f"{os.path.dirname(__file__)}/../exts"
+    manager.add_path(od_cobot_exts_path)
 
-    extensions.enable_extension("oc.ex.yolo_cobot")
+    extensions.enable_extension("oc.cobot.yolo")
 
 
 def running_sim(sim_app: SimulationApp):

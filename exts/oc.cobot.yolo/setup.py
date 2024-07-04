@@ -19,9 +19,9 @@ INSTALL_REQUIRES = [
 
 # Installation operation
 setup(
-    name="oc-ex-yolocobot",
-    author="Titiwat Munintravong (Be munin)",
-    maintainer="Titiwat Munintravong (Be munin)",
+    name="oc-cobot-yolo_detect",
+    author="Titiwat Munintravong (OmniCraft)",
+    maintainer="Titiwat Munintravong (OmniCraft)",
     maintainer_email="",
     url=EXTENSION_TOML_DATA["package"]["repository"],
     version=EXTENSION_TOML_DATA["package"]["version"],
@@ -32,7 +32,7 @@ setup(
     python_requires=">=3.10",
     install_requires=INSTALL_REQUIRES,
     packages=[
-        "oc.ex.yolo_cobot",
+        "oc.cobot.yolo",
     ],
     zip_safe=False,
 )

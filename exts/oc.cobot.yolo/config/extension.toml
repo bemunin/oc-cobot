@@ -5,9 +5,9 @@ order = 0
 [package]
 version = "0.0.0"
 category = "Simulation"
-title = "Omnicraft Yolo Cobot Example"
-description = "Extension for performing cobot sorting tasks using the YOLO object detection model."
-authors = ["Be Munin (Omnicraft)"]
+title = "Omnicraft Cobot Object Detection"
+description = "Extension for experiment robot arm sorting task with various object detection algorithm."
+authors = ["Titiwat Munintravong (Omnicraft)"]
 repository = ""
 keywords = []
 changelog = "docs/CHANGELOG.md"
@@ -22,4 +22,4 @@ icon = "data/icon.png"
 "omni.isaac.core" = {}
 
 [[python.module]]
-name = "oc.ex.yolo_cobot"
+name = "oc.cobot.yolo"
