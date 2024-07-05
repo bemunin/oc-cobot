@@ -1,15 +1,22 @@
 # OmniCraft Cobot Project
 
+> 📌 This project is being developed in an Ubuntu environment and is not yet guaranteed to work with Windows.
 
 A simulation scene built with NVIDIA Isaac Sim for experimenting with a robot arm (cobot) and the YOLO object detection model.
 
 ![Scene from extension oc.cobot.yolo](docs/images/oc_cobot_yolo_scene.png "Scene from extension oc.cobot.yolo")
 
-The goal of this project is to provide an example of how to create an NVIDIA Isaac Sim scene from scratch, control a robot manipulator, and use it for experimenting with modern computer vision algorithms.
+The goal of this project is to provide an example of how to create an NVIDIA Isaac Sim scene from scratch, control a robot manipulator, and use it for experimenting with computer vision algorithms.
 
+
+## Roadmap
+- ✅ Create the entire scene, implement the object spawner module, and simulate conveyor functionality.
+- Implement a robot pick-and-place skill using the NVIDIA Isaac Sim Core API.
+- Apply YOLO object detection.
 
 ## Changelog
 For detailed information on our current features, updates and changes, see the [Changelog](./CHANGELOG.md).
+
 
 ## Project Files and Directories
 - `sim.py`: Main entry point, a standalone workflow script to launch the NVIDIA Isaac Sim app and run the `oc.cobot.yolo` extension.  
@@ -21,8 +28,6 @@ For detailed information on our current features, updates and changes, see the [
 - `utils/`: Shared utility functions that are used frequently in the project.
 
 ## Getting Started
-
-> 📌 The project is being developed in an Ubuntu environment and is not yet guaranteed to work with Windows.
 
 1. Install Conda by following the [official Conda installation guide for Linux](https://conda.io/projects/conda/en/latest/user-guide/install/linux.html). Use the **Anaconda Distribution installer for Linux**.
 
