@@ -9,4 +9,4 @@
 - **Spawner Module**: Implemented object spawning logic supporting both geometric and real-life objects. Added logic to track whether object items are on or off the belt. User can random object item, object's spawn angle and position along y-axis of the belt. 
 - **Control Panel UI**: Added a control panel to interact with the workcell.
 - **Simplify Standalone Workflow Script**: Refactored the standalone workflow script into easy-to-read functions.
-- **Launch Configuration**: Allows setting the spawner module configuration at launch time using `config.toml` or `config.dev.toml` in your local environment.
+- **Launch Configuration**: Allows setting the spawner module configuration at launch time using `config.toml` or `config.local.toml` in your local environment.

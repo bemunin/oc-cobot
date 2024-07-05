@@ -17,7 +17,7 @@ def load_config():
     root = get_proj_root_path()
 
     try:
-        with open(f"{root}/config.dev.toml", "r") as file:
+        with open(f"{root}/config.local.toml", "r") as file:
             config = toml.load(file)
     except FileNotFoundError:
         with open(f"{root}/config.toml", "r") as file:

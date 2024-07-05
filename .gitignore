@@ -52,5 +52,6 @@ _build
 **/recordings/*
 
 
-# YoloCobot
-**/config.dev.toml
+# OmniCraft Cobot
+**/config.local.toml
+**/environment.local.yml
