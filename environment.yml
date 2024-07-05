@@ -1,4 +1,4 @@
-name: env_isaacsim
+name: oc_cobot
 channels:
   - conda-forge
   - defaults
@@ -99,4 +99,4 @@ dependencies:
       - torch==2.3.1
       - triton==2.3.1
       - urllib3==2.2.2
-prefix: /home/<user>/anaconda3/envs/env_isaacsim
+prefix: /home/<user>/anaconda3/envs/oc_cobot
