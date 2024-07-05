@@ -1,11 +1,11 @@
 # OmniCraft Cobot Project
 
 
-An example of simulation scene built with NVIDIA Isaac Sim for experimenting with the robot arm (cobot) and YOLO object detection model.
+An simulation scene built with NVIDIA Isaac Sim for experimenting with the robot arm (cobot) and YOLO object detection model.
 
-[ TODO: Add video of current version v0.1.0 ]
+![Scene from extension oc.cobot.yolo](docs/images/oc_cobot_yolo_scene.png "Scene from extension oc.cobot.yolo")
 
-The goal of this project is to provide an example of how to create a NVIDIA Isaac Sim scene from scratch
+The goal of this project is to provide an example of how to create a NVIDIA Isaac Sim scene from scratch, control robot manipulator and  use it for experimenting with modern computer vison algorithm.
 
 ## Changelog
 For detailed information on updates and changes, see the [Changelog](./CHANGELOG.md).
