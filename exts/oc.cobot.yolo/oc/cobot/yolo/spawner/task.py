@@ -31,7 +31,7 @@ class SpawnerTask(BaseTask):
 
         # configs
         self._disabled_task = False
-        # 90 step = every 2.5 sec (60Hz sim step)
+        # 180 step = every 3 sec (60Hz sim step)
         self._spawn_timer = 180  # step
         self._object_type = (
             ObjectType.REAL_LIFE
