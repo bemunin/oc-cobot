@@ -145,10 +145,10 @@ class Conveyor(XFormPrim):
         """move sensor forward or backward in x-axis from its default position
 
         Args:
-            distance (int): distance to move in meters (negative: forward, position: backward)
+            distance (int): distance to move in unit step. 1 unit step = 0.1m (negative: forward, position: backward)
         """
         sensor = XFormPrim(f"{self._prim_path}/Sensors")
-        # 1 unit = 0.1m
+        
         new_pos_x = (
             self._sensor_default_x_pos + distance * Conveyor.SENSOR_POS_ADJUST_UNIT
         )
@@ -163,7 +163,7 @@ class Conveyor(XFormPrim):
         """get distance changed in x-axis of sensor compared to its default position
 
         Returns:
-            int: moved distance in meters (negative: forward, position: backward)
+            int: moved distance in unit step. 1 unit step = 0.1m (negative: forward, position: backward)
         """
         pos = self.sensor_pos
         cur_pos_x = round(pos[0], 1)
