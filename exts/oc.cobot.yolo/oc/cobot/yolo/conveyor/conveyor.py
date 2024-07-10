@@ -148,7 +148,7 @@ class Conveyor(XFormPrim):
             distance (int): distance to move in unit step. 1 unit step = 0.1m (negative: forward, position: backward)
         """
         sensor = XFormPrim(f"{self._prim_path}/Sensors")
-        
+
         new_pos_x = (
             self._sensor_default_x_pos + distance * Conveyor.SENSOR_POS_ADJUST_UNIT
         )
@@ -206,11 +206,17 @@ class Conveyor(XFormPrim):
     # Callback
     ##
     def _on_sim_step(self, time_per_step_ms: float):
-        if self._is_engine_on:
-            if self.is_sensor_detect_object():
+        try:
+            if not self._is_engine_on:
+                return
+            is_detect = self.is_sensor_detect_object()
+            if is_detect:
                 return self.stop()
             else:
                 return self.start()
+        except Exception as e:
+            log.error(f"Error on sensor detection: {e}")
+            return
 
     ##
     # Utils

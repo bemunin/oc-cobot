@@ -7,6 +7,7 @@ from omni.isaac.core.tasks import BaseTask
 from omni.isaac.core.utils.stage import clear_stage
 from omni.isaac.core.world.world import World
 
+import utils.log as log
 from utils.path import load_config
 
 from ..conveyor import Conveyor
@@ -121,7 +122,10 @@ class SpawnerTask(BaseTask):
         }
 
         self._spawn_routine(**kwargs)
-        self._manage_items_on_belt_routine(**kwargs)
+        try:
+            self._manage_items_on_belt_routine(**kwargs)
+        except Exception as e:
+            log.error(f"Error in manage_items_on_belt_routine: {e}")
 
     def cleanup(self) -> None:
         """
