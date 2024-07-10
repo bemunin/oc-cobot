@@ -2,9 +2,9 @@ import random
 from collections import deque
 
 import numpy as np
+import omni.isaac.core.utils.prims as prims_utils
 from omni.isaac.core.scenes.scene import Scene
 from omni.isaac.core.tasks import BaseTask
-from omni.isaac.core.utils.stage import clear_stage
 from omni.isaac.core.world.world import World
 
 import utils.log as log
@@ -136,7 +136,9 @@ class SpawnerTask(BaseTask):
         self._items_off_belt = deque()
         self._total_items = 0
         self._spawn_timer_count = 0
-        clear_stage(lambda path: path == "/Execute/spawner_task")
+
+        if prims_utils.get_prim_at_path("/Execute/spawner_task"):
+            prims_utils.delete_prim("/Execute/spawner_task")
 
     ##
     # Routines
