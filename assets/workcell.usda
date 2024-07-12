@@ -657,7 +657,7 @@ def Xform "Main"
                         custom bool inputs:curved = 0
                         custom float inputs:delta
                         prepend float inputs:delta.connect = </Main/Conveyor/Track/ConveyorTrackB/ConveyorBeltGraph/OnTick.outputs:deltaSeconds>
-                        custom float3 inputs:direction = (1, 0, 0)
+                        custom float3 inputs:direction = (-1, 0, 0)
                         custom bool inputs:enabled
                         custom uint inputs:onStep
                         prepend uint inputs:onStep.connect = </Main/Conveyor/Track/ConveyorTrackB/ConveyorBeltGraph/OnTick.outputs:tick>

@@ -34,10 +34,6 @@ class Conveyor(XFormPrim):
         world = World.instance()
         world.add_physics_callback("conveyor:sim_step", self._on_sim_step)
 
-        # init conveyor direction
-        self.set_prim_direction("ConveyorTrackA", 1.0)
-        self.set_prim_direction("ConveyorTrackB", -1.0)
-
     ##
     # Properties
     ##

@@ -1,0 +1,91 @@
+{
+	// Place your oc-cobot workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
+	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
+	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
+	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
+	// Placeholders with the same ids are connected.
+	// Example:
+	// "Print to console": {
+	// 	"scope": "javascript,typescript",
+	// 	"prefix": "log",
+	// 	"body": [
+	// 		"console.log('$1');",
+	// 		"$2"
+	// 	],
+	// 	"description": "Log output to console"
+	// }
+
+	"Write Task Boilerplate": {
+		"scope": "python",
+		"prefix": "is:task",
+		"body": [
+            "from typing import Optional",
+            "",
+            "import numpy as np",
+            "from omni.isaac.core.scenes.scene import Scene",
+            "from omni.isaac.core.tasks import BaseTask",
+            "",
+            "class ${1:TaskClass}(BaseTask):",
+			"    name = \"${2:task_class}\"",
+            "",
+            "    def __init__(",
+            "        self, name: Optional[str] = None, offset: Optional[np.ndarray] = None",
+            "    ) -> None:",
+            "        super().__init__($1.name if name is None else name, offset)",
+            "",
+            "    ##",
+            "    #   Setup",
+            "    ##",
+            "    def set_up_scene(self, scene: Scene):",
+            "        super().set_up_scene(scene)",
+            "",
+            "    ##",
+            "    #   Required override methods",
+            "    ##",
+            "    def calculate_metrics(self) -> dict:",
+            "        return {}",
+            "",
+            "    def get_observations(self):",
+            "        obs = {}",
+            "        return obs",
+            "",
+            "    def is_done(self) -> bool:",
+            "        return False",
+            "",
+            "    def get_params(self) -> dict:",
+            "        return {}",
+            "",
+            "    def set_params(self, *args, **kwargs) -> None:",
+            "        pass",
+            "",
+            "    ##",
+            "    #   Event hooks",
+            "    ##",
+            "",
+            "    def pre_step(self, total_sim_step: int, total_sim_time_sec: float):",
+            "        return",
+            "",
+            "    def cleanup(self) -> None:",
+            "        return",
+            "",
+            "    def post_reset(self) -> None:",
+            "        return",
+            "",
+            "    ##",
+            "    #   Routines",
+            "    ##",
+            "",
+            "    # def _my_routine(self):",
+            "    #     pass",
+            "",
+            "    ##",
+            "    #   Task Utility Functions",
+            "    ##",
+            "",
+            "    # def _my_utility(self):",
+            "    #     pass"
+        ],
+        "description": "Snippet for creating Isaac Sim Task class"
+	}
+}
