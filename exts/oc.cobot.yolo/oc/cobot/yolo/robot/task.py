@@ -45,10 +45,10 @@ class RobotTask(BaseTask):
     def pre_step(self, total_sim_step: int, total_sim_time_sec: float):
         return
 
-    def cleanup(self) -> None:
+    def post_reset(self) -> None:
         return
 
-    def post_reset(self) -> None:
+    def cleanup(self) -> None:
         return
 
     ##
@@ -59,7 +59,7 @@ class RobotTask(BaseTask):
     #     pass
 
     ##
-    #   Task Utility Functions
+    #   Utils
     ##
 
     # def _my_utility(self):

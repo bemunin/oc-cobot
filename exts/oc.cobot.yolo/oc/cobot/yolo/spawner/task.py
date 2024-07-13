@@ -98,11 +98,17 @@ class SpawnerTask(BaseTask):
         self._is_random_pos = is_random_pos
 
     ##
-    # Task
+    #   Setup
     ##
-
     def set_up_scene(self, scene: Scene):
         super().set_up_scene(scene)
+
+    ##
+    #   Required override methods
+    ##
+
+    def calculate_metrics(self) -> dict:
+        return {}
 
     def get_observations(self):
         obs = {
@@ -111,6 +117,19 @@ class SpawnerTask(BaseTask):
             "total_items": self._total_items,
         }
         return obs
+
+    def is_done(self) -> bool:
+        return False
+
+    def get_params(self) -> dict:
+        return {}
+
+    def set_params(self, *args, **kwargs) -> None:
+        pass
+
+    ##
+    #   Event hooks
+    ##
 
     def pre_step(self, total_sim_step: int, total_sim_time_sec: float):
         if self._disabled_task:
@@ -126,6 +145,9 @@ class SpawnerTask(BaseTask):
             self._manage_items_on_belt_routine(**kwargs)
         except Exception as e:
             log.error(f"Error in manage_items_on_belt_routine: {e}")
+
+    def post_reset(self) -> None:
+        return
 
     def cleanup(self) -> None:
         """
