@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.1.1] - 2024-07-25
+
+### Added
+- **Spawner Module**: Add reset button to remove all spawned item.
+- **Code Snippets**: Add task vscode snippet to create task boiler plate code. 
+
 ## [v0.1.0] - 2024-07-05
 
 ### Added
