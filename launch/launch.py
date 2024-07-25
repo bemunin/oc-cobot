@@ -25,6 +25,7 @@ def init_world():
 def before_setup_stage():
     # enable required extensions
     extensions.enable_extension("omni.isaac.conveyor")
+    extensions.enable_extension("omni.isaac.ros2_bridge")
 
 
 def setup_stage(sim_app: SimulationApp):

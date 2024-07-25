@@ -51,6 +51,11 @@ _build
 **/logs/*
 **/recordings/*
 
+# OmniCraft ros_ws
+**/devel/
+**/build/
+**/install/
+**/log/
 
 # OmniCraft Cobot
 **/config.local.toml
