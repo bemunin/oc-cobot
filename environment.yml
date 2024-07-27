@@ -5,21 +5,32 @@ channels:
 dependencies:
   - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=4.5=2_gnu
+  - _sysroot_linux-64_curr_repodata_hack=3=h69a702a_16
+  - binutils_impl_linux-64=2.38=h2a08ee3_1
+  - binutils_linux-64=2.38.0=hc2dff05_0
   - bzip2=1.0.8=h5eee18b_6
-  - ca-certificates=2024.6.2=hbcca054_0
+  - ca-certificates=2024.7.4=hbcca054_0
+  - catkin_pkg=1.0.0=pyhd8ed1ab_0
+  - docutils=0.21.2=pyhd8ed1ab_0
+  - gcc_impl_linux-64=11.2.0=h1234567_1
+  - gcc_linux-64=11.2.0=h5c386dc_0
+  - kernel-headers_linux-64=3.10.0=h4a8ded7_16
   - ld_impl_linux-64=2.38=h1181459_1
   - libffi=3.4.4=h6a678d5_1
+  - libgcc-devel_linux-64=11.2.0=h1234567_1
   - libgcc-ng=14.1.0=h77fa898_0
   - libgomp=14.1.0=h77fa898_0
-  - libstdcxx-ng=11.2.0=h1234567_1
+  - libstdcxx-ng=14.1.0=hc0a3c3a_0
   - libuuid=1.41.5=h5eee18b_0
   - ncurses=6.4=h6a678d5_0
-  - openssl=3.3.1=h4ab18f5_1
-  - pip=24.0=py310h06a4308_0
+  - openssl=3.3.1=h4bc722e_2
+  - pyparsing=3.1.2=pyhd8ed1ab_0
   - python=3.10.14=h955ad1f_1
   - readline=8.2=h5eee18b_0
   - setuptools=69.5.1=py310h06a4308_0
+  - six=1.16.0=pyh6c4a22f_0
   - sqlite=3.45.3=h5eee18b_0
+  - sysroot_linux-64=2.17=h4a8ded7_16
   - tk=8.6.14=h39e8969_0
   - toml=0.10.2=pyhd8ed1ab_0
   - tzdata=2024a=h04d1e81_0
@@ -86,17 +97,16 @@ dependencies:
       - osqp==0.6.7.post0
       - packaging==24.1
       - pillow==10.3.0
+      - pip==24.1.2
       - psutil==6.0.0
-      - pyparsing==3.1.2
       - pyperclip==1.9.0
       - python-dateutil==2.9.0.post0
       - pyyaml==6.0.1
       - qdldl==0.1.7.post4
       - s3transfer==0.10.2
       - scipy==1.14.0
-      - six==1.16.0
       - sympy==1.12.1
       - torch==2.3.1
       - triton==2.3.1
       - urllib3==2.2.2
-prefix: /home/<user>/anaconda3/envs/oc_cobot
+prefix: /home/bemunin/anaconda3/envs/oc_cobot
