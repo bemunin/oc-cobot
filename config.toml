@@ -1,4 +1,4 @@
 [spawner]
 # real_life or geometric
-object_type = "real_life" 
-object_spawn= "all"
+object_type = "geometric" 
+object_spawn= "cube.usd"
