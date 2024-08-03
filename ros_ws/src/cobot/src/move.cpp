@@ -23,21 +23,24 @@ double degreeToRadian(double deg){
 }
 
 // helpers
-std::string cmdParser(int argc, char** argv){
+std::vector<std::string> cmdParser(int argc, char** argv){
+  std::vector<std::string> output;
+  
   if(argc<2){
-    return "fk:pick";
+    output.push_back("fk:standby");
+    return output;
   }
 
   std::string cmd = argv[1];
-  std::string output = "";
 
   if(cmd == "ik"){
     // TODO: Inverse Kinematic
-    return "ik:0,0,0";
+    output.push_back("ik");
+    return output;
   } else {
     // forward kinematic, accepts state name (pick, standby)
-    output.append("fk:");
-    output.append(argv[1]);
+    std::string state = argv[1];
+    output.push_back("fk:"+state);
     return output;
   } 
 }
@@ -87,22 +90,45 @@ int main(int argc, char** argv)
   RCLCPP_INFO(logger, "Start node");
   auto mg_arm = MoveGroupInterface(node, "panda_arm_hand");
 
-  // parse command
-  std::string cmd = cmdParser(argc, argv);
+  // fk states
+  JointCommand pick;
+  pick.arm_joint_degs = {-3,77,2,-60,3,164,38};
+  pick.gripper_pos_meter = 0.04;
 
-  // states
-  JointCommand pick_state;
-  pick_state.arm_joint_degs = {-3,77,2,-60,3,164,38};
-  pick_state.gripper_pos_meter = 0.04;
+  JointCommand standby;
+  standby.arm_joint_degs = {0,-45,0,-135,0,92,45};
+  standby.gripper_pos_meter = 0.04;
 
-  JointCommand stand_by_state;
-  stand_by_state.arm_joint_degs = {0,-45,0,-135,0,92,45};
-  stand_by_state.gripper_pos_meter = 0.04;
+  // basket1
+  JointCommand standby_to_basket;
+  standby_to_basket.arm_joint_degs = {122,14,17,-82,-15,145,45};
+  standby_to_basket.gripper_pos_meter = 0.04;
 
+  // logic
+  // parse commandline arguments
+  std::vector<std::string> parse_values = cmdParser(argc, argv);
+  std::string cmd = parse_values.at(0);
+
+  // modify gripper position
+  // TODO  
+  
   // execute
-  if(cmd == "fk:pick") move_fk(mg_arm, pick_state);
-  else if(cmd == "fk:standby") move_fk(mg_arm, stand_by_state);
-  else move_ik();
+  if(cmd == "fk:pick"){
+    move_fk(mg_arm, pick);
+  } else if(cmd == "fk:standby"){
+    move_fk(mg_arm, standby);
+  } else if(cmd == "fk:basket1"){
+    move_fk(mg_arm, standby_to_basket);
+  } else if(cmd == "fk:basket2"){
+    standby_to_basket.arm_joint_degs.at(0) = 122;
+    move_fk(mg_arm, standby_to_basket);
+  } else if(cmd == "fk:basket3"){
+    standby_to_basket.arm_joint_degs.at(0) = -158;
+    move_fk(mg_arm, standby_to_basket);
+  } else if(cmd == "ik"){
+    move_ik();
+  }
+ 
 
   rclcpp::shutdown();
   return 0;
