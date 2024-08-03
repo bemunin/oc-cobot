@@ -8,7 +8,7 @@ using MoveGroupInterface = moveit::planning_interface::MoveGroupInterface;
 using Plan = moveit::planning_interface::MoveGroupInterface::Plan;
 using MoveItErrorCode = moveit::core::MoveItErrorCode;
 
-struct JointCommand {
+struct FkJointCommand {
   std::vector<double> arm_joint_degs;
   double gripper_pos_meter;
 };
@@ -41,12 +41,17 @@ std::vector<std::string> cmdParser(int argc, char** argv){
     // forward kinematic, accepts state name (pick, standby)
     std::string state = argv[1];
     output.push_back("fk:"+state);
+
+    if(argc==3){
+      std::string gripper_pos_meter = argv[2];
+      output.push_back(gripper_pos_meter);
+    }
     return output;
   } 
 }
 
 // Forward Kinematics
-void move_fk(MoveGroupInterface &mg, JointCommand const &target){
+void move_fk(MoveGroupInterface &mg, FkJointCommand const &target){
   
   std::vector<double> joints_goal;
   joints_goal.reserve(PANDA_JOINTS_NUM);
@@ -91,44 +96,48 @@ int main(int argc, char** argv)
   auto mg_arm = MoveGroupInterface(node, "panda_arm_hand");
 
   // fk states
-  JointCommand pick;
-  pick.arm_joint_degs = {-3,77,2,-60,3,164,38};
-  pick.gripper_pos_meter = 0.04;
+  std::vector<double> pick_arm_joint_degs = {-3,77,2,-60,3,164,38};
+  std::vector<double> standby_arm_joint_degs = {0,-45,0,-135,0,92,45};
+  // default to basket1
+  std::vector<double> basket_arm_joint_degs = {122,14,17,-82,-15,145,45};
 
-  JointCommand standby;
-  standby.arm_joint_degs = {0,-45,0,-135,0,92,45};
-  standby.gripper_pos_meter = 0.04;
 
-  // basket1
-  JointCommand standby_to_basket;
-  standby_to_basket.arm_joint_degs = {122,14,17,-82,-15,145,45};
-  standby_to_basket.gripper_pos_meter = 0.04;
-
-  // logic
+  // create joint target
   // parse commandline arguments
   std::vector<std::string> parse_values = cmdParser(argc, argv);
   std::string cmd = parse_values.at(0);
 
-  // modify gripper position
-  // TODO  
-  
-  // execute
-  if(cmd == "fk:pick"){
-    move_fk(mg_arm, pick);
-  } else if(cmd == "fk:standby"){
-    move_fk(mg_arm, standby);
-  } else if(cmd == "fk:basket1"){
-    move_fk(mg_arm, standby_to_basket);
-  } else if(cmd == "fk:basket2"){
-    standby_to_basket.arm_joint_degs.at(0) = 122;
-    move_fk(mg_arm, standby_to_basket);
-  } else if(cmd == "fk:basket3"){
-    standby_to_basket.arm_joint_degs.at(0) = -158;
-    move_fk(mg_arm, standby_to_basket);
-  } else if(cmd == "ik"){
+  // Inverse Kinematics
+
+  if (cmd == "ik"){
     move_ik();
+  } else {
+    // Forward Kinematics
+    FkJointCommand goal;
+    goal.arm_joint_degs = {-3,77,2,-60,3,164,38};
+    goal.gripper_pos_meter = 0.04;
+
+
+    if(parse_values.size() == 2){
+      goal.gripper_pos_meter = std::stod(parse_values.at(1));
+    }
+
+    if(cmd == "fk:pick"){
+      goal.arm_joint_degs = pick_arm_joint_degs;
+    } else if(cmd == "fk:standby"){
+      goal.arm_joint_degs = standby_arm_joint_degs;
+    } else if(cmd == "fk:basket1"){
+      goal.arm_joint_degs = basket_arm_joint_degs;
+    } else if(cmd == "fk:basket2"){
+      basket_arm_joint_degs.at(0) = 122;
+      goal.arm_joint_degs = basket_arm_joint_degs;
+    } else if(cmd == "fk:basket3"){
+      basket_arm_joint_degs.at(0) = -158;
+      goal.arm_joint_degs = basket_arm_joint_degs;
+    } 
+  
+    move_fk(mg_arm, goal);
   }
- 
 
   rclcpp::shutdown();
   return 0;
