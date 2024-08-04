@@ -2,6 +2,7 @@
 #include <memory>
 #include <moveit/move_group_interface/move_group_interface.h>
 #include <cmath>
+#include <tf2/utils.h>
 
 // alias
 using MoveGroupInterface = moveit::planning_interface::MoveGroupInterface;
@@ -23,7 +24,7 @@ double degreeToRadian(double deg){
 }
 
 // helpers
-std::vector<std::string> cmdParser(int argc, char** argv){
+std::vector<std::string> parseCmdArguments(int argc, char** argv){
   std::vector<std::string> output;
   
   if(argc<2){
@@ -34,8 +35,30 @@ std::vector<std::string> cmdParser(int argc, char** argv){
   std::string cmd = argv[1];
 
   if(cmd == "ik"){
-    // TODO: Inverse Kinematic
     output.push_back("ik");
+
+    for(auto i=2; i<argc; i++){
+      // extract 1.0 form pattern x=1.0
+      std::string arg = argv[i];
+      std::string key;
+      std::string value;
+
+      size_t pos = arg.find("=");
+
+      if(pos != std::string::npos){
+        key = arg.substr(0,pos);
+        value = arg.substr(pos+1);
+      } else {
+        value = arg;
+      }
+
+      RCLCPP_INFO_STREAM(logger, "Accept value ik "<<key<<": "<<value);
+
+      output.push_back(value);
+    }
+    // data structure in resturn string will be 
+    // ik, x_meter,y_meter,z_meter,(optional) roll_degree,(optional) pitch_degree,(optional)yaw_degree
+    // min size = 4, max size = 7
     return output;
   } else {
     // forward kinematic, accepts state name (pick, standby)
@@ -48,6 +71,31 @@ std::vector<std::string> cmdParser(int argc, char** argv){
     }
     return output;
   } 
+}
+
+geometry_msgs::msg::Pose createGeometryMsg(std::vector<std::string> parse_values){
+  geometry_msgs::msg::Pose msg;
+  msg.position.x = std::stod(parse_values.at(1));
+  msg.position.y = std::stod(parse_values.at(2));
+  msg.position.z = std::stod(parse_values.at(3));
+
+  if(parse_values.size() == 7){
+    tf2::Quaternion q;
+    q.setRPY(std::stod(parse_values.at(4)), std::stod(parse_values.at(5)), std::stod(parse_values.at(6)));
+    msg.orientation.w = q.getW();
+    msg.orientation.x = q.getX();
+    msg.orientation.y = q.getY();
+    msg.orientation.z = q.getZ();
+  } else {
+    tf2::Quaternion q;
+    q.setRPY(0, 0, 0);
+    msg.orientation.w = q.getW();
+    msg.orientation.x = q.getX();
+    msg.orientation.y = q.getY();
+    msg.orientation.z = q.getZ();
+  }
+
+  return msg;
 }
 
 // Forward Kinematics
@@ -82,8 +130,23 @@ void move_fk(MoveGroupInterface &mg, FkJointCommand const &target){
 }
 
 // Inverse Kinematics
-void move_ik(){
-  // TODO
+void move_ik(MoveGroupInterface &mg, geometry_msgs::msg::Pose const &target_pose){
+
+    mg.setPoseTarget(target_pose);
+
+    // Create a plan to that target pose
+    auto const [success, plan] = [&mg]{
+      moveit::planning_interface::MoveGroupInterface::Plan msg;
+      auto const ok = static_cast<bool>(mg.plan(msg));
+      return std::make_pair(ok, msg);
+    }();
+
+    // Execute the plan
+    if(success) {
+      mg.execute(plan);
+    } else {
+      RCLCPP_ERROR(logger, "Planing failed!");
+    }
 }
 
 
@@ -104,13 +167,15 @@ int main(int argc, char** argv)
 
   // create joint target
   // parse commandline arguments
-  std::vector<std::string> parse_values = cmdParser(argc, argv);
+  std::vector<std::string> parse_values = parseCmdArguments(argc, argv);
   std::string cmd = parse_values.at(0);
 
-  // Inverse Kinematics
 
   if (cmd == "ik"){
-    move_ik();
+    // Inverse Kinematics
+    geometry_msgs::msg::Pose target = createGeometryMsg(parse_values);
+    auto mg_arm = MoveGroupInterface(node, "panda_arm");
+    move_ik(mg_arm,target);
   } else {
     // Forward Kinematics
     FkJointCommand goal;
