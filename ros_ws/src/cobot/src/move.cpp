@@ -96,10 +96,10 @@ int main(int argc, char** argv)
   auto mg_arm = MoveGroupInterface(node, "panda_arm_hand");
 
   // fk states
-  std::vector<double> pick_arm_joint_degs = {-3,77,2,-60,3,164,38};
+  std::vector<double> prepick_arm_joint_degs = {-3,77,2,-60,3,164,38};
   std::vector<double> standby_arm_joint_degs = {0,-45,0,-135,0,92,45};
-  // default to basket1
-  std::vector<double> basket_arm_joint_degs = {122,14,17,-82,-15,145,45};
+  std::vector<double> basket1_arm_joint_degs = {122,14,17,-82,-15,145,45};
+  std::vector<double> basket2_arm_joint_degs = {166,-32,6,-134,7,127,50};
 
 
   // create joint target
@@ -114,7 +114,7 @@ int main(int argc, char** argv)
   } else {
     // Forward Kinematics
     FkJointCommand goal;
-    goal.arm_joint_degs = {-3,77,2,-60,3,164,38};
+    goal.arm_joint_degs = standby_arm_joint_degs;
     goal.gripper_pos_meter = 0.04;
 
 
@@ -122,18 +122,18 @@ int main(int argc, char** argv)
       goal.gripper_pos_meter = std::stod(parse_values.at(1));
     }
 
-    if(cmd == "fk:pick"){
-      goal.arm_joint_degs = pick_arm_joint_degs;
+    if(cmd == "fk:prepick"){
+      goal.arm_joint_degs = prepick_arm_joint_degs;
     } else if(cmd == "fk:standby"){
       goal.arm_joint_degs = standby_arm_joint_degs;
-    } else if(cmd == "fk:basket1"){
-      goal.arm_joint_degs = basket_arm_joint_degs;
+    } else if(cmd == "fk:basket1" || cmd == "fk:basket"){
+      goal.arm_joint_degs = basket1_arm_joint_degs;
     } else if(cmd == "fk:basket2"){
-      basket_arm_joint_degs.at(0) = 122;
-      goal.arm_joint_degs = basket_arm_joint_degs;
+      basket2_arm_joint_degs.at(0) = 166;
+      goal.arm_joint_degs = basket2_arm_joint_degs;
     } else if(cmd == "fk:basket3"){
-      basket_arm_joint_degs.at(0) = -158;
-      goal.arm_joint_degs = basket_arm_joint_degs;
+      basket1_arm_joint_degs.at(0) = -158;
+      goal.arm_joint_degs = basket1_arm_joint_degs;
     } 
   
     move_fk(mg_arm, goal);
