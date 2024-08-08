@@ -165,7 +165,6 @@ int main(int argc, char** argv)
   std::vector<double> basket2_arm_joint_degs = {166,-32,6,-134,7,127,50};
 
 
-  // create joint target
   // parse commandline arguments
   std::vector<std::string> parse_values = parseCmdArguments(argc, argv);
   std::string cmd = parse_values.at(0);
