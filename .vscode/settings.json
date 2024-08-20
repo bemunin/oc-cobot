@@ -791,5 +791,6 @@
         "variant": "cpp",
         "*.ipp": "cpp"
     },
+    "editor.tabSize": 2
 
 }
