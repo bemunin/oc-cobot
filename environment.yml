@@ -12,9 +12,13 @@ dependencies:
   - ca-certificates=2024.7.4=hbcca054_0
   - catkin_pkg=1.0.0=pyhd8ed1ab_0
   - docutils=0.21.2=pyhd8ed1ab_0
+  - empy=3.3.4=pyh9f0ad1d_1
+  - exceptiongroup=1.2.0=py310h06a4308_0
   - gcc_impl_linux-64=11.2.0=h1234567_1
   - gcc_linux-64=11.2.0=h5c386dc_0
+  - iniconfig=1.1.1=pyhd3eb1b0_0
   - kernel-headers_linux-64=3.10.0=h57e8cba_10
+  - lark-parser=0.12.0=pyhd8ed1ab_0
   - ld_impl_linux-64=2.38=h1181459_1
   - libffi=3.4.4=h6a678d5_1
   - libgcc-devel_linux-64=11.2.0=h1234567_1
@@ -24,7 +28,10 @@ dependencies:
   - libuuid=1.41.5=h5eee18b_0
   - ncurses=6.4=h6a678d5_0
   - openssl=3.0.14=h5eee18b_0
+  - packaging=24.1=py310h06a4308_0
+  - pluggy=1.0.0=py310h06a4308_1
   - pyparsing=3.1.2=pyhd8ed1ab_0
+  - pytest=7.4.4=py310h06a4308_0
   - python=3.10.14=h955ad1f_1
   - python-dateutil=2.9.0post0=py310h06a4308_2
   - readline=8.2=h5eee18b_0
@@ -34,6 +41,7 @@ dependencies:
   - sysroot_linux-64=2.17=h57e8cba_10
   - tk=8.6.14=h39e8969_0
   - toml=0.10.2=pyhd3eb1b0_0
+  - tomli=2.0.1=py310h06a4308_0
   - tzdata=2024a=h04d1e81_0
   - wheel=0.43.0=py310h06a4308_0
   - xz=5.4.6=h5eee18b_1
@@ -93,7 +101,6 @@ dependencies:
       - omniverse-kit==106.0.0
       - opencv-python==4.10.0.84
       - osqp==0.6.7.post0
-      - packaging==24.1
       - pillow==10.3.0
       - pip==24.1.2
       - psutil==6.0.0
