@@ -1,13 +1,16 @@
 import gc
 import weakref
 
+import numpy as np
 import omni
 import omni.ui as ui
 from omni.isaac.core import World
+from omni.isaac.core.utils import stage, viewports
 from omni.isaac.ui.menu import make_menu_item_description
 from omni.kit.menu.utils.scripts.utils import add_menu_items, remove_menu_items
 
 import utils.log as log
+from utils.path import get_proj_root_path
 from utils.ui import vstack
 
 from .conveyor import Conveyor, conveyor_section_ui
@@ -71,6 +74,19 @@ class Extension(omni.ext.IExt):
     # Scene
     ##
     def _setup_scene(self):
+        # setup stage
+
+        # camera view setup
+        camera_pos = np.array([-4, -4, 4])
+        camera_angle_point = np.array([-1, 1, 0])
+        viewports.set_camera_view(eye=camera_pos, target=camera_angle_point)
+
+        env_usd_path = get_proj_root_path() + "/assets/environments/default.usda"
+        workcell_usd_path = get_proj_root_path() + "/assets/workcell.usda"
+
+        stage.add_reference_to_stage(env_usd_path, "/Environment")
+        stage.add_reference_to_stage(workcell_usd_path, "/Main")
+
         world = World.instance()
         scene = world.scene
 
