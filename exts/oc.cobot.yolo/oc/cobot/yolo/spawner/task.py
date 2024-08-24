@@ -22,6 +22,9 @@ class SpawnerTask(BaseTask):
         super().__init__(SpawnerTask.name)
         config = load_config()
 
+        # state control
+        self._is_task_run = True
+
         # variables
         self._items_on_belt = deque()
         self._items_off_belt = deque()
@@ -85,6 +88,10 @@ class SpawnerTask(BaseTask):
     def is_random_angle(self) -> bool:
         return self._is_random_angle
 
+    @property
+    def is_task_run(self) -> bool:
+        return self._is_task_run
+
     @is_random_angle.setter
     def is_random_angle(self, is_random_angle: bool):
         self._is_random_angle = is_random_angle
@@ -96,6 +103,15 @@ class SpawnerTask(BaseTask):
     @is_random_pos.setter
     def is_random_pos(self, is_random_pos: bool):
         self._is_random_pos = is_random_pos
+
+    ##
+    # API
+    ##
+    def run(self):
+        self._is_task_run = True
+
+    def stop(self):
+        self._is_task_run = False
 
     ##
     #   Setup
@@ -167,7 +183,7 @@ class SpawnerTask(BaseTask):
     ##
     def _spawn_routine(self, total_sim_step: int, total_sim_time_sec: float):
         # don't spawn if belt is stopped
-        if not self.conveyor.is_belt_move:
+        if not self.conveyor.is_belt_move or not self._is_task_run:
             return
 
         # check if spawn timer trigger

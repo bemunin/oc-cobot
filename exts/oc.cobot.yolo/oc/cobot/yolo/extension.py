@@ -107,8 +107,8 @@ class Extension(omni.ext.IExt):
         scene.add(conveyor)
 
         # setup spawner task
-        spawner_task = SpawnerTask()
-        world.add_task(spawner_task)
+        self._spawner_task = SpawnerTask()
+        world.add_task(self._spawner_task)
 
         # reset world to build task set_up_scene
         # must call to make task work
@@ -122,7 +122,6 @@ class Extension(omni.ext.IExt):
         scene.remove_object("conveyor")
 
         # remove tasks
-
         current_tasks = world.get_current_tasks()
         del current_tasks[SpawnerTask.name]
 
@@ -144,7 +143,15 @@ class Extension(omni.ext.IExt):
     def _on_timeline_callback(self, event):
         if event.type == int(omni.timeline.TimelineEventType.STOP):
             log.info("Execute callback on timeline STOP")
-            tasks = World.instance().get_current_tasks()
-            spawner_task = tasks.get(SpawnerTask.name)
-            spawner_task.cleanup()
-            log.info("Done Execute callback on timeline STOP")
+
+            if self._spawner_task is not None:
+                self._spawner_task.stop()
+                self._spawner_task.cleanup()
+        elif event.type == int(omni.timeline.TimelineEventType.PAUSE):
+            log.info("Execute callback on timeline PAUSE")
+            if self._spawner_task is not None:
+                self._spawner_task.stop()
+        elif event.type == int(omni.timeline.TimelineEventType.PLAY):
+            log.info("Execute callback on timeline PLAY")
+            if self._spawner_task is not None:
+                self._spawner_task.run()
