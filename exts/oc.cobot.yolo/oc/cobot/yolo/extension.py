@@ -29,9 +29,20 @@ class Extension(omni.ext.IExt):
         self._spawner_task = None
 
         # initialize
+        log.info(f"(Extension) {EXTENSION_WINDOW_NAME} extension is loaded.")
         self._setup_scene()
         self._create_menus()
         self._build_ui()
+
+        # timeline callback
+        world = World.instance()
+        if world.timeline_callback_exists("oc.yolo.cobot.timeline"):
+            world.remove_timeline_callback("oc.yolo.cobot.timeline")
+
+        world.add_timeline_callback(
+            "oc.yolo.cobot.timeline",
+            self._on_timeline_callback,
+        )
 
     def on_shutdown(self):
         remove_menu_items(self._setting_menu_item, self._root_menu)
@@ -126,3 +137,14 @@ class Extension(omni.ext.IExt):
             return
 
         self._window.visible = not self._window.visible
+
+    ##
+    # Callbacks
+    ##
+    def _on_timeline_callback(self, event):
+        if event.type == int(omni.timeline.TimelineEventType.STOP):
+            log.info("Execute callback on timeline STOP")
+            tasks = World.instance().get_current_tasks()
+            spawner_task = tasks.get(SpawnerTask.name)
+            spawner_task.cleanup()
+            log.info("Done Execute callback on timeline STOP")

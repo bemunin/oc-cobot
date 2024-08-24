@@ -185,7 +185,6 @@ class Conveyor(XFormPrim):
             return False
 
         item_pos, _ = first_item.get_local_pose()
-        log.info(f"items_on_belt: {item_pos}")
 
         item_pos_x = item_pos[0]
         sensor_pos_x = self._sensor_pos[0]

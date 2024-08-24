@@ -203,7 +203,7 @@ class SpawnerTask(BaseTask):
             simulation_time (_type_): _description_
         """
 
-        # checkout everyr 5 time steps (10ms)
+        # checkout every 5 time steps (10ms)
 
         # Check and remove if first item is not on the belt
         if not self._items_on_belt:
