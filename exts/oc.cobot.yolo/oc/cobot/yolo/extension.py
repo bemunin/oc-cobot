@@ -103,16 +103,26 @@ class Extension(omni.ext.IExt):
 
         # setup conveyor
         conveyor = Conveyor("conveyor", "/Main/Conveyor")
-        conveyor.start()
         scene.add(conveyor)
 
         # setup spawner task
         self._spawner_task = SpawnerTask()
         world.add_task(self._spawner_task)
 
-        # reset world to build task set_up_scene
-        # must call to make task work
+        # reset world to update new objects and tasks adding to the scence
+        # it also trigger a task's set_up_scene function call
+        # that requires to make task work
         world.reset()
+
+        # fix bug sometime a conveyor run in to wrong direction at startup
+        # by re-stop and re-play the world
+        # after experiment for 20 times, this solution seems to work
+        world.stop()
+        world.play()
+        # end bug fix logic
+
+        # start conveyor
+        conveyor.start()
 
     def _cleanup_scene(self):
         world = World.instance()
