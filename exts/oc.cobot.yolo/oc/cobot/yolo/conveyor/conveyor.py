@@ -61,8 +61,7 @@ class Conveyor(XFormPrim):
         if self._sensor_pos is not None:
             return self._sensor_pos
 
-        sensor = XFormPrim(f"{self._prim_path}/Sensors")
-        sensor_pos, _ = sensor.get_local_pose()
+        sensor_pos, _ = self._sensor.get_local_pose()
         self._sensor_pos = sensor_pos
         return self._sensor_pos
 
@@ -150,16 +149,15 @@ class Conveyor(XFormPrim):
         Args:
             distance (int): distance to move in unit step. 1 unit step = 0.1m (negative: forward, position: backward)
         """
-        sensor = XFormPrim(f"{self._prim_path}/Sensors")
 
         new_pos_x = (
             self._sensor_default_x_pos + distance * Conveyor.SENSOR_POS_ADJUST_UNIT
         )
 
-        sensor_pos, _ = sensor.get_local_pose()
+        sensor_pos, _ = self._sensor.get_local_pose()
         new_pos = np.array([new_pos_x, sensor_pos[1], sensor_pos[2]])
 
-        sensor.set_local_pose(new_pos)
+        self._sensor.set_local_pose(new_pos)
         self._sensor_pos = new_pos
 
     def get_sensor_move_distance(self) -> int:
@@ -179,30 +177,9 @@ class Conveyor(XFormPrim):
         if not self._is_sensor_on:
             return False
 
-        world = World.instance()
-        items_on_belt = world.get_observations().get("items_on_belt")
+        is_detected, _, _ = self._sensor.sense()
 
-        if not items_on_belt or len(items_on_belt) == 0:
-            return
-
-        first_item = items_on_belt[0]
-
-        # sensor not detected
-        if first_item is None:
-            return False
-
-        item_pos, _ = first_item.get_local_pose()
-
-        item_pos_x = item_pos[0]
-        sensor_pos_x = self._sensor_pos[0]
-
-        dist = abs(sensor_pos_x - item_pos_x)
-
-        # sensor not detected
-        if dist > 0.02:
-            return False
-
-        return True
+        return is_detected
 
     ##
     # Callback
