@@ -6,7 +6,7 @@ def error(msg: str):
 
 
 def warn(msg: str):
-    carb.log_warning(f"oc: {msg}")
+    carb.log_warn(f"oc: {msg}")
 
 
 def info(msg: str):

@@ -6,6 +6,8 @@ from pxr import Gf
 
 import utils.log as log
 
+from .light_beam_sensor import LightBeamSensor
+
 
 class Conveyor(XFormPrim):
     SENSOR_POS_ADJUST_UNIT = 0.1  # 1 unit = 0.1m
@@ -29,6 +31,11 @@ class Conveyor(XFormPrim):
         # belt
         self._start_pos = None
         self._end_pos = None
+
+        # sensor
+        self._sensor = LightBeamSensor(
+            name="LightBeamSensor", prim_path=f"{prim_path}/Sensors"
+        )
 
         # callback
         world = World.instance()
