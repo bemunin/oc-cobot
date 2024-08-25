@@ -4,7 +4,11 @@ import omni
 import omni.graph.core as og
 import omni.kit.commands
 from omni.isaac.core.prims.xform_prim import XFormPrim
-from omni.isaac.core.utils.prims import delete_prim, get_prim_at_path
+from omni.isaac.core.utils.prims import (
+    delete_prim,
+    get_prim_at_path,
+    set_prim_attribute_value,
+)
 from omni.isaac.core.utils.rotations import euler_angles_to_quat
 from omni.isaac.sensor import _sensor
 from pxr import Gf
@@ -16,6 +20,7 @@ class LightBeamSensor(XFormPrim):
     def __init__(self, name: str, prim_path: str):
         super().__init__(name=name, prim_path=prim_path)
         self._lb_sensor = _sensor.acquire_lightbeam_sensor_interface()
+        self._is_visualize_on = False
 
         # prim
         self._light_beam_path = f"{prim_path}/LightBeam"
@@ -23,6 +28,13 @@ class LightBeamSensor(XFormPrim):
 
         # setup
         self._setup_light_beam_sensor()
+
+    ##
+    # Properties
+    ##
+    @property
+    def is_visualize_on(self) -> bool:
+        return self._is_visualize_on
 
     ##
     # Public Methods
@@ -44,6 +56,28 @@ class LightBeamSensor(XFormPrim):
         depth_meter = self._lb_sensor.get_linear_depth_data(self._light_beam_path)
         hit_pos = self._lb_sensor.get_hit_pos_data(self._light_beam_path)
         return (is_detected, depth_meter, hit_pos)
+
+    def show_beam_visualizer(self, is_visualize: bool):
+        """
+        Set the visualization of the light beam sensor.
+
+        Args:
+            is_visualize (bool): A boolean value to set the visualization of the light beam sensor.
+        """
+        if is_visualize:
+            self._is_visualize_on = True
+            set_prim_attribute_value(
+                f"{self._visualizer_actiongraph_path}/DebugDrawRayCast",
+                "inputs:color",
+                Gf.Vec4f(0.75, 0.75, 1.0, 1.0),
+            )
+        else:
+            self._is_visualize_on = False
+            set_prim_attribute_value(
+                f"{self._visualizer_actiongraph_path}/DebugDrawRayCast",
+                "inputs:color",
+                Gf.Vec4f(0.75, 0.75, 1.0, 0),
+            )
 
     ##
     # Private Methods
@@ -83,9 +117,9 @@ class LightBeamSensor(XFormPrim):
             log.error("Could not create Light Beam Sensor")
             return
 
-        self._visualize_light_beam()
+        self._setup_light_beam_visualizer()
 
-    def _visualize_light_beam(self):
+    def _setup_light_beam_visualizer(self):
         (action_graph, new_nodes, _, _) = og.Controller.edit(
             {
                 "graph_path": f"{self._visualizer_actiongraph_path}",
@@ -99,6 +133,7 @@ class LightBeamSensor(XFormPrim):
                 ],
                 og.Controller.Keys.SET_VALUES: [
                     ("IsaacReadLightBeam.inputs:lightbeamPrim", self._light_beam_path),
+                    ("DebugDrawRayCast.inputs:color", Gf.Vec4f(0.75, 0.75, 1.0, 0)),
                 ],
                 og.Controller.Keys.CONNECT: [
                     ("OnPlaybackTick.outputs:tick", "IsaacReadLightBeam.inputs:execIn"),

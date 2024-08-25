@@ -1,6 +1,6 @@
 import omni.ui as ui
 from omni.isaac.core.world.world import World
-from omni.isaac.ui.element_wrappers.ui_widget_wrappers import StateButton
+from omni.isaac.ui.element_wrappers.ui_widget_wrappers import CheckBox, StateButton
 from omni.isaac.ui.style import get_style
 from omni.ui import AbstractValueModel
 from omni.ui import color as cl
@@ -16,6 +16,9 @@ def conveyor_section_ui():
             sensor_control_btn()
             ui.Spacer(height=5)
             sensor_pos_slider()
+            ui.Spacer(height=5)
+            sensor_visualizer()
+            ui.Spacer(height=5)
 
 
 def conveyor_control_btn():
@@ -120,3 +123,25 @@ def sensor_pos_slider():
             },
         )
         ui.Spacer(height=5)
+
+
+def sensor_visualizer():
+    conveyor = World.instance().scene.get_object("conveyor")
+    sensor = conveyor.get_sensor_prim()
+
+    def handle_click(value: bool):
+        if value:
+            sensor.show_beam_visualizer(True)
+            log.info("Sensor visualizer ON")
+        else:
+            sensor.show_beam_visualizer(False)
+            log.info("Sensor visualizer OFF")
+
+    initial_value = sensor.is_visualize_on
+
+    CheckBox(
+        "Visualize Sensor Beam",
+        default_value=initial_value,
+        tooltip=" Click this checkbox to see light beam of conveyor sensor",
+        on_click_fn=handle_click,
+    )

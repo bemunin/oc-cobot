@@ -181,6 +181,9 @@ class Conveyor(XFormPrim):
 
         return is_detected
 
+    def get_sensor_prim(self) -> LightBeamSensor:
+        return self._sensor
+
     ##
     # Callback
     ##

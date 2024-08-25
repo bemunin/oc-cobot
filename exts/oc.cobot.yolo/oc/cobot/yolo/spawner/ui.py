@@ -1,5 +1,4 @@
 import omni.ui as ui
-from omni.isaac.core.utils.stage import clear_stage
 from omni.isaac.core.world.world import World
 from omni.isaac.ui.element_wrappers.ui_widget_wrappers import CheckBox
 from omni.isaac.ui.ui_utils import add_line_rect_flourish, btn_builder, format_tt
@@ -24,6 +23,7 @@ def spawner_task_section_ui():
             random_position_checkbox()
             ui.Spacer(height=10)
             reset_button()
+            ui.Spacer(height=5)
 
 
 ##
