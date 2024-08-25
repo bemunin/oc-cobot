@@ -26,8 +26,7 @@ class SpawnerTask(BaseTask):
         self._is_task_run = True
 
         # variables
-        self._items_on_belt = deque()
-        self._items_off_belt = deque()
+        self._items = deque()
         self._total_items = 0
         # step, need to use it for uniform spawn
         # in case of conveyor start/stop
@@ -128,8 +127,7 @@ class SpawnerTask(BaseTask):
 
     def get_observations(self):
         obs = {
-            "items_on_belt": self._items_on_belt,
-            "items_off_belt": self._items_off_belt,
+            "items": self._items,
             "total_items": self._total_items,
         }
         return obs
@@ -157,10 +155,6 @@ class SpawnerTask(BaseTask):
         }
 
         self._spawn_routine(**kwargs)
-        try:
-            self._manage_items_on_belt_routine(**kwargs)
-        except Exception as e:
-            log.error(f"Error in manage_items_on_belt_routine: {e}")
 
     def post_reset(self) -> None:
         return
@@ -170,8 +164,7 @@ class SpawnerTask(BaseTask):
         clean up temporary objects during task execution,
         use when reset or shutdown task
         """
-        self._items_on_belt = deque()
-        self._items_off_belt = deque()
+        self._items = deque()
         self._total_items = 0
         self._spawn_timer_count = 0
 
@@ -206,58 +199,12 @@ class SpawnerTask(BaseTask):
         item = spawn(**spawn_kwargs)
 
         if item is not None:
-            self._items_on_belt.append(item)
+            self._items.append(item)
             self._total_items += 1
-
-    def _manage_items_on_belt_routine(
-        self, total_sim_step: int, total_sim_time_sec: float
-    ):
-        """Manage first item on belt or off belt
-
-        Args:
-            time_step_index (_type_): _description_
-            simulation_time (_type_): _description_
-        """
-
-        # checkout every 5 time steps (10ms)
-
-        # Check and remove if first item is not on the belt
-        if not self._items_on_belt:
-            return
-
-        first_item = self._items_on_belt[0]
-        first_item_pose, _ = first_item.get_local_pose()
-        first_item_x = first_item_pose[0]
-        first_item_y = first_item_pose[1]
-        first_item_z = first_item_pose[2]
-
-        # check if the first item y pos is still on the belt
-        if first_item_y > 0.48 or first_item_y < -0.48:
-            self._move_first_item_off_belt()
-            return
-
-        delta_z = abs(first_item_z - 0.58)
-
-        # check if the first item z pos is still on the belt
-        if delta_z > 0.5:
-            self._move_first_item_off_belt()
-            return
-
-        # pop first item if it's passed the sensor
-        sensor_x = self.conveyor.sensor_pos[0]
-        if first_item_x > sensor_x + 0.01:
-            self._move_first_item_off_belt()
-            return
 
     ##
     # Utils
     ##
-    def _move_first_item_off_belt(self):
-        if not self._items_on_belt:
-            return
-
-        first_item = self._items_on_belt.popleft()
-        self._items_off_belt.append(first_item)
 
     def _get_spawn_point(self) -> np.ndarray:
         if self._spawn_point is None:
