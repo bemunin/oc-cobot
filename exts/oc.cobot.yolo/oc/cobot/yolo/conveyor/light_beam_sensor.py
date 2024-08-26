@@ -96,7 +96,6 @@ class LightBeamSensor(XFormPrim):
         pitch_deg = 90
         yaw_deg = 0
         oriant_quat = euler_angles_to_quat([roll_deg, pitch_deg, yaw_deg], degrees=True)
-        # calculate light beam max range
 
         result, _ = omni.kit.commands.execute(
             "IsaacSensorCreateLightBeamSensor",
