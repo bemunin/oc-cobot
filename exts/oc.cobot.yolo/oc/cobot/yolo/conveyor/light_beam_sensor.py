@@ -120,7 +120,7 @@ class LightBeamSensor(XFormPrim):
         self._setup_light_beam_visualizer()
 
     def _setup_light_beam_visualizer(self):
-        (action_graph, new_nodes, _, _) = og.Controller.edit(
+        og.Controller.edit(
             {
                 "graph_path": f"{self._visualizer_actiongraph_path}",
                 "evaluator_name": "execution",
