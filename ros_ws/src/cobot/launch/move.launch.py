@@ -40,12 +40,17 @@ def generate_launch_description():
         .to_moveit_configs()
     )
 
+    # Load  ExecuteTaskSolutionCapability so we can execute found solutions in simulation
+    move_group_capabilities = {
+        "capabilities": "move_group/ExecuteTaskSolutionCapability"
+    }
+
     # Start the actual move_group node/action server
     move_group_node = Node(
         package="moveit_ros_move_group",
         executable="move_group",
         output="screen",
-        parameters=[moveit_config.to_dict()],
+        parameters=[moveit_config.to_dict(), move_group_capabilities],
         arguments=["--ros-args", "--log-level", "info"],
     )
 
@@ -79,22 +84,23 @@ def generate_launch_description():
         output="log",
         arguments=["--frame-id", "world", "--child-frame-id", "panda_link0"],
     )
-    hand2camera_tf_node = Node(
-        package="tf2_ros",
-        executable="static_transform_publisher",
-        name="static_transform_publisher",
-        output="log",
-        arguments=[
-            "0.04",
-            "0.0",
-            "0.04",
-            "0.0",
-            "0.0",
-            "0.0",
-            "panda_hand",
-            "sim_camera",
-        ],
-    )
+
+    # hand2camera_tf_node = Node(
+    #     package="tf2_ros",
+    #     executable="static_transform_publisher",
+    #     name="static_transform_publisher",
+    #     output="log",
+    #     arguments=[
+    #         "0.04",
+    #         "0.0",
+    #         "0.04",
+    #         "0.0",
+    #         "0.0",
+    #         "0.0",
+    #         "panda_hand",
+    #         "sim_camera",
+    #     ],
+    # )
 
     # Publish TF
     robot_state_publisher = Node(
@@ -105,7 +111,6 @@ def generate_launch_description():
         parameters=[moveit_config.robot_description],
     )
 
-    # ros2_control using FakeSystem as hardware
     ros2_controllers_path = os.path.join(
         get_package_share_directory("moveit_resources_panda_moveit_config"),
         "config",
@@ -148,7 +153,7 @@ def generate_launch_description():
             ros2_control_hardware_type,
             rviz_node,
             world2robot_tf_node,
-            hand2camera_tf_node,
+            # hand2camera_tf_node,
             robot_state_publisher,
             move_group_node,
             ros2_control_node,
