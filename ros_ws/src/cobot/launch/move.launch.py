@@ -5,54 +5,36 @@ from launch_ros.actions import Node
 from moveit_configs_utils import MoveItConfigsBuilder
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, ExecuteProcess
+from launch.actions import DeclareLaunchArgument, ExecuteProcess, OpaqueFunction
 from launch.substitutions import LaunchConfiguration
 
 
 # Builder functions
 
 
-def build_movegroup_node(moveit_config):
+def build_movegroup_node(context, *args, **kwargs):
+    moveit_config = args[0] if len(args) > 0 else {}
+    params = [moveit_config.to_dict()]
+
+    is_use_mtc = LaunchConfiguration("is_use_mtc").perform(context).lower()
+
     # Load  ExecuteTaskSolutionCapability so we can execute found solutions in simulation
-    move_group_capabilities = {
-        "capabilities": "move_group/ExecuteTaskSolutionCapability"
-    }
+    if is_use_mtc == "true":
+        move_group_capabilities = {
+            "capabilities": "move_group/ExecuteTaskSolutionCapability"
+        }
+        params.append(move_group_capabilities)
 
     # Start the actual move_group node/action server
     move_group_node = Node(
         package="moveit_ros_move_group",
         executable="move_group",
         output="screen",
-        parameters=[moveit_config.to_dict(), move_group_capabilities],
+        parameters=params,
         arguments=["--ros-args", "--log-level", "info"],
     )
 
-    return move_group_node
-
-
-def build_rviz_node(moveit_config):
-    rviz_config_file = os.path.join(
-        get_package_share_directory("cobot"),
-        "config",
-        "panda_moveit_config.rviz",
-    )
-
-    rviz_node = Node(
-        package="rviz2",
-        executable="rviz2",
-        name="rviz2",
-        output="log",
-        arguments=["-d", rviz_config_file],
-        parameters=[
-            moveit_config.robot_description,
-            moveit_config.robot_description_semantic,
-            moveit_config.robot_description_kinematics,
-            moveit_config.planning_pipelines,
-            moveit_config.joint_limits,
-        ],
-    )
-
-    return rviz_node
+    return [move_group_node]
 
 
 def build_tf_nodes(moveit_config):
@@ -93,6 +75,36 @@ def build_tf_nodes(moveit_config):
     )
 
     return world2robot_tf_node, robot_state_publisher
+
+
+def build_rviz_node(context, *args, **kwargs):
+    moveit_config = args[0] if len(args) > 0 else {}
+
+    is_use_mtc = LaunchConfiguration("is_use_mtc").perform(context).lower()
+    rviz_filename = "mtc.rviz" if is_use_mtc == "true" else "panda_moveit_config.rviz"
+
+    rviz_config_file = os.path.join(
+        get_package_share_directory("cobot"),
+        "config",
+        rviz_filename,
+    )
+
+    rviz_node = Node(
+        package="rviz2",
+        executable="rviz2",
+        name="rviz2",
+        output="log",
+        arguments=["-d", rviz_config_file],
+        parameters=[
+            moveit_config.robot_description,
+            moveit_config.robot_description_semantic,
+            moveit_config.robot_description_kinematics,
+            moveit_config.planning_pipelines,
+            moveit_config.joint_limits,
+        ],
+    )
+
+    return [rviz_node]
 
 
 def build_ros2_control_node():
@@ -142,6 +154,12 @@ def generate_launch_description():
         description="ROS2 control hardware interface type to use for the launch file -- possible values: [mock_components, isaac]",
     )
 
+    is_use_mtc_arg = DeclareLaunchArgument(
+        "is_use_mtc",
+        default_value="false",
+        description="Name of the RViz configuration file to use in cobot config directory",
+    )
+
     # setup
     moveit_config = (
         MoveItConfigsBuilder(
@@ -164,20 +182,22 @@ def generate_launch_description():
         .to_moveit_configs()
     )
 
-    move_group_node = build_movegroup_node(moveit_config)
-    rviz_node = build_rviz_node(moveit_config)
     world2robot_tf_node, robot_state_publisher = build_tf_nodes(moveit_config)
     ros2_control_node = build_ros2_control_node()
     controllers = load_controllers()
 
+    rviz_node = OpaqueFunction(function=build_rviz_node, args=[moveit_config])
+    movegroup_node = OpaqueFunction(function=build_movegroup_node, args=[moveit_config])
+
     return LaunchDescription(
         [
+            is_use_mtc_arg,
             hardware_type_arg,
             rviz_node,
             world2robot_tf_node,
             # hand2camera_tf_node,
+            movegroup_node,
             robot_state_publisher,
-            move_group_node,
             ros2_control_node,
         ]
         + controllers
