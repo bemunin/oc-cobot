@@ -5,41 +5,14 @@ from launch_ros.actions import Node
 from moveit_configs_utils import MoveItConfigsBuilder
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, ExecuteProcess
 from launch.substitutions import LaunchConfiguration
 
 
-def generate_launch_description():
-    # Command-line arguments
-    ros2_control_hardware_type = DeclareLaunchArgument(
-        "ros2_control_hardware_type",
-        default_value="isaac",
-        description="ROS2 control hardware interface type to use for the launch file -- possible values: [mock_components, isaac]",
-    )
+# Builder functions
 
-    moveit_config = (
-        MoveItConfigsBuilder(
-            "moveit_resources_panda",
-            package_name="moveit_resources_panda_moveit_config",
-        )
-        .robot_description(
-            file_path="config/panda.urdf.xacro",
-            mappings={
-                "ros2_control_hardware_type": LaunchConfiguration(
-                    "ros2_control_hardware_type"
-                )
-            },
-        )
-        .robot_description_semantic(file_path="config/panda.srdf")
-        .trajectory_execution(file_path="config/gripper_moveit_controllers.yaml")
-        .planning_pipelines(pipelines=["ompl", "pilz_industrial_motion_planner"])
-        .planning_scene_monitor(
-            publish_robot_description=True, publish_robot_description_semantic=True
-        )
-        .joint_limits(file_path="config/joint_limits.3x.yaml")
-        .to_moveit_configs()
-    )
 
+def build_movegroup_node(moveit_config):
     # Load  ExecuteTaskSolutionCapability so we can execute found solutions in simulation
     move_group_capabilities = {
         "capabilities": "move_group/ExecuteTaskSolutionCapability"
@@ -54,7 +27,10 @@ def generate_launch_description():
         arguments=["--ros-args", "--log-level", "info"],
     )
 
-    # RViz
+    return move_group_node
+
+
+def build_rviz_node(moveit_config):
     rviz_config_file = os.path.join(
         get_package_share_directory("cobot"),
         "config",
@@ -76,6 +52,10 @@ def generate_launch_description():
         ],
     )
 
+    return rviz_node
+
+
+def build_tf_nodes(moveit_config):
     # Static TF
     world2robot_tf_node = Node(
         package="tf2_ros",
@@ -85,6 +65,7 @@ def generate_launch_description():
         arguments=["--frame-id", "world", "--child-frame-id", "panda_link0"],
     )
 
+    # TODO: uncomment it when use RGBD camera
     # hand2camera_tf_node = Node(
     #     package="tf2_ros",
     #     executable="static_transform_publisher",
@@ -111,11 +92,16 @@ def generate_launch_description():
         parameters=[moveit_config.robot_description],
     )
 
+    return world2robot_tf_node, robot_state_publisher
+
+
+def build_ros2_control_node():
     ros2_controllers_path = os.path.join(
         get_package_share_directory("moveit_resources_panda_moveit_config"),
         "config",
         "ros2_controllers.yaml",
     )
+
     ros2_control_node = Node(
         package="controller_manager",
         executable="ros2_control_node",
@@ -126,39 +112,73 @@ def generate_launch_description():
         output="screen",
     )
 
-    joint_state_broadcaster_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=[
-            "joint_state_broadcaster",
-            "--controller-manager",
-            "/controller_manager",
-        ],
+    return ros2_control_node
+
+
+def load_controllers():
+    processes = []
+    for controller in [
+        "panda_arm_controller",
+        "panda_hand_controller",
+        "joint_state_broadcaster",
+    ]:
+        processes += [
+            ExecuteProcess(
+                cmd=["ros2 run controller_manager spawner {}".format(controller)],
+                shell=True,
+                output="screen",
+            )
+        ]
+
+    return processes
+
+
+# Launch file declaration
+def generate_launch_description():
+    # args
+    hardware_type_arg = DeclareLaunchArgument(
+        "hardware_type",
+        default_value="isaac",
+        description="ROS2 control hardware interface type to use for the launch file -- possible values: [mock_components, isaac]",
     )
 
-    panda_arm_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["panda_arm_controller", "-c", "/controller_manager"],
+    # setup
+    moveit_config = (
+        MoveItConfigsBuilder(
+            "moveit_resources_panda",
+            package_name="moveit_resources_panda_moveit_config",
+        )
+        .robot_description(
+            file_path="config/panda.urdf.xacro",
+            mappings={
+                "ros2_control_hardware_type": LaunchConfiguration("hardware_type")
+            },
+        )
+        .robot_description_semantic(file_path="config/panda.srdf")
+        .trajectory_execution(file_path="config/gripper_moveit_controllers.yaml")
+        .planning_pipelines(pipelines=["ompl", "pilz_industrial_motion_planner"])
+        .planning_scene_monitor(
+            publish_robot_description=True, publish_robot_description_semantic=True
+        )
+        .joint_limits(file_path="config/joint_limits.3x.yaml")
+        .to_moveit_configs()
     )
 
-    panda_hand_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["panda_hand_controller", "-c", "/controller_manager"],
-    )
+    move_group_node = build_movegroup_node(moveit_config)
+    rviz_node = build_rviz_node(moveit_config)
+    world2robot_tf_node, robot_state_publisher = build_tf_nodes(moveit_config)
+    ros2_control_node = build_ros2_control_node()
+    controllers = load_controllers()
 
     return LaunchDescription(
         [
-            ros2_control_hardware_type,
+            hardware_type_arg,
             rviz_node,
             world2robot_tf_node,
             # hand2camera_tf_node,
             robot_state_publisher,
             move_group_node,
             ros2_control_node,
-            joint_state_broadcaster_spawner,
-            panda_arm_controller_spawner,
-            panda_hand_controller_spawner,
         ]
+        + controllers
     )
