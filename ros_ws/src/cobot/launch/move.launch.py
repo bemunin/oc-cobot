@@ -199,6 +199,6 @@ def generate_launch_description():
             movegroup_node,
             robot_state_publisher,
             ros2_control_node,
+            *controllers,
         ]
-        + controllers
     )
