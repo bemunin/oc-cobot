@@ -24,6 +24,13 @@ def generate_launch_description():
     )
     lf = open(move_launch_file).read()
     lf = lf.replace("generate_launch_description", "generate_base_launch_description")
+
+    # Add pickplace node to to base launch description
+    # This subsitution relies on the fact that
+    # "*controllers," appears only once in the launch file
+    # lf = lf.replace(
+    #     "*controllers,", "*controllers, build_pickplace_node(moveit_config),"
+    # )
     exec(lf, globals())
 
     return generate_base_launch_description()  # type: ignore # noqa: F821
