@@ -2,14 +2,16 @@ import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch_ros.actions import Node
-from moveit_configs_utils import MoveItConfigsBuilder
+from moveit_configs_utils import MoveItConfigs, MoveItConfigsBuilder
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, ExecuteProcess, OpaqueFunction
 from launch.substitutions import LaunchConfiguration
 
 
+##
 # Builder functions
+##
 
 
 def build_movegroup_node(context, *args, **kwargs):
@@ -37,7 +39,7 @@ def build_movegroup_node(context, *args, **kwargs):
     return [move_group_node]
 
 
-def build_tf_nodes(moveit_config):
+def build_tf_nodes(moveit_config: MoveItConfigs):
     # Static TF
     world2robot_tf_node = Node(
         package="tf2_ros",
@@ -145,7 +147,17 @@ def load_controllers():
     return processes
 
 
+def create_is_use_mtc_arg():
+    return DeclareLaunchArgument(
+        "is_use_mtc",
+        default_value="false",
+        description="boolean flag to specify whether to use MoveItTaskConstructor settings",
+    )
+
+
+##
 # Launch file declaration
+##
 def generate_launch_description():
     # args
     hardware_type_arg = DeclareLaunchArgument(
@@ -154,12 +166,7 @@ def generate_launch_description():
         description="ROS2 control hardware interface type to use for the launch file -- possible values: [mock_components, isaac]",
     )
 
-    is_use_mtc_arg = DeclareLaunchArgument(
-        "is_use_mtc",
-        default_value="false",
-        description="Name of the RViz configuration file to use in cobot config directory",
-    )
-
+    is_use_mtc_arg = create_is_use_mtc_arg()
     # setup
     moveit_config = (
         MoveItConfigsBuilder(
