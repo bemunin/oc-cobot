@@ -1,6 +1,19 @@
 from os import path
 
 from ament_index_python.packages import get_package_share_directory
+from launch_ros.actions import Node
+
+
+def build_pickplace_node(moveit_config: dict):
+    pick_place_node = Node(
+        package="cobot",
+        executable="pickplace",
+        output="screen",
+        parameters=[
+            moveit_config,
+        ],
+    )
+    return pick_place_node
 
 
 def generate_launch_description():
