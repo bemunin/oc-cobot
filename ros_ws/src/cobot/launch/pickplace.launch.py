@@ -36,13 +36,13 @@ def generate_launch_description():
     lf = open(move_launch_file).read()
     lf = lf.replace("generate_launch_description", "generate_base_launch_description")
 
-    # Modify is_use_mtc_arg
+    # Modify is_use_mtc_arg default argument
     lf = lf.replace(
         "is_use_mtc_arg = create_is_use_mtc_arg()",
         "is_use_mtc_arg = modify_create_is_use_mtc_arg()",
     )
 
-    # Add pickplace node to to base launch description
+    # Add pickplace node to base launch description
     # This subsitution relies on the fact that
     # "*controllers," appears only once in the launch file
     lf = lf.replace(
