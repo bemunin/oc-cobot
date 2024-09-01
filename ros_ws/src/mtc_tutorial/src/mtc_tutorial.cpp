@@ -220,6 +220,7 @@ mtc::Task MTCTaskNode::createTask()
     task.add(std::move(grasp));
   }
 
+  // TODO: mtc_conveyor_node do next from here
   {
     auto stage_move_to_place = std::make_unique<mtc::stages::Connect>(
         "move to place", mtc::stages::Connect::GroupPlannerVector{ { arm_group_name, sampling_planner },

@@ -80,15 +80,147 @@ void MTCConveyorNode::doTask()
 
 // Stages
 
+void MTCConveyorNode::addCurrentStateStage()
+{
+  auto stage = std::make_unique<mtc::stages::CurrentState>("current");
+  current_state_ptr_ = stage.get();
+  task_.add(std::move(stage));
+}
+
+void MTCConveyorNode::addHandStage(std::string stage_name, std::string goal)
+{
+  auto stage = std::make_unique<mtc::stages::MoveTo>(stage_name, interpolation_planner_);
+  stage->setGroup(hand_group_name_);
+  stage->setGoal(goal);
+
+  task_.add(std::move(stage));
+}
+
+void MTCConveyorNode::addHandStageToContainer(std::string stage_name, std::string goal,
+                                              std::unique_ptr<mtc::SerialContainer>& container)
+{
+  auto stage = std::make_unique<mtc::stages::MoveTo>(stage_name, interpolation_planner_);
+  stage->setGroup(hand_group_name_);
+  stage->setGoal(goal);
+  container->insert(std::move(stage));
+}
+
+// pick object container
+void MTCConveyorNode::addConnectStage(std::string stage_name)
+{
+  auto stage = std::make_unique<mtc::stages::Connect>(
+      stage_name, mtc::stages::Connect::GroupPlannerVector{ { arm_group_name_, sampling_planner_ } });
+  stage->setTimeout(5.0);
+  stage->properties().configureInitFrom(mtc::Stage::PARENT);
+  task_.add(std::move(stage));
+}
+
+std::unique_ptr<mtc::SerialContainer> MTCConveyorNode::createSerialContainer(std::string container_name)
+{
+  auto container = std::make_unique<mtc::SerialContainer>(container_name);
+  task_.properties().exposeTo(container->properties(), { "eef", "group", "ik_frame" });
+  container->properties().configureInitFrom(mtc::Stage::PARENT, { "eef", "group", "ik_frame" });
+
+  return container;
+}
+
+void MTCConveyorNode::addApproachObjectStage(std::string stage_name, std::unique_ptr<mtc::SerialContainer>& grasp)
+{
+  auto stage = std::make_unique<mtc::stages::MoveRelative>(stage_name, cartesian_planner_);
+  stage->properties().set("marker_ns", "approach_object");
+  stage->properties().set("link", hand_frame_);
+  stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
+  stage->setMinMaxDistance(0.1, 0.15);
+
+  // Set hand forward direction
+  geometry_msgs::msg::Vector3Stamped vec;
+  vec.header.frame_id = hand_frame_;
+  vec.vector.z = 1.0;
+  stage->setDirection(vec);
+  grasp->insert(std::move(stage));
+}
+
+void MTCConveyorNode::addGenerateGraspPose(std::string stage_name, const std::string& target_object,
+                                           std::unique_ptr<mtc::SerialContainer>& grasp)
+{
+  // Sample grasp pose
+  auto stage = std::make_unique<mtc::stages::GenerateGraspPose>(stage_name);
+  stage->properties().configureInitFrom(mtc::Stage::PARENT);
+  stage->properties().set("marker_ns", "grasp_pose");
+  stage->setPreGraspPose("open");
+  stage->setObject(target_object);
+  stage->setAngleDelta(M_PI / 12);
+  stage->setMonitoredStage(current_state_ptr_);  // Hook into current state
+
+  Eigen::Isometry3d grasp_frame_transform;
+  Eigen::Quaterniond q = Eigen::AngleAxisd(M_PI / 2, Eigen::Vector3d::UnitX()) *
+                         Eigen::AngleAxisd(M_PI / 2, Eigen::Vector3d::UnitY()) *
+                         Eigen::AngleAxisd(M_PI / 2, Eigen::Vector3d::UnitZ());
+  grasp_frame_transform.linear() = q.matrix();
+  grasp_frame_transform.translation().z() = 0.1;
+  // Compute IK
+  auto wrapper = std::make_unique<mtc::stages::ComputeIK>("grasp pose IK", std::move(stage));
+  wrapper->setMaxIKSolutions(8);
+  wrapper->setMinSolutionDistance(1.0);
+  wrapper->setIKFrame(grasp_frame_transform, hand_frame_);
+  wrapper->properties().configureInitFrom(mtc::Stage::PARENT, { "eef", "group" });
+  wrapper->properties().configureInitFrom(mtc::Stage::INTERFACE, { "target_pose" });
+  grasp->insert(std::move(wrapper));
+}
+
+void MTCConveyorNode::addAllowCollisionToObjectStage(std::string stage_name, const std::string& target_object,
+                                                     std::unique_ptr<mtc::SerialContainer>& grasp)
+{
+  auto stage = std::make_unique<mtc::stages::ModifyPlanningScene>(stage_name);
+  stage->allowCollisions(
+      target_object,
+      task_.getRobotModel()->getJointModelGroup(hand_group_name_)->getLinkModelNamesWithCollisionGeometry(), true);
+  grasp->insert(std::move(stage));
+}
+
+void MTCConveyorNode::addAttachObjectStage(std::string stage_name, const std::string& target_object,
+                                           std::unique_ptr<mtc::SerialContainer>& grasp)
+{
+  auto stage = std::make_unique<mtc::stages::ModifyPlanningScene>(stage_name);
+  stage->attachObject(target_object, hand_frame_);
+  attach_object_stage_ = stage.get();
+  grasp->insert(std::move(stage));
+}
+
+void MTCConveyorNode::addLiftObjectStage(std::string stage_name, std::unique_ptr<mtc::SerialContainer>& grasp)
+{
+  auto stage = std::make_unique<mtc::stages::MoveRelative>(stage_name, cartesian_planner_);
+  stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
+  stage->setMinMaxDistance(0.1, 0.3);
+  stage->setIKFrame(hand_frame_);
+  stage->properties().set("marker_ns", "lift_object");
+
+  // Set upward direction
+  geometry_msgs::msg::Vector3Stamped vec;
+  vec.header.frame_id = "world";
+  vec.vector.z = 1.0;
+  stage->setDirection(vec);
+  grasp->insert(std::move(stage));
+}
+
 void MTCConveyorNode::setupTaskStages()
 {
-  auto stage_state_current = std::make_unique<mtc::stages::CurrentState>("current");
-  current_state_ptr_ = stage_state_current.get();
-  task_.add(std::move(stage_state_current));
+  std::string target_object = "object";
 
-  auto stage_open_hand = std::make_unique<mtc::stages::MoveTo>("open hand", interpolation_planner_);
-  stage_open_hand->setGroup(hand_group_name_);
-  stage_open_hand->setGoal("open");
-  task_.add(std::move(stage_open_hand));
+  addCurrentStateStage();
+  addHandStage("open hand", "open");
+  addConnectStage("move to pick");
+
+  // pick object container
+  {
+    auto grasp = createSerialContainer("pick object");
+    addApproachObjectStage("approach object", grasp);
+    addGenerateGraspPose("generate grasp pose", target_object, grasp);
+    addAllowCollisionToObjectStage("allow collision (hand,object)", target_object, grasp);
+    addHandStageToContainer("close hand", "close", grasp);
+    addAttachObjectStage("attach object", target_object, grasp);
+    addLiftObjectStage("lift object", grasp);
+    task_.add(std::move(grasp));
+  }
 }
 }  // namespace cobot

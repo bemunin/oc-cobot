@@ -42,6 +42,7 @@ private:
   rclcpp::Node::SharedPtr node_;
   mtc::Task task_;
   mtc::Stage* current_state_ptr_;
+  mtc::Stage* attach_object_stage_;
 
   const std::string arm_group_name_ = "panda_arm";
   const std::string hand_group_name_ = "hand";
@@ -52,6 +53,24 @@ private:
   std::shared_ptr<CartesianPath> cartesian_planner_;
 
   void setupTaskStages();
+
+  // stages
+  void addCurrentStateStage();
+  void addHandStage(std::string stage_name, std::string goal);
+
+  void addHandStageToContainer(std::string stage_name, std::string goal,
+                               std::unique_ptr<mtc::SerialContainer>& container);
+  void addConnectStage(std::string stage_name);
+  std::unique_ptr<mtc::SerialContainer> createSerialContainer(std::string container_name);
+  void addApproachObjectStage(std::string stage_name, std::unique_ptr<mtc::SerialContainer>& grasp);
+  void addGenerateGraspPose(std::string stage_name, const std::string& target_object,
+                            std::unique_ptr<mtc::SerialContainer>& grasp);
+  void addAllowCollisionToObjectStage(std::string stage_name, const std::string& target_object,
+                                      std::unique_ptr<mtc::SerialContainer>& grasp);
+
+  void addAttachObjectStage(std::string stage_name, const std::string& target_object,
+                            std::unique_ptr<mtc::SerialContainer>& grasp);
+  void addLiftObjectStage(std::string stage_name, std::unique_ptr<mtc::SerialContainer>& grasp);
 };
 
 }  // namespace cobot
