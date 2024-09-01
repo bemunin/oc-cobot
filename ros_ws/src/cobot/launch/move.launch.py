@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 from ament_index_python.packages import get_package_share_directory
 from launch_ros.actions import Node
@@ -155,6 +156,26 @@ def create_is_use_mtc_arg():
     )
 
 
+# main setup funtion for all nodes in this launch file
+def setup_entities(moveit_config: MoveItConfigs) -> List:
+    world2robot_tf_node, robot_state_publisher = build_tf_nodes(moveit_config)
+    ros2_control_node = build_ros2_control_node()
+    controllers = load_controllers()
+
+    rviz_node = OpaqueFunction(function=build_rviz_node, args=[moveit_config])
+    movegroup_node = OpaqueFunction(function=build_movegroup_node, args=[moveit_config])
+
+    return [
+        rviz_node,
+        world2robot_tf_node,
+        # hand2camera_tf_node,
+        movegroup_node,
+        robot_state_publisher,
+        ros2_control_node,
+        *controllers,
+    ]
+
+
 ##
 # Launch file declaration
 ##
@@ -189,23 +210,5 @@ def generate_launch_description():
         .to_moveit_configs()
     )
 
-    world2robot_tf_node, robot_state_publisher = build_tf_nodes(moveit_config)
-    ros2_control_node = build_ros2_control_node()
-    controllers = load_controllers()
-
-    rviz_node = OpaqueFunction(function=build_rviz_node, args=[moveit_config])
-    movegroup_node = OpaqueFunction(function=build_movegroup_node, args=[moveit_config])
-
-    return LaunchDescription(
-        [
-            is_use_mtc_arg,
-            hardware_type_arg,
-            rviz_node,
-            world2robot_tf_node,
-            # hand2camera_tf_node,
-            movegroup_node,
-            robot_state_publisher,
-            ros2_control_node,
-            *controllers,
-        ]
-    )
+    entities = setup_entities(moveit_config)
+    return LaunchDescription([is_use_mtc_arg, hardware_type_arg, *entities])
