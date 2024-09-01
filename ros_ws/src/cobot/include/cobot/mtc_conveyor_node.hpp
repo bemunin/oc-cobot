@@ -21,6 +21,9 @@
 
 static const rclcpp::Logger LOGGER = rclcpp::get_logger("cobot");
 namespace mtc = moveit::task_constructor;
+using PipelinePlanner = mtc::solvers::PipelinePlanner;
+using JointInterpolationPlanner = mtc::solvers::JointInterpolationPlanner;
+using CartesianPath = mtc::solvers::CartesianPath;
 
 namespace cobot
 {
@@ -36,9 +39,19 @@ public:
   void setupPlanningScene();
 
 private:
-  mtc::Task createTask();
-  mtc::Task task_;
   rclcpp::Node::SharedPtr node_;
+  mtc::Task task_;
+  mtc::Stage* current_state_ptr_;
+
+  const std::string arm_group_name_ = "panda_arm";
+  const std::string hand_group_name_ = "hand";
+  const std::string hand_frame_ = "panda_hand";
+
+  std::shared_ptr<PipelinePlanner> sampling_planner_;
+  std::shared_ptr<JointInterpolationPlanner> interpolation_planner_;
+  std::shared_ptr<CartesianPath> cartesian_planner_;
+
+  void setupTaskStages();
 };
 
 }  // namespace cobot
