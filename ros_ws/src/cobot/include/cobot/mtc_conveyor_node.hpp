@@ -24,6 +24,7 @@ namespace mtc = moveit::task_constructor;
 using PipelinePlanner = mtc::solvers::PipelinePlanner;
 using JointInterpolationPlanner = mtc::solvers::JointInterpolationPlanner;
 using CartesianPath = mtc::solvers::CartesianPath;
+using GroupPlannerVector = mtc::stages::Connect::GroupPlannerVector;
 
 namespace cobot
 {
@@ -57,20 +58,26 @@ private:
   // stages
   void addCurrentStateStage();
   void addHandStage(std::string stage_name, std::string goal);
+  void addHandStage(std::string stage_name, std::string goal, std::unique_ptr<mtc::SerialContainer>& container);
 
-  void addHandStageToContainer(std::string stage_name, std::string goal,
-                               std::unique_ptr<mtc::SerialContainer>& container);
-  void addConnectStage(std::string stage_name);
+  void addConnectStage(std::string stage_name, GroupPlannerVector group_planner_vector);
   std::unique_ptr<mtc::SerialContainer> createSerialContainer(std::string container_name);
-  void addApproachObjectStage(std::string stage_name, std::unique_ptr<mtc::SerialContainer>& grasp);
-  void addGenerateGraspPose(std::string stage_name, const std::string& target_object,
-                            std::unique_ptr<mtc::SerialContainer>& grasp);
-  void addAllowCollisionToObjectStage(std::string stage_name, const std::string& target_object,
-                                      std::unique_ptr<mtc::SerialContainer>& grasp);
+  void addApproachObjectStage(std::string stage_name, std::unique_ptr<mtc::SerialContainer>& container);
+  void addGenerateGraspPoseStage(std::string stage_name, const std::string& target_object,
+                                 std::unique_ptr<mtc::SerialContainer>& container);
+  void addAllowCollisionToObjectStage(std::string stage_name, bool is_allow, const std::string& target_object,
+                                      std::unique_ptr<mtc::SerialContainer>& container);
 
-  void addAttachObjectStage(std::string stage_name, const std::string& target_object,
-                            std::unique_ptr<mtc::SerialContainer>& grasp);
-  void addLiftObjectStage(std::string stage_name, std::unique_ptr<mtc::SerialContainer>& grasp);
+  void addGraspObjectStage(std::string stage_name, bool is_attach, const std::string& target_object,
+                           std::unique_ptr<mtc::SerialContainer>& container);
+  void addLiftObjectStage(std::string stage_name, std::unique_ptr<mtc::SerialContainer>& container);
+
+  void addGeneratePlacePoseStage(std::string stage_name, const std::string& target_object,
+                                 std::unique_ptr<mtc::SerialContainer>& container);
+
+  void addRetreatStage(std::string stage_name, std::unique_ptr<mtc::SerialContainer>& container);
+
+  void addReturnHome(std::string stage_name);
 };
 
 }  // namespace cobot
