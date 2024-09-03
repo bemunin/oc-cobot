@@ -55,29 +55,16 @@ private:
 
   void setupTaskStages();
 
-  // experiments
-  void addToContainer(mtc::ContainerBase::pointer& container, mtc::Stage::pointer&& stage)
-  {
-    container->insert(std::move(stage));
-  }
-
-  void addToTask(mtc::Stage::pointer&& stage)
-  {
-    task_.add(std::move(stage));
-  }
-
-  mtc::Stage::pointer handStage(std::string stage_name, std::string goal)
-  {
-    auto stage = std::make_unique<mtc::stages::MoveTo>(stage_name, interpolation_planner_);
-    stage->setGroup(hand_group_name_);
-    stage->setGoal(goal);
-    return stage;
-  }
+  // Utility functions
+  void addToContainer(mtc::ContainerBase::pointer& container, mtc::Stage::pointer&& stage);
+  void addToTask(mtc::Stage::pointer&& stage);
+  void addToTask(mtc::ContainerBase::pointer& stage);
 
   // stages
-  void addCurrentStateStage();
-  void addHandStage(std::string stage_name, std::string goal);
-  void addHandStage(std::string stage_name, std::string goal, mtc::ContainerBase::pointer& container);
+  mtc::Stage::pointer currentStateStage(std::string stage_name);
+  mtc::Stage::pointer handStage(std::string stage_name, std::string goal);
+
+  // stages
 
   void addConnectStage(std::string stage_name, GroupPlannerVector group_planner_vector);
   mtc::ContainerBase::pointer createSerialContainer(std::string container_name);

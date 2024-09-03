@@ -78,39 +78,20 @@ void MTCConveyorNode::doTask()
   return;
 }
 
-// Stages
-
-void MTCConveyorNode::addCurrentStateStage()
+// Utiltiy functions
+void MTCConveyorNode::addToContainer(mtc::ContainerBase::pointer& container, mtc::Stage::pointer&& stage)
 {
-  auto stage = std::make_unique<mtc::stages::CurrentState>("current");
-  current_state_ptr_ = stage.get();
-  task_.add(std::move(stage));
-}
-
-void MTCConveyorNode::addHandStage(std::string stage_name, std::string goal)
-{
-  auto stage = std::make_unique<mtc::stages::MoveTo>(stage_name, interpolation_planner_);
-  stage->setGroup(hand_group_name_);
-  stage->setGoal(goal);
-
-  task_.add(std::move(stage));
-}
-
-void MTCConveyorNode::addHandStage(std::string stage_name, std::string goal, mtc::ContainerBase::pointer& container)
-{
-  auto stage = std::make_unique<mtc::stages::MoveTo>(stage_name, interpolation_planner_);
-  stage->setGroup(hand_group_name_);
-  stage->setGoal(goal);
   container->insert(std::move(stage));
 }
 
-// pick object container
-void MTCConveyorNode::addConnectStage(std::string stage_name, GroupPlannerVector group_planner_vector)
+void MTCConveyorNode::addToTask(mtc::Stage::pointer&& stage)
 {
-  auto stage = std::make_unique<mtc::stages::Connect>(stage_name, group_planner_vector);
-  stage->setTimeout(5.0);
-  stage->properties().configureInitFrom(mtc::Stage::PARENT);
   task_.add(std::move(stage));
+}
+
+void MTCConveyorNode::addToTask(mtc::ContainerBase::pointer& container)
+{
+  task_.add(std::move(container));
 }
 
 mtc::ContainerBase::pointer MTCConveyorNode::createSerialContainer(std::string container_name)
@@ -120,6 +101,31 @@ mtc::ContainerBase::pointer MTCConveyorNode::createSerialContainer(std::string c
   container->properties().configureInitFrom(mtc::Stage::PARENT, { "eef", "group", "ik_frame" });
 
   return container;
+}
+
+// Stages
+mtc::Stage::pointer MTCConveyorNode::handStage(std::string stage_name, std::string goal)
+{
+  auto stage = std::make_unique<mtc::stages::MoveTo>(stage_name, interpolation_planner_);
+  stage->setGroup(hand_group_name_);
+  stage->setGoal(goal);
+  return stage;
+}
+
+mtc::Stage::pointer MTCConveyorNode::currentStateStage(std::string stage_name)
+{
+  auto stage = std::make_unique<mtc::stages::CurrentState>(stage_name);
+  current_state_ptr_ = stage.get();
+  return stage;
+}
+
+// pick object container
+void MTCConveyorNode::addConnectStage(std::string stage_name, GroupPlannerVector group_planner_vector)
+{
+  auto stage = std::make_unique<mtc::stages::Connect>(stage_name, group_planner_vector);
+  stage->setTimeout(5.0);
+  stage->properties().configureInitFrom(mtc::Stage::PARENT);
+  task_.add(std::move(stage));
 }
 
 void MTCConveyorNode::addApproachObjectStage(std::string stage_name, mtc::ContainerBase::pointer& container)
@@ -262,7 +268,7 @@ void MTCConveyorNode::setupTaskStages()
 {
   std::string target_object = "object";
 
-  addCurrentStateStage();
+  addToTask(currentStateStage("current"));
   addToTask(handStage("open hand", "open"));
 
   GroupPlannerVector to_pick_group_planner{ { arm_group_name_, sampling_planner_ } };
@@ -271,13 +277,15 @@ void MTCConveyorNode::setupTaskStages()
   // pick object container
   {
     auto pick = createSerialContainer("pick object");
+
     addApproachObjectStage("approach object", pick);
     addGenerateGraspPoseStage("generate grasp pose", target_object, pick);
     addAllowCollisionToObjectStage("allow collision (hand,object)", true, target_object, pick);
     addToContainer(pick, handStage("close hand", "close"));
     addGraspObjectStage("attach object", true, target_object, pick);
     addLiftObjectStage("lift object", pick);
-    task_.add(std::move(pick));
+
+    addToTask(pick);
   }
 
   GroupPlannerVector to_place_group_planner{ { arm_group_name_, sampling_planner_ },
@@ -289,11 +297,12 @@ void MTCConveyorNode::setupTaskStages()
     auto place = createSerialContainer("place object");
 
     addGeneratePlacePoseStage("generate place pose", target_object, place);
-    addHandStage("open hand", "open", place);
+    addToContainer(place, handStage("open hand", "open"));
     addAllowCollisionToObjectStage("forbid collision (hand,object)", false, target_object, place);
     addGraspObjectStage("detach object", false, target_object, place);
     addRetreatStage("retreat", place);
-    task_.add(std::move(place));
+
+    addToTask(place);
   }
   addReturnHome("return home");
 }
