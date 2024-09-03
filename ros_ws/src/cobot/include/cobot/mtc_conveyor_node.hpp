@@ -55,27 +55,46 @@ private:
 
   void setupTaskStages();
 
+  // experiments
+  void addToContainer(mtc::ContainerBase::pointer& container, mtc::Stage::pointer&& stage)
+  {
+    container->insert(std::move(stage));
+  }
+
+  void addToTask(mtc::Stage::pointer&& stage)
+  {
+    task_.add(std::move(stage));
+  }
+
+  mtc::Stage::pointer handStage(std::string stage_name, std::string goal)
+  {
+    auto stage = std::make_unique<mtc::stages::MoveTo>(stage_name, interpolation_planner_);
+    stage->setGroup(hand_group_name_);
+    stage->setGoal(goal);
+    return stage;
+  }
+
   // stages
   void addCurrentStateStage();
   void addHandStage(std::string stage_name, std::string goal);
-  void addHandStage(std::string stage_name, std::string goal, std::unique_ptr<mtc::SerialContainer>& container);
+  void addHandStage(std::string stage_name, std::string goal, mtc::ContainerBase::pointer& container);
 
   void addConnectStage(std::string stage_name, GroupPlannerVector group_planner_vector);
-  std::unique_ptr<mtc::SerialContainer> createSerialContainer(std::string container_name);
-  void addApproachObjectStage(std::string stage_name, std::unique_ptr<mtc::SerialContainer>& container);
+  mtc::ContainerBase::pointer createSerialContainer(std::string container_name);
+  void addApproachObjectStage(std::string stage_name, mtc::ContainerBase::pointer& container);
   void addGenerateGraspPoseStage(std::string stage_name, const std::string& target_object,
-                                 std::unique_ptr<mtc::SerialContainer>& container);
+                                 mtc::ContainerBase::pointer& container);
   void addAllowCollisionToObjectStage(std::string stage_name, bool is_allow, const std::string& target_object,
-                                      std::unique_ptr<mtc::SerialContainer>& container);
+                                      mtc::ContainerBase::pointer& container);
 
   void addGraspObjectStage(std::string stage_name, bool is_attach, const std::string& target_object,
-                           std::unique_ptr<mtc::SerialContainer>& container);
-  void addLiftObjectStage(std::string stage_name, std::unique_ptr<mtc::SerialContainer>& container);
+                           mtc::ContainerBase::pointer& container);
+  void addLiftObjectStage(std::string stage_name, mtc::ContainerBase::pointer& container);
 
   void addGeneratePlacePoseStage(std::string stage_name, const std::string& target_object,
-                                 std::unique_ptr<mtc::SerialContainer>& container);
+                                 mtc::ContainerBase::pointer& container);
 
-  void addRetreatStage(std::string stage_name, std::unique_ptr<mtc::SerialContainer>& container);
+  void addRetreatStage(std::string stage_name, mtc::ContainerBase::pointer& container);
 
   void addReturnHome(std::string stage_name);
 };

@@ -96,8 +96,7 @@ void MTCConveyorNode::addHandStage(std::string stage_name, std::string goal)
   task_.add(std::move(stage));
 }
 
-void MTCConveyorNode::addHandStage(std::string stage_name, std::string goal,
-                                   std::unique_ptr<mtc::SerialContainer>& container)
+void MTCConveyorNode::addHandStage(std::string stage_name, std::string goal, mtc::ContainerBase::pointer& container)
 {
   auto stage = std::make_unique<mtc::stages::MoveTo>(stage_name, interpolation_planner_);
   stage->setGroup(hand_group_name_);
@@ -114,7 +113,7 @@ void MTCConveyorNode::addConnectStage(std::string stage_name, GroupPlannerVector
   task_.add(std::move(stage));
 }
 
-std::unique_ptr<mtc::SerialContainer> MTCConveyorNode::createSerialContainer(std::string container_name)
+mtc::ContainerBase::pointer MTCConveyorNode::createSerialContainer(std::string container_name)
 {
   auto container = std::make_unique<mtc::SerialContainer>(container_name);
   task_.properties().exposeTo(container->properties(), { "eef", "group", "ik_frame" });
@@ -123,7 +122,7 @@ std::unique_ptr<mtc::SerialContainer> MTCConveyorNode::createSerialContainer(std
   return container;
 }
 
-void MTCConveyorNode::addApproachObjectStage(std::string stage_name, std::unique_ptr<mtc::SerialContainer>& container)
+void MTCConveyorNode::addApproachObjectStage(std::string stage_name, mtc::ContainerBase::pointer& container)
 {
   auto stage = std::make_unique<mtc::stages::MoveRelative>(stage_name, cartesian_planner_);
   stage->properties().set("marker_ns", "approach_object");
@@ -140,7 +139,7 @@ void MTCConveyorNode::addApproachObjectStage(std::string stage_name, std::unique
 }
 
 void MTCConveyorNode::addGenerateGraspPoseStage(std::string stage_name, const std::string& target_object,
-                                                std::unique_ptr<mtc::SerialContainer>& container)
+                                                mtc::ContainerBase::pointer& container)
 {
   // Sample grasp pose
   auto stage = std::make_unique<mtc::stages::GenerateGraspPose>(stage_name);
@@ -169,7 +168,7 @@ void MTCConveyorNode::addGenerateGraspPoseStage(std::string stage_name, const st
 
 void MTCConveyorNode::addAllowCollisionToObjectStage(std::string stage_name, bool is_allow,
                                                      const std::string& target_object,
-                                                     std::unique_ptr<mtc::SerialContainer>& container)
+                                                     mtc::ContainerBase::pointer& container)
 {
   auto stage = std::make_unique<mtc::stages::ModifyPlanningScene>(stage_name);
   stage->allowCollisions(
@@ -179,7 +178,7 @@ void MTCConveyorNode::addAllowCollisionToObjectStage(std::string stage_name, boo
 }
 
 void MTCConveyorNode::addGraspObjectStage(std::string stage_name, bool is_attach, const std::string& target_object,
-                                          std::unique_ptr<mtc::SerialContainer>& container)
+                                          mtc::ContainerBase::pointer& container)
 {
   auto stage = std::make_unique<mtc::stages::ModifyPlanningScene>(stage_name);
   if (is_attach)
@@ -194,7 +193,7 @@ void MTCConveyorNode::addGraspObjectStage(std::string stage_name, bool is_attach
   container->insert(std::move(stage));
 }
 
-void MTCConveyorNode::addLiftObjectStage(std::string stage_name, std::unique_ptr<mtc::SerialContainer>& container)
+void MTCConveyorNode::addLiftObjectStage(std::string stage_name, mtc::ContainerBase::pointer& container)
 {
   auto stage = std::make_unique<mtc::stages::MoveRelative>(stage_name, cartesian_planner_);
   stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
@@ -211,7 +210,7 @@ void MTCConveyorNode::addLiftObjectStage(std::string stage_name, std::unique_ptr
 }
 
 void MTCConveyorNode::addGeneratePlacePoseStage(std::string stage_name, const std::string& target_object,
-                                                std::unique_ptr<mtc::SerialContainer>& container)
+                                                mtc::ContainerBase::pointer& container)
 {
   auto stage = std::make_unique<mtc::stages::GeneratePlacePose>(stage_name);
   stage->properties().configureInitFrom(mtc::Stage::PARENT);
@@ -235,7 +234,7 @@ void MTCConveyorNode::addGeneratePlacePoseStage(std::string stage_name, const st
   container->insert(std::move(wrapper));
 }
 
-void MTCConveyorNode::addRetreatStage(std::string stage_name, std::unique_ptr<mtc::SerialContainer>& container)
+void MTCConveyorNode::addRetreatStage(std::string stage_name, mtc::ContainerBase::pointer& container)
 {
   auto stage = std::make_unique<mtc::stages::MoveRelative>(stage_name, cartesian_planner_);
   stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
@@ -264,7 +263,7 @@ void MTCConveyorNode::setupTaskStages()
   std::string target_object = "object";
 
   addCurrentStateStage();
-  addHandStage("open hand", "open");
+  addToTask(handStage("open hand", "open"));
 
   GroupPlannerVector to_pick_group_planner{ { arm_group_name_, sampling_planner_ } };
   addConnectStage("move to pick", to_pick_group_planner);
@@ -275,7 +274,7 @@ void MTCConveyorNode::setupTaskStages()
     addApproachObjectStage("approach object", pick);
     addGenerateGraspPoseStage("generate grasp pose", target_object, pick);
     addAllowCollisionToObjectStage("allow collision (hand,object)", true, target_object, pick);
-    addHandStage("close hand", "close", pick);
+    addToContainer(pick, handStage("close hand", "close"));
     addGraspObjectStage("attach object", true, target_object, pick);
     addLiftObjectStage("lift object", pick);
     task_.add(std::move(pick));
