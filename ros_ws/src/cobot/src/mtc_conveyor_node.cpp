@@ -119,16 +119,23 @@ mtc::Stage::pointer MTCConveyorNode::currentStateStage(std::string stage_name)
   return stage;
 }
 
-// pick object container
-void MTCConveyorNode::addConnectStage(std::string stage_name, GroupPlannerVector group_planner_vector)
+mtc::Stage::pointer MTCConveyorNode::connectStage(std::string stage_name, GroupPlannerVector group_planner_vector)
 {
   auto stage = std::make_unique<mtc::stages::Connect>(stage_name, group_planner_vector);
   stage->setTimeout(5.0);
   stage->properties().configureInitFrom(mtc::Stage::PARENT);
-  task_.add(std::move(stage));
+  return stage;
 }
 
-void MTCConveyorNode::addApproachObjectStage(std::string stage_name, mtc::ContainerBase::pointer& container)
+mtc::Stage::pointer MTCConveyorNode::toHomeStage(std::string stage_name)
+{
+  auto stage = std::make_unique<mtc::stages::MoveTo>(stage_name, interpolation_planner_);
+  stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
+  stage->setGoal("ready");
+  return stage;
+}
+
+mtc::Stage::pointer MTCConveyorNode::approachObjectStage(std::string stage_name)
 {
   auto stage = std::make_unique<mtc::stages::MoveRelative>(stage_name, cartesian_planner_);
   stage->properties().set("marker_ns", "approach_object");
@@ -141,7 +148,7 @@ void MTCConveyorNode::addApproachObjectStage(std::string stage_name, mtc::Contai
   vec.header.frame_id = hand_frame_;
   vec.vector.z = 1.0;
   stage->setDirection(vec);
-  container->insert(std::move(stage));
+  return stage;
 }
 
 void MTCConveyorNode::addGenerateGraspPoseStage(std::string stage_name, const std::string& target_object,
@@ -256,29 +263,23 @@ void MTCConveyorNode::addRetreatStage(std::string stage_name, mtc::ContainerBase
   container->insert(std::move(stage));
 }
 
-void MTCConveyorNode::addReturnHome(std::string stage_name)
-{
-  auto stage = std::make_unique<mtc::stages::MoveTo>(stage_name, interpolation_planner_);
-  stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
-  stage->setGoal("ready");
-  task_.add(std::move(stage));
-}
-
 void MTCConveyorNode::setupTaskStages()
 {
   std::string target_object = "object";
+  GroupPlannerVector to_pick_group_planner{ { arm_group_name_, sampling_planner_ } };
+  GroupPlannerVector to_place_group_planner{ { arm_group_name_, sampling_planner_ },
+                                             { hand_group_name_, sampling_planner_ } };
 
   addToTask(currentStateStage("current"));
   addToTask(handStage("open hand", "open"));
 
-  GroupPlannerVector to_pick_group_planner{ { arm_group_name_, sampling_planner_ } };
-  addConnectStage("move to pick", to_pick_group_planner);
+  addToTask(connectStage("move to pick", to_pick_group_planner));
 
   // pick object container
   {
     auto pick = createSerialContainer("pick object");
 
-    addApproachObjectStage("approach object", pick);
+    addToContainer(pick, approachObjectStage("approach object"));
     addGenerateGraspPoseStage("generate grasp pose", target_object, pick);
     addAllowCollisionToObjectStage("allow collision (hand,object)", true, target_object, pick);
     addToContainer(pick, handStage("close hand", "close"));
@@ -288,9 +289,7 @@ void MTCConveyorNode::setupTaskStages()
     addToTask(pick);
   }
 
-  GroupPlannerVector to_place_group_planner{ { arm_group_name_, sampling_planner_ },
-                                             { hand_group_name_, sampling_planner_ } };
-  addConnectStage("move to place", to_place_group_planner);
+  addToTask(connectStage("move to place", to_place_group_planner));
 
   // place object container
   {
@@ -304,6 +303,7 @@ void MTCConveyorNode::setupTaskStages()
 
     addToTask(place);
   }
-  addReturnHome("return home");
+
+  addToTask(toHomeStage("return home"));
 }
 }  // namespace cobot

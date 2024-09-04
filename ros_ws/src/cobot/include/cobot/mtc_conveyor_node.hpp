@@ -59,15 +59,17 @@ private:
   void addToContainer(mtc::ContainerBase::pointer& container, mtc::Stage::pointer&& stage);
   void addToTask(mtc::Stage::pointer&& stage);
   void addToTask(mtc::ContainerBase::pointer& stage);
+  mtc::ContainerBase::pointer createSerialContainer(std::string container_name);
 
   // stages
   mtc::Stage::pointer currentStateStage(std::string stage_name);
   mtc::Stage::pointer handStage(std::string stage_name, std::string goal);
+  mtc::Stage::pointer connectStage(std::string stage_name, GroupPlannerVector group_planner_vector);
+  mtc::Stage::pointer toHomeStage(std::string stage_name);
 
+  mtc::Stage::pointer approachObjectStage(std::string stage_name);
   // stages
 
-  void addConnectStage(std::string stage_name, GroupPlannerVector group_planner_vector);
-  mtc::ContainerBase::pointer createSerialContainer(std::string container_name);
   void addApproachObjectStage(std::string stage_name, mtc::ContainerBase::pointer& container);
   void addGenerateGraspPoseStage(std::string stage_name, const std::string& target_object,
                                  mtc::ContainerBase::pointer& container);
@@ -82,8 +84,6 @@ private:
                                  mtc::ContainerBase::pointer& container);
 
   void addRetreatStage(std::string stage_name, mtc::ContainerBase::pointer& container);
-
-  void addReturnHome(std::string stage_name);
 };
 
 }  // namespace cobot

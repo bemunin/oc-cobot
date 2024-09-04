@@ -158,6 +158,7 @@ def create_is_use_mtc_arg():
 
 # main setup funtion for all nodes in this launch file
 def setup_entities(moveit_config: MoveItConfigs) -> List:
+    is_use_mtc_arg = create_is_use_mtc_arg()
     world2robot_tf_node, robot_state_publisher = build_tf_nodes(moveit_config)
     ros2_control_node = build_ros2_control_node()
     controllers = load_controllers()
@@ -166,6 +167,9 @@ def setup_entities(moveit_config: MoveItConfigs) -> List:
     movegroup_node = OpaqueFunction(function=build_movegroup_node, args=[moveit_config])
 
     return [
+        # args
+        is_use_mtc_arg,
+        # nodes
         rviz_node,
         world2robot_tf_node,
         # hand2camera_tf_node,
@@ -187,7 +191,6 @@ def generate_launch_description():
         description="ROS2 control hardware interface type to use for the launch file -- possible values: [mock_components, isaac]",
     )
 
-    is_use_mtc_arg = create_is_use_mtc_arg()
     # setup
     moveit_config = (
         MoveItConfigsBuilder(
@@ -211,4 +214,4 @@ def generate_launch_description():
     )
 
     entities = setup_entities(moveit_config)
-    return LaunchDescription([is_use_mtc_arg, hardware_type_arg, *entities])
+    return LaunchDescription([hardware_type_arg, *entities])
