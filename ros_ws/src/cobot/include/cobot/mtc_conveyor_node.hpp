@@ -66,24 +66,13 @@ private:
   mtc::Stage::pointer handStage(std::string stage_name, std::string goal);
   mtc::Stage::pointer connectStage(std::string stage_name, GroupPlannerVector group_planner_vector);
   mtc::Stage::pointer toHomeStage(std::string stage_name);
-
   mtc::Stage::pointer approachObjectStage(std::string stage_name);
-  // stages
-
-  void addApproachObjectStage(std::string stage_name, mtc::ContainerBase::pointer& container);
-  void addGenerateGraspPoseStage(std::string stage_name, const std::string& target_object,
-                                 mtc::ContainerBase::pointer& container);
-  void addAllowCollisionToObjectStage(std::string stage_name, bool is_allow, const std::string& target_object,
-                                      mtc::ContainerBase::pointer& container);
-
-  void addGraspObjectStage(std::string stage_name, bool is_attach, const std::string& target_object,
-                           mtc::ContainerBase::pointer& container);
-  void addLiftObjectStage(std::string stage_name, mtc::ContainerBase::pointer& container);
-
-  void addGeneratePlacePoseStage(std::string stage_name, const std::string& target_object,
-                                 mtc::ContainerBase::pointer& container);
-
-  void addRetreatStage(std::string stage_name, mtc::ContainerBase::pointer& container);
+  mtc::Stage::pointer generateGraspPoseStage(std::string stage_name, const std::string& target_object);
+  mtc::Stage::pointer allowCollisionStage(std::string stage_name, const std::string& target_object, bool is_allow);
+  mtc::Stage::pointer graspObjectStage(std::string stage_name, const std::string& target_object, bool is_attach);
+  mtc::Stage::pointer liftObjectStage(std::string stage_name);
+  mtc::Stage::pointer generatePlacePoseStage(std::string stage_name, const std::string& target_object);
+  mtc::Stage::pointer retreatStage(std::string stage_name);
 };
 
 }  // namespace cobot

@@ -28,6 +28,7 @@ MTCConveyorNode::MTCConveyorNode(const rclcpp::NodeOptions& options)
   task_.setProperty("ik_frame", hand_frame_);
 }
 
+// Public
 void MTCConveyorNode::setupPlanningScene()
 {
   moveit_msgs::msg::CollisionObject object;
@@ -78,32 +79,52 @@ void MTCConveyorNode::doTask()
   return;
 }
 
-// Utiltiy functions
-void MTCConveyorNode::addToContainer(mtc::ContainerBase::pointer& container, mtc::Stage::pointer&& stage)
+// Private: Main
+void MTCConveyorNode::setupTaskStages()
 {
-  container->insert(std::move(stage));
+  std::string target_object = "object";
+  GroupPlannerVector to_pick_group_planner{ { arm_group_name_, sampling_planner_ } };
+  GroupPlannerVector to_place_group_planner{ { arm_group_name_, sampling_planner_ },
+                                             { hand_group_name_, sampling_planner_ } };
+
+  addToTask(currentStateStage("current"));
+  addToTask(handStage("open hand", "open"));
+
+  addToTask(connectStage("move to pick", to_pick_group_planner));
+
+  // pick object container
+  {
+    auto pick = createSerialContainer("pick object");
+
+    addToContainer(pick, approachObjectStage("approach object"));
+    addToContainer(pick, generateGraspPoseStage("generate grasp pose", target_object));
+    addToContainer(pick, allowCollisionStage("allow collision (hand,object)", target_object, true));
+    addToContainer(pick, handStage("close hand", "close"));
+    addToContainer(pick, graspObjectStage("attach object", target_object, true));
+    addToContainer(pick, liftObjectStage("lift object"));
+
+    addToTask(pick);
+  }
+
+  addToTask(connectStage("move to place", to_place_group_planner));
+
+  // place object container
+  {
+    auto place = createSerialContainer("place object");
+
+    addToContainer(place, generatePlacePoseStage("generate place pose", target_object));
+    addToContainer(place, handStage("open hand", "open"));
+    addToContainer(place, allowCollisionStage("forbid collision (hand,object)", target_object, false));
+    addToContainer(place, graspObjectStage("detach object", target_object, false));
+    addToContainer(place, retreatStage("retreat"));
+
+    addToTask(place);
+  }
+
+  addToTask(toHomeStage("return home"));
 }
 
-void MTCConveyorNode::addToTask(mtc::Stage::pointer&& stage)
-{
-  task_.add(std::move(stage));
-}
-
-void MTCConveyorNode::addToTask(mtc::ContainerBase::pointer& container)
-{
-  task_.add(std::move(container));
-}
-
-mtc::ContainerBase::pointer MTCConveyorNode::createSerialContainer(std::string container_name)
-{
-  auto container = std::make_unique<mtc::SerialContainer>(container_name);
-  task_.properties().exposeTo(container->properties(), { "eef", "group", "ik_frame" });
-  container->properties().configureInitFrom(mtc::Stage::PARENT, { "eef", "group", "ik_frame" });
-
-  return container;
-}
-
-// Stages
+// Private: Stages factory methods
 mtc::Stage::pointer MTCConveyorNode::handStage(std::string stage_name, std::string goal)
 {
   auto stage = std::make_unique<mtc::stages::MoveTo>(stage_name, interpolation_planner_);
@@ -135,24 +156,7 @@ mtc::Stage::pointer MTCConveyorNode::toHomeStage(std::string stage_name)
   return stage;
 }
 
-mtc::Stage::pointer MTCConveyorNode::approachObjectStage(std::string stage_name)
-{
-  auto stage = std::make_unique<mtc::stages::MoveRelative>(stage_name, cartesian_planner_);
-  stage->properties().set("marker_ns", "approach_object");
-  stage->properties().set("link", hand_frame_);
-  stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
-  stage->setMinMaxDistance(0.1, 0.15);
-
-  // Set hand forward direction
-  geometry_msgs::msg::Vector3Stamped vec;
-  vec.header.frame_id = hand_frame_;
-  vec.vector.z = 1.0;
-  stage->setDirection(vec);
-  return stage;
-}
-
-void MTCConveyorNode::addGenerateGraspPoseStage(std::string stage_name, const std::string& target_object,
-                                                mtc::ContainerBase::pointer& container)
+mtc::Stage::pointer MTCConveyorNode::generateGraspPoseStage(std::string stage_name, const std::string& target_object)
 {
   // Sample grasp pose
   auto stage = std::make_unique<mtc::stages::GenerateGraspPose>(stage_name);
@@ -176,22 +180,22 @@ void MTCConveyorNode::addGenerateGraspPoseStage(std::string stage_name, const st
   wrapper->setIKFrame(grasp_frame_transform, hand_frame_);
   wrapper->properties().configureInitFrom(mtc::Stage::PARENT, { "eef", "group" });
   wrapper->properties().configureInitFrom(mtc::Stage::INTERFACE, { "target_pose" });
-  container->insert(std::move(wrapper));
+
+  return wrapper;
 }
 
-void MTCConveyorNode::addAllowCollisionToObjectStage(std::string stage_name, bool is_allow,
-                                                     const std::string& target_object,
-                                                     mtc::ContainerBase::pointer& container)
+mtc::Stage::pointer MTCConveyorNode::allowCollisionStage(std::string stage_name, const std::string& target_object,
+                                                         bool is_allow)
 {
   auto stage = std::make_unique<mtc::stages::ModifyPlanningScene>(stage_name);
   stage->allowCollisions(
       target_object,
       task_.getRobotModel()->getJointModelGroup(hand_group_name_)->getLinkModelNamesWithCollisionGeometry(), is_allow);
-  container->insert(std::move(stage));
+  return stage;
 }
 
-void MTCConveyorNode::addGraspObjectStage(std::string stage_name, bool is_attach, const std::string& target_object,
-                                          mtc::ContainerBase::pointer& container)
+mtc::Stage::pointer MTCConveyorNode::graspObjectStage(std::string stage_name, const std::string& target_object,
+                                                      bool is_attach)
 {
   auto stage = std::make_unique<mtc::stages::ModifyPlanningScene>(stage_name);
   if (is_attach)
@@ -203,10 +207,26 @@ void MTCConveyorNode::addGraspObjectStage(std::string stage_name, bool is_attach
   {
     stage->detachObject(target_object, hand_frame_);
   }
-  container->insert(std::move(stage));
+  return stage;
 }
 
-void MTCConveyorNode::addLiftObjectStage(std::string stage_name, mtc::ContainerBase::pointer& container)
+mtc::Stage::pointer MTCConveyorNode::approachObjectStage(std::string stage_name)
+{
+  auto stage = std::make_unique<mtc::stages::MoveRelative>(stage_name, cartesian_planner_);
+  stage->properties().set("marker_ns", "approach_object");
+  stage->properties().set("link", hand_frame_);
+  stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
+  stage->setMinMaxDistance(0.1, 0.15);
+
+  // Set hand forward direction
+  geometry_msgs::msg::Vector3Stamped vec;
+  vec.header.frame_id = hand_frame_;
+  vec.vector.z = 1.0;
+  stage->setDirection(vec);
+  return stage;
+}
+
+mtc::Stage::pointer MTCConveyorNode::liftObjectStage(std::string stage_name)
 {
   auto stage = std::make_unique<mtc::stages::MoveRelative>(stage_name, cartesian_planner_);
   stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
@@ -219,11 +239,10 @@ void MTCConveyorNode::addLiftObjectStage(std::string stage_name, mtc::ContainerB
   vec.header.frame_id = "world";
   vec.vector.z = 1.0;
   stage->setDirection(vec);
-  container->insert(std::move(stage));
+  return stage;
 }
 
-void MTCConveyorNode::addGeneratePlacePoseStage(std::string stage_name, const std::string& target_object,
-                                                mtc::ContainerBase::pointer& container)
+mtc::Stage::pointer MTCConveyorNode::generatePlacePoseStage(std::string stage_name, const std::string& target_object)
 {
   auto stage = std::make_unique<mtc::stages::GeneratePlacePose>(stage_name);
   stage->properties().configureInitFrom(mtc::Stage::PARENT);
@@ -244,10 +263,11 @@ void MTCConveyorNode::addGeneratePlacePoseStage(std::string stage_name, const st
   wrapper->setIKFrame(target_object);
   wrapper->properties().configureInitFrom(mtc::Stage::PARENT, { "eef", "group" });
   wrapper->properties().configureInitFrom(mtc::Stage::INTERFACE, { "target_pose" });
-  container->insert(std::move(wrapper));
+
+  return wrapper;
 }
 
-void MTCConveyorNode::addRetreatStage(std::string stage_name, mtc::ContainerBase::pointer& container)
+mtc::Stage::pointer MTCConveyorNode::retreatStage(std::string stage_name)
 {
   auto stage = std::make_unique<mtc::stages::MoveRelative>(stage_name, cartesian_planner_);
   stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
@@ -260,50 +280,33 @@ void MTCConveyorNode::addRetreatStage(std::string stage_name, mtc::ContainerBase
   vec.header.frame_id = "world";
   vec.vector.x = -0.5;
   stage->setDirection(vec);
+
+  return stage;
+}
+
+// Private: Utiltiy functions
+void MTCConveyorNode::addToContainer(mtc::ContainerBase::pointer& container, mtc::Stage::pointer&& stage)
+{
   container->insert(std::move(stage));
 }
 
-void MTCConveyorNode::setupTaskStages()
+void MTCConveyorNode::addToTask(mtc::Stage::pointer&& stage)
 {
-  std::string target_object = "object";
-  GroupPlannerVector to_pick_group_planner{ { arm_group_name_, sampling_planner_ } };
-  GroupPlannerVector to_place_group_planner{ { arm_group_name_, sampling_planner_ },
-                                             { hand_group_name_, sampling_planner_ } };
-
-  addToTask(currentStateStage("current"));
-  addToTask(handStage("open hand", "open"));
-
-  addToTask(connectStage("move to pick", to_pick_group_planner));
-
-  // pick object container
-  {
-    auto pick = createSerialContainer("pick object");
-
-    addToContainer(pick, approachObjectStage("approach object"));
-    addGenerateGraspPoseStage("generate grasp pose", target_object, pick);
-    addAllowCollisionToObjectStage("allow collision (hand,object)", true, target_object, pick);
-    addToContainer(pick, handStage("close hand", "close"));
-    addGraspObjectStage("attach object", true, target_object, pick);
-    addLiftObjectStage("lift object", pick);
-
-    addToTask(pick);
-  }
-
-  addToTask(connectStage("move to place", to_place_group_planner));
-
-  // place object container
-  {
-    auto place = createSerialContainer("place object");
-
-    addGeneratePlacePoseStage("generate place pose", target_object, place);
-    addToContainer(place, handStage("open hand", "open"));
-    addAllowCollisionToObjectStage("forbid collision (hand,object)", false, target_object, place);
-    addGraspObjectStage("detach object", false, target_object, place);
-    addRetreatStage("retreat", place);
-
-    addToTask(place);
-  }
-
-  addToTask(toHomeStage("return home"));
+  task_.add(std::move(stage));
 }
+
+void MTCConveyorNode::addToTask(mtc::ContainerBase::pointer& container)
+{
+  task_.add(std::move(container));
+}
+
+mtc::ContainerBase::pointer MTCConveyorNode::createSerialContainer(std::string container_name)
+{
+  auto container = std::make_unique<mtc::SerialContainer>(container_name);
+  task_.properties().exposeTo(container->properties(), { "eef", "group", "ik_frame" });
+  container->properties().configureInitFrom(mtc::Stage::PARENT, { "eef", "group", "ik_frame" });
+
+  return container;
+}
+
 }  // namespace cobot
