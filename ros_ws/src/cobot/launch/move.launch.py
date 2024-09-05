@@ -209,7 +209,7 @@ def generate_launch_description():
         .planning_scene_monitor(
             publish_robot_description=True, publish_robot_description_semantic=True
         )
-        .joint_limits(file_path="config/joint_limits.3x.yaml")
+        .joint_limits(file_path="config/joint_limits.yaml")
         .to_moveit_configs()
     )
 

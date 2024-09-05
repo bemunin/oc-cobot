@@ -31,20 +31,74 @@ MTCConveyorNode::MTCConveyorNode(const rclcpp::NodeOptions& options)
 // Public
 void MTCConveyorNode::setupPlanningScene()
 {
+  moveit::planning_interface::PlanningSceneInterface psi;
+  moveit_msgs::msg::CollisionObject conveyor;
   moveit_msgs::msg::CollisionObject object;
+  moveit_msgs::msg::CollisionObject sensor_emitter;
+  moveit_msgs::msg::CollisionObject sensor_receiver;
+
+  // Add conveyor
+  conveyor.id = "conveyor";
+  conveyor.header.frame_id = "world";
+  conveyor.primitives.resize(1);
+  conveyor.primitives[0].type = shape_msgs::msg::SolidPrimitive::BOX;
+  conveyor.primitives[0].dimensions = { 1.0, 4, 0.7 };
+  conveyor.operation = moveit_msgs::msg::CollisionObject::ADD;
+
+  geometry_msgs::msg::Pose conveyor_pose;
+  conveyor_pose.position.x = 0.82;
+  conveyor_pose.position.y = -2 + 1.1326 + 0.03;
+  conveyor_pose.position.z = -0.35 - 0.06 - 0.03;
+  conveyor_pose.orientation.w = 1;
+  conveyor.pose = conveyor_pose;
+
+  // Add sensor emitter
+  sensor_emitter.id = "sensor_emitter";
+  sensor_emitter.header.frame_id = "world";
+  sensor_emitter.primitives.resize(1);
+  sensor_emitter.primitives[0].type = shape_msgs::msg::SolidPrimitive::BOX;
+  sensor_emitter.primitives[0].dimensions = { 0.04, 0.07, 0.04 };
+  conveyor.operation = moveit_msgs::msg::CollisionObject::ADD;
+
+  geometry_msgs::msg::Pose sensor_emitter_pose;
+  sensor_emitter_pose.position.x = 0.34;
+  sensor_emitter_pose.position.y = 0.03;
+  sensor_emitter_pose.position.z = -0.07;
+  sensor_emitter_pose.orientation.w = 1;
+  sensor_emitter.pose = sensor_emitter_pose;
+
+  // Add sensor receiver
+  sensor_receiver.id = "sensor_receiver";
+  sensor_receiver.header.frame_id = "world";
+  sensor_receiver.primitives.resize(1);
+  sensor_receiver.primitives[0].type = shape_msgs::msg::SolidPrimitive::BOX;
+  sensor_receiver.primitives[0].dimensions = { 0.04, 0.07, 0.04 };
+  conveyor.operation = moveit_msgs::msg::CollisionObject::ADD;
+
+  geometry_msgs::msg::Pose sensor_receiver_pose;
+  sensor_receiver_pose.position.x = 1.29;
+  sensor_receiver_pose.position.y = 0.03;
+  sensor_receiver_pose.position.z = -0.07;
+  sensor_receiver_pose.orientation.w = 1;
+  sensor_receiver.pose = sensor_receiver_pose;
+
+  // Add object
   object.id = "object";
   object.header.frame_id = "world";
   object.primitives.resize(1);
-  object.primitives[0].type = shape_msgs::msg::SolidPrimitive::CYLINDER;
-  object.primitives[0].dimensions = { 0.1, 0.02 };
+  object.primitives[0].type = shape_msgs::msg::SolidPrimitive::BOX;
+  object.primitives[0].dimensions = { 0.06, 0.06, 0.06 };
 
-  geometry_msgs::msg::Pose pose;
-  pose.position.x = 0.5;
-  pose.position.y = -0.25;
-  pose.orientation.w = 1.0;
-  object.pose = pose;
+  geometry_msgs::msg::Pose obj_pose;
+  obj_pose.position.x = 0.82;
+  obj_pose.position.y = -0.04;
+  obj_pose.position.z = -0.06;  // -0.06
+  obj_pose.orientation.w = 1.0;
+  object.pose = obj_pose;
 
-  moveit::planning_interface::PlanningSceneInterface psi;
+  psi.applyCollisionObject(conveyor);
+  psi.applyCollisionObject(sensor_emitter);
+  psi.applyCollisionObject(sensor_receiver);
   psi.applyCollisionObject(object);
 }
 
@@ -108,7 +162,7 @@ void MTCConveyorNode::setupTaskStages()
 
   addToTask(connectStage("move to place", to_place_group_planner));
 
-  // place object container
+  // // place object container
   {
     auto place = createSerialContainer("place object");
 
@@ -121,8 +175,10 @@ void MTCConveyorNode::setupTaskStages()
     addToTask(place);
   }
 
-  addToTask(toHomeStage("return home"));
+  // addToTask(toHomeStage("return home"));
 }
+
+// private: Scene setup
 
 // Private: Stages factory methods
 mtc::Stage::pointer MTCConveyorNode::handStage(std::string stage_name, std::string goal)
@@ -167,12 +223,17 @@ mtc::Stage::pointer MTCConveyorNode::generateGraspPoseStage(std::string stage_na
   stage->setAngleDelta(M_PI / 12);
   stage->setMonitoredStage(current_state_ptr_);  // Hook into current state
 
+  Eigen::Vector3d custom_axis(0.0, 1.0, 0.0);
+  custom_axis.normalize();
+  stage->setRotationAxis(custom_axis);
+
   Eigen::Isometry3d grasp_frame_transform;
   Eigen::Quaterniond q = Eigen::AngleAxisd(M_PI / 2, Eigen::Vector3d::UnitX()) *
                          Eigen::AngleAxisd(M_PI / 2, Eigen::Vector3d::UnitY()) *
                          Eigen::AngleAxisd(M_PI / 2, Eigen::Vector3d::UnitZ());
   grasp_frame_transform.linear() = q.matrix();
-  grasp_frame_transform.translation().z() = 0.1;
+  grasp_frame_transform.translation().z() = 0.12;
+
   // Compute IK
   auto wrapper = std::make_unique<mtc::stages::ComputeIK>("grasp pose IK", std::move(stage));
   wrapper->setMaxIKSolutions(8);
@@ -216,7 +277,7 @@ mtc::Stage::pointer MTCConveyorNode::approachObjectStage(std::string stage_name)
   stage->properties().set("marker_ns", "approach_object");
   stage->properties().set("link", hand_frame_);
   stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
-  stage->setMinMaxDistance(0.1, 0.15);
+  stage->setMinMaxDistance(0.0, 0.1);
 
   // Set hand forward direction
   geometry_msgs::msg::Vector3Stamped vec;
@@ -251,7 +312,9 @@ mtc::Stage::pointer MTCConveyorNode::generatePlacePoseStage(std::string stage_na
 
   geometry_msgs::msg::PoseStamped target_pose_msg;
   target_pose_msg.header.frame_id = target_object;
-  target_pose_msg.pose.position.y = 0.5;
+  target_pose_msg.pose.position.x = -0.2;
+  target_pose_msg.pose.position.y = 0.4;
+  target_pose_msg.pose.position.z = 0.2;
   target_pose_msg.pose.orientation.w = 1.0;
   stage->setPose(target_pose_msg);
   stage->setMonitoredStage(attach_object_stage_);  // Hook into attach_object_stage
@@ -271,7 +334,7 @@ mtc::Stage::pointer MTCConveyorNode::retreatStage(std::string stage_name)
 {
   auto stage = std::make_unique<mtc::stages::MoveRelative>(stage_name, cartesian_planner_);
   stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
-  stage->setMinMaxDistance(0.1, 0.3);
+  stage->setMinMaxDistance(0, 0.2);
   stage->setIKFrame(hand_frame_);
   stage->properties().set("marker_ns", "retreat");
 
