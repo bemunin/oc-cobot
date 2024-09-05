@@ -47,8 +47,8 @@ void MTCConveyorNode::setupPlanningScene()
 
   geometry_msgs::msg::Pose conveyor_pose;
   conveyor_pose.position.x = 0.82;
-  conveyor_pose.position.y = -2 + 1.1326 + 0.03;
-  conveyor_pose.position.z = -0.35 - 0.06 - 0.03;
+  conveyor_pose.position.y = -2 + 1.1329;
+  conveyor_pose.position.z = -0.35 - 0.09;
   conveyor_pose.orientation.w = 1;
   conveyor.pose = conveyor_pose;
 
@@ -87,12 +87,12 @@ void MTCConveyorNode::setupPlanningScene()
   object.header.frame_id = "world";
   object.primitives.resize(1);
   object.primitives[0].type = shape_msgs::msg::SolidPrimitive::BOX;
-  object.primitives[0].dimensions = { 0.06, 0.06, 0.06 };
+  object.primitives[0].dimensions = { 0.04, 0.04, 0.04 };
 
   geometry_msgs::msg::Pose obj_pose;
   obj_pose.position.x = 0.82;
-  obj_pose.position.y = -0.04;
-  obj_pose.position.z = -0.06;  // -0.06
+  obj_pose.position.y = -0.03;
+  obj_pose.position.z = -0.07;  // -0.06
   obj_pose.orientation.w = 1.0;
   object.pose = obj_pose;
 
@@ -175,7 +175,7 @@ void MTCConveyorNode::setupTaskStages()
     addToTask(place);
   }
 
-  // addToTask(toHomeStage("return home"));
+  addToTask(toHomeStage("return home"));
 }
 
 // private: Scene setup
@@ -232,7 +232,7 @@ mtc::Stage::pointer MTCConveyorNode::generateGraspPoseStage(std::string stage_na
                          Eigen::AngleAxisd(M_PI / 2, Eigen::Vector3d::UnitY()) *
                          Eigen::AngleAxisd(M_PI / 2, Eigen::Vector3d::UnitZ());
   grasp_frame_transform.linear() = q.matrix();
-  grasp_frame_transform.translation().z() = 0.12;
+  grasp_frame_transform.translation().z() = 0.1;
 
   // Compute IK
   auto wrapper = std::make_unique<mtc::stages::ComputeIK>("grasp pose IK", std::move(stage));
@@ -277,7 +277,7 @@ mtc::Stage::pointer MTCConveyorNode::approachObjectStage(std::string stage_name)
   stage->properties().set("marker_ns", "approach_object");
   stage->properties().set("link", hand_frame_);
   stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
-  stage->setMinMaxDistance(0.0, 0.1);
+  stage->setMinMaxDistance(0.02, 0.1);
 
   // Set hand forward direction
   geometry_msgs::msg::Vector3Stamped vec;
@@ -291,7 +291,7 @@ mtc::Stage::pointer MTCConveyorNode::liftObjectStage(std::string stage_name)
 {
   auto stage = std::make_unique<mtc::stages::MoveRelative>(stage_name, cartesian_planner_);
   stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
-  stage->setMinMaxDistance(0.1, 0.3);
+  stage->setMinMaxDistance(0.01, 0.2);
   stage->setIKFrame(hand_frame_);
   stage->properties().set("marker_ns", "lift_object");
 
@@ -312,8 +312,8 @@ mtc::Stage::pointer MTCConveyorNode::generatePlacePoseStage(std::string stage_na
 
   geometry_msgs::msg::PoseStamped target_pose_msg;
   target_pose_msg.header.frame_id = target_object;
-  target_pose_msg.pose.position.x = -0.2;
-  target_pose_msg.pose.position.y = 0.4;
+  target_pose_msg.pose.position.x = -0.1;
+  target_pose_msg.pose.position.y = 0.2;
   target_pose_msg.pose.position.z = 0.2;
   target_pose_msg.pose.orientation.w = 1.0;
   stage->setPose(target_pose_msg);
