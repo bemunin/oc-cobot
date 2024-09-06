@@ -26,6 +26,7 @@ def register_extensions():
     manager.add_path(oc_cobot_exts_path)
 
     # enable required extensions
+    extensions.enable_extension("omni.kit.tool.measure")
     extensions.enable_extension("omni.isaac.conveyor")
     extensions.enable_extension("omni.isaac.ros2_bridge")
     extensions.enable_extension("oc.cobot.yolo")
