@@ -1,4 +1,4 @@
 [spawner]
 # real_life or geometric
 object_type = "geometric" 
-object_spawn= "cube.usd"
+object_spawn= "cylinder.usd"

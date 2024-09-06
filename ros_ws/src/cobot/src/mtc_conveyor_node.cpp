@@ -42,13 +42,13 @@ void MTCConveyorNode::setupPlanningScene()
   conveyor.header.frame_id = "world";
   conveyor.primitives.resize(1);
   conveyor.primitives[0].type = shape_msgs::msg::SolidPrimitive::BOX;
-  conveyor.primitives[0].dimensions = { 1.0, 4, 0.7 };
+  conveyor.primitives[0].dimensions = { 1.0, 4, 0.71 };
   conveyor.operation = moveit_msgs::msg::CollisionObject::ADD;
 
   geometry_msgs::msg::Pose conveyor_pose;
   conveyor_pose.position.x = 0.82;
   conveyor_pose.position.y = -2 + 1.1329;
-  conveyor_pose.position.z = -0.35 - 0.09;
+  conveyor_pose.position.z = -0.355 - 0.09;
   conveyor_pose.orientation.w = 1;
   conveyor.pose = conveyor_pose;
 
@@ -62,7 +62,7 @@ void MTCConveyorNode::setupPlanningScene()
 
   geometry_msgs::msg::Pose sensor_emitter_pose;
   sensor_emitter_pose.position.x = 0.34;
-  sensor_emitter_pose.position.y = 0.03;
+  sensor_emitter_pose.position.y = -0.03;
   sensor_emitter_pose.position.z = -0.07;
   sensor_emitter_pose.orientation.w = 1;
   sensor_emitter.pose = sensor_emitter_pose;
@@ -77,7 +77,7 @@ void MTCConveyorNode::setupPlanningScene()
 
   geometry_msgs::msg::Pose sensor_receiver_pose;
   sensor_receiver_pose.position.x = 1.29;
-  sensor_receiver_pose.position.y = 0.03;
+  sensor_receiver_pose.position.y = -0.03;
   sensor_receiver_pose.position.z = -0.07;
   sensor_receiver_pose.orientation.w = 1;
   sensor_receiver.pose = sensor_receiver_pose;
@@ -86,13 +86,13 @@ void MTCConveyorNode::setupPlanningScene()
   object.id = "object";
   object.header.frame_id = "world";
   object.primitives.resize(1);
-  object.primitives[0].type = shape_msgs::msg::SolidPrimitive::BOX;
-  object.primitives[0].dimensions = { 0.04, 0.04, 0.04 };
+  object.primitives[0].type = shape_msgs::msg::SolidPrimitive::CYLINDER;
+  object.primitives[0].dimensions = { 0.1, 0.02 };
 
   geometry_msgs::msg::Pose obj_pose;
   obj_pose.position.x = 0.82;
   obj_pose.position.y = -0.03;
-  obj_pose.position.z = -0.07;  // -0.06
+  obj_pose.position.z = -0.01;  // -0.06
   obj_pose.orientation.w = 1.0;
   object.pose = obj_pose;
 
@@ -212,6 +212,22 @@ mtc::Stage::pointer MTCConveyorNode::toHomeStage(std::string stage_name)
   return stage;
 }
 
+mtc::Stage::pointer MTCConveyorNode::approachObjectStage(std::string stage_name)
+{
+  auto stage = std::make_unique<mtc::stages::MoveRelative>(stage_name, cartesian_planner_);
+  stage->properties().set("marker_ns", "approach_object");
+  stage->properties().set("link", hand_frame_);
+  stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
+  stage->setMinMaxDistance(0.05, 0.08);
+
+  // Set hand forward direction
+  geometry_msgs::msg::Vector3Stamped vec;
+  vec.header.frame_id = hand_frame_;
+  vec.vector.z = 1.0;
+  stage->setDirection(vec);
+  return stage;
+}
+
 mtc::Stage::pointer MTCConveyorNode::generateGraspPoseStage(std::string stage_name, const std::string& target_object)
 {
   // Sample grasp pose
@@ -223,7 +239,7 @@ mtc::Stage::pointer MTCConveyorNode::generateGraspPoseStage(std::string stage_na
   stage->setAngleDelta(M_PI / 12);
   stage->setMonitoredStage(current_state_ptr_);  // Hook into current state
 
-  Eigen::Vector3d custom_axis(0.0, 1.0, 0.0);
+  Eigen::Vector3d custom_axis(0.0, 0.0, 1.0);
   custom_axis.normalize();
   stage->setRotationAxis(custom_axis);
 
@@ -233,10 +249,9 @@ mtc::Stage::pointer MTCConveyorNode::generateGraspPoseStage(std::string stage_na
                          Eigen::AngleAxisd(M_PI / 2, Eigen::Vector3d::UnitZ());
   grasp_frame_transform.linear() = q.matrix();
   grasp_frame_transform.translation().z() = 0.1;
-
   // Compute IK
   auto wrapper = std::make_unique<mtc::stages::ComputeIK>("grasp pose IK", std::move(stage));
-  wrapper->setMaxIKSolutions(8);
+  wrapper->setMaxIKSolutions(30);
   wrapper->setMinSolutionDistance(1.0);
   wrapper->setIKFrame(grasp_frame_transform, hand_frame_);
   wrapper->properties().configureInitFrom(mtc::Stage::PARENT, { "eef", "group" });
@@ -271,27 +286,11 @@ mtc::Stage::pointer MTCConveyorNode::graspObjectStage(std::string stage_name, co
   return stage;
 }
 
-mtc::Stage::pointer MTCConveyorNode::approachObjectStage(std::string stage_name)
-{
-  auto stage = std::make_unique<mtc::stages::MoveRelative>(stage_name, cartesian_planner_);
-  stage->properties().set("marker_ns", "approach_object");
-  stage->properties().set("link", hand_frame_);
-  stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
-  stage->setMinMaxDistance(0.02, 0.1);
-
-  // Set hand forward direction
-  geometry_msgs::msg::Vector3Stamped vec;
-  vec.header.frame_id = hand_frame_;
-  vec.vector.z = 1.0;
-  stage->setDirection(vec);
-  return stage;
-}
-
 mtc::Stage::pointer MTCConveyorNode::liftObjectStage(std::string stage_name)
 {
   auto stage = std::make_unique<mtc::stages::MoveRelative>(stage_name, cartesian_planner_);
   stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
-  stage->setMinMaxDistance(0.01, 0.2);
+  stage->setMinMaxDistance(0.1, 0.2);
   stage->setIKFrame(hand_frame_);
   stage->properties().set("marker_ns", "lift_object");
 
@@ -312,8 +311,8 @@ mtc::Stage::pointer MTCConveyorNode::generatePlacePoseStage(std::string stage_na
 
   geometry_msgs::msg::PoseStamped target_pose_msg;
   target_pose_msg.header.frame_id = target_object;
-  target_pose_msg.pose.position.x = -0.1;
-  target_pose_msg.pose.position.y = 0.2;
+  target_pose_msg.pose.position.x = -0.05;
+  target_pose_msg.pose.position.y = 0.5;
   target_pose_msg.pose.position.z = 0.2;
   target_pose_msg.pose.orientation.w = 1.0;
   stage->setPose(target_pose_msg);
@@ -321,7 +320,7 @@ mtc::Stage::pointer MTCConveyorNode::generatePlacePoseStage(std::string stage_na
 
   // Compute IK
   auto wrapper = std::make_unique<mtc::stages::ComputeIK>("place pose IK", std::move(stage));
-  wrapper->setMaxIKSolutions(2);
+  wrapper->setMaxIKSolutions(30);
   wrapper->setMinSolutionDistance(1.0);
   wrapper->setIKFrame(target_object);
   wrapper->properties().configureInitFrom(mtc::Stage::PARENT, { "eef", "group" });

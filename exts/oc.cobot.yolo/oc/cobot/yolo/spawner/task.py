@@ -218,6 +218,10 @@ class SpawnerTask(BaseTask):
             # cache
             self._spawn_point = spawn_point
 
+            # adjust starting point to first part of the conveyor
+            self._spawn_point[0] = self._spawn_point[2] + -2.7
+            # self._spawn_point[1] = self._spawn_point[1] + 0.2
+
         if self._is_random_pos:
             spawn_point = self._spawn_point.copy()
             # random only in y axis (side to side)
