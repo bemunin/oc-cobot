@@ -251,7 +251,7 @@ mtc::Stage::pointer MTCConveyorNode::generateGraspPoseStage(std::string stage_na
   grasp_frame_transform.translation().z() = 0.1;
   // Compute IK
   auto wrapper = std::make_unique<mtc::stages::ComputeIK>("grasp pose IK", std::move(stage));
-  wrapper->setMaxIKSolutions(30);
+  wrapper->setMaxIKSolutions(10);
   wrapper->setMinSolutionDistance(1.0);
   wrapper->setIKFrame(grasp_frame_transform, hand_frame_);
   wrapper->properties().configureInitFrom(mtc::Stage::PARENT, { "eef", "group" });
@@ -320,7 +320,7 @@ mtc::Stage::pointer MTCConveyorNode::generatePlacePoseStage(std::string stage_na
 
   // Compute IK
   auto wrapper = std::make_unique<mtc::stages::ComputeIK>("place pose IK", std::move(stage));
-  wrapper->setMaxIKSolutions(30);
+  wrapper->setMaxIKSolutions(10);
   wrapper->setMinSolutionDistance(1.0);
   wrapper->setIKFrame(target_object);
   wrapper->properties().configureInitFrom(mtc::Stage::PARENT, { "eef", "group" });
