@@ -797,6 +797,9 @@
         "numericaldiff": "cpp",
         "specialfunctions": "cpp"
     },
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
+    "workbench.colorCustomizations": {
+        "titleBar.inactiveBackground": "#c76e08",
+    }
 
 }
