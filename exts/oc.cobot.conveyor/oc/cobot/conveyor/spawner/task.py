@@ -7,7 +7,6 @@ from omni.isaac.core.scenes.scene import Scene
 from omni.isaac.core.tasks import BaseTask
 from omni.isaac.core.world.world import World
 
-import utils.log as log
 from utils.path import load_config
 
 from ..conveyor import Conveyor
@@ -219,7 +218,7 @@ class SpawnerTask(BaseTask):
             self._spawn_point = spawn_point
 
             # adjust starting point to first part of the conveyor
-            self._spawn_point[0] = self._spawn_point[2] + -2.7
+            # self._spawn_point[0] = self._spawn_point[2] + -2.7
             # self._spawn_point[1] = self._spawn_point[1] + 0.2
 
         if self._is_random_pos:

@@ -7,8 +7,8 @@
                 double radius = 6.49921875
             }
             dictionary Perspective = {
-                double3 position = (2.4720014561913044, -3.465892086002295, 3.127278596984042)
-                double3 target = (0.5478158853209989, 0.590695308216509, -0.0699673995307144)
+                double3 position = (-1.881071812850229, -3.118192413538516, 4.676582731282311)
+                double3 target = (-1.9504904326569368, 0.7973492177697876, 0.9328137924574751)
             }
             dictionary Right = {
                 double3 position = (-1.3390253924285254, -49999.524, 1.6635517444395298)
@@ -3336,7 +3336,7 @@ def Xform "Main"
             )
             {
                 quatd xformOp:orient = (6.123233995736766e-17, 0, 0, 1)
-                double3 xformOp:scale = (1, 1, 1)
+                double3 xformOp:scale = (0.7, 1, 1)
                 double3 xformOp:translate = (0, 0, 0)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
