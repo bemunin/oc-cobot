@@ -2,12 +2,11 @@ import os
 from typing import List
 
 from ament_index_python.packages import get_package_share_directory
-from launch_ros.actions import Node
-from moveit_configs_utils import MoveItConfigs, MoveItConfigsBuilder
-
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, ExecuteProcess, OpaqueFunction
 from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import Node
+from moveit_configs_utils import MoveItConfigs, MoveItConfigsBuilder
 
 
 ##
