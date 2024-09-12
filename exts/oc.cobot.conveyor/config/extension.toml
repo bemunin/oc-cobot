@@ -5,8 +5,8 @@ order = 0
 [package]
 version = "0.0.0"
 category = "Simulation"
-title = "Omnicraft Cobot Object Detection"
-description = "Extension for experiment robot arm sorting task with various object detection algorithm."
+title = "Omnicraft Cobot Conveyor Scene"
+description = "Extension for experiment robot arm sorting task with various object detection in Conveyor scene."
 authors = ["Titiwat Munintravong (Omnicraft)"]
 repository = ""
 keywords = []
@@ -22,4 +22,4 @@ icon = "data/icon.png"
 "omni.isaac.core" = {}
 
 [[python.module]]
-name = "oc.cobot.yolo"
+name = "oc.cobot.conveyor"

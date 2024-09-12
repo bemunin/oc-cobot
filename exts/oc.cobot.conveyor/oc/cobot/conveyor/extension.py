@@ -36,11 +36,11 @@ class Extension(omni.ext.IExt):
 
         # timeline callback
         world = World.instance()
-        if world.timeline_callback_exists("oc.yolo.cobot.timeline"):
-            world.remove_timeline_callback("oc.yolo.cobot.timeline")
+        if world.timeline_callback_exists("oc.cobot.conveyor.timeline"):
+            world.remove_timeline_callback("oc.cobot.conveyor.timeline")
 
         world.add_timeline_callback(
-            "oc.yolo.cobot.timeline",
+            "oc.cobot.conveyor.timeline",
             self._on_timeline_callback,
         )
 

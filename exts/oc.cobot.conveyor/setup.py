@@ -19,7 +19,7 @@ INSTALL_REQUIRES = [
 
 # Installation operation
 setup(
-    name="oc-cobot-yolo_detect",
+    name="oc-cobot-conveyor",
     author="Titiwat Munintravong (OmniCraft)",
     maintainer="Titiwat Munintravong (OmniCraft)",
     maintainer_email="",
@@ -32,7 +32,7 @@ setup(
     python_requires=">=3.10",
     install_requires=INSTALL_REQUIRES,
     packages=[
-        "oc.cobot.yolo",
+        "oc.cobot.conveyor",
     ],
     zip_safe=False,
 )

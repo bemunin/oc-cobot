@@ -35,7 +35,7 @@ def register_extensions():
     extensions.enable_extension("omni.kit.tool.measure")
     extensions.enable_extension("omni.isaac.conveyor")
     extensions.enable_extension("omni.isaac.ros2_bridge")
-    extensions.enable_extension("oc.cobot.yolo")
+    extensions.enable_extension("oc.cobot.conveyor")
 
 
 def running_sim(sim_app: SimulationApp):
