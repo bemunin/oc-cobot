@@ -7,6 +7,7 @@ from omni.isaac.core.scenes.scene import Scene
 from omni.isaac.core.tasks import BaseTask
 from omni.isaac.core.world.world import World
 
+import utils.log as log
 from utils.path import load_config
 
 from ..conveyor import Conveyor
@@ -35,19 +36,29 @@ class SpawnerTask(BaseTask):
         self._disabled_task = False
         # 180 step = every 3 sec (60Hz sim step)
         self._spawn_timer = 180  # step
+
+        config_object_type = config.get("spawner", {}).get("object_type", "real_life")
         self._object_type = (
             ObjectType.REAL_LIFE
-            if config["spawner"]["object_type"] == "real_life"
+            if config_object_type == "real_life"
             else ObjectType.GEOMETRIC
         )
+
         # ObjectItem.ALL will random all object items filter by the object_type
+        config_object_spawn = config.get("spawner", {}).get("object_spawn", "all")
         self._object_spawn = (
             ObjectItem.ALL
-            if config["spawner"]["object_spawn"] == "all"
-            else ObjectItem(config["spawner"]["object_spawn"])
+            if config_object_spawn == "all"
+            else ObjectItem(config_object_spawn)
         )
         self._is_random_angle = False
         self._is_random_pos = False
+
+        # Adjust spawn point
+
+        self._spawn_pos_x_offset = config.get("conveyor", {}).get(
+            "spawn_pos_x_offset", 0.0
+        )
 
         # cache
         self._spawn_point = None
@@ -218,8 +229,7 @@ class SpawnerTask(BaseTask):
             self._spawn_point = spawn_point
 
             # adjust starting point to first part of the conveyor
-            # self._spawn_point[0] = self._spawn_point[2] + -2.7
-            # self._spawn_point[1] = self._spawn_point[1] + 0.2
+            self._spawn_point[0] = self._spawn_point[0] + self._spawn_pos_x_offset
 
         if self._is_random_pos:
             spawn_point = self._spawn_point.copy()

@@ -2,3 +2,6 @@
 # real_life or geometric
 object_type = "geometric" 
 object_spawn= "cylinder.usd"
+
+[conveyor]
+spawn_pos_x_offset = 1.25
