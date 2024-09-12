@@ -7,7 +7,6 @@ from omni.isaac.core.scenes.scene import Scene
 from omni.isaac.core.tasks import BaseTask
 from omni.isaac.core.world.world import World
 
-import utils.log as log
 from utils.path import load_config
 
 from ..conveyor import Conveyor
