@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.2.0] - 2024-09-13
+- **Simulation**: Migrated isaac sim to version 4.1.0. Refactored sim.py and move all scene setup logic to extension oc.cobot.conveyor. Added Omnigraph to communicate between ROS2 and isaac sim scene workcell.usda.
+- **Assets**: Resized conveyor length in workcell.usda. Changed basket assets to nvidia bin crate. 
+- **ROS2**: Added ros_ws workspace and moveit task constructor to perform pick and place geometric in conveyor belt. 
+- **oc.cobot.conveyor extension**: Renamed oc.cobot.yolo to oc.cobot.conveyor. Added omni.kit.tool.measure to sim.py required extensions.
+- **Conveyor Module**: Fixed a conveyor belt randomly feeds object into opposite direction at extension startup. Added Light beam sensor (new feature in isaac sim v.4.1.0).
+- **Launch Configuration**: Added config `spawn_pos_x_offset` in `config.toml` to move spawn object point in conveyor belt closer to robot.
+
 ## [v0.1.1] - 2024-07-25
 
 ### Added
