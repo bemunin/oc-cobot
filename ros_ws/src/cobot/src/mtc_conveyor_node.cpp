@@ -33,6 +33,7 @@ void MTCConveyorNode::setupPlanningScene()
 {
   moveit::planning_interface::PlanningSceneInterface psi;
   moveit_msgs::msg::CollisionObject conveyor;
+  moveit_msgs::msg::CollisionObject table;
   moveit_msgs::msg::CollisionObject object;
   moveit_msgs::msg::CollisionObject sensor_emitter;
   moveit_msgs::msg::CollisionObject sensor_receiver;
@@ -51,6 +52,21 @@ void MTCConveyorNode::setupPlanningScene()
   conveyor_pose.position.z = -0.355 - 0.09;
   conveyor_pose.orientation.w = 1;
   conveyor.pose = conveyor_pose;
+
+  // Add table
+  table.id = "table";
+  table.header.frame_id = "world";
+  table.primitives.resize(1);
+  table.primitives[0].type = shape_msgs::msg::SolidPrimitive::BOX;
+  table.primitives[0].dimensions = { 1.44, 2.13, 0.8 };
+  table.operation = moveit_msgs::msg::CollisionObject::ADD;
+
+  geometry_msgs::msg::Pose table_pose;
+  table_pose.position.x = -0.49;
+  table_pose.position.y = 0;
+  table_pose.position.z = -0.44;
+  table_pose.orientation.w = 1;
+  table.pose = table_pose;
 
   // Add sensor emitter
   sensor_emitter.id = "sensor_emitter";
@@ -87,19 +103,24 @@ void MTCConveyorNode::setupPlanningScene()
   object.header.frame_id = "world";
   object.primitives.resize(1);
   object.primitives[0].type = shape_msgs::msg::SolidPrimitive::CYLINDER;
-  object.primitives[0].dimensions = { 0.1, 0.02 };
+  object.primitives[0].dimensions = { 0.16, 0.02 };
 
   geometry_msgs::msg::Pose obj_pose;
   obj_pose.position.x = 0.82;
   obj_pose.position.y = -0.03;
-  obj_pose.position.z = -0.01;  // -0.06
+  obj_pose.position.z = -0.005;  // -0.06
   obj_pose.orientation.w = 1.0;
   object.pose = obj_pose;
+
+  addBasketCollisionObj(psi, "basket1", -0.74, 0.46, 0.185);
+  addBasketCollisionObj(psi, "basket2", -0.74, 0.0, 0.185);
+  addBasketCollisionObj(psi, "basket3", -0.74, -0.46, 0.185);
 
   psi.applyCollisionObject(conveyor);
   psi.applyCollisionObject(sensor_emitter);
   psi.applyCollisionObject(sensor_receiver);
   psi.applyCollisionObject(object);
+  psi.applyCollisionObject(table);
 }
 
 void MTCConveyorNode::doTask()
@@ -312,8 +333,8 @@ mtc::Stage::pointer MTCConveyorNode::generatePlacePoseStage(std::string stage_na
   geometry_msgs::msg::PoseStamped target_pose_msg;
   target_pose_msg.header.frame_id = target_object;
   target_pose_msg.pose.position.x = -0.05;
-  target_pose_msg.pose.position.y = 0.5;
-  target_pose_msg.pose.position.z = 0.2;
+  target_pose_msg.pose.position.y = 0.3;
+  target_pose_msg.pose.position.z = 0.0;
   target_pose_msg.pose.orientation.w = 1.0;
   stage->setPose(target_pose_msg);
   stage->setMonitoredStage(attach_object_stage_);  // Hook into attach_object_stage
@@ -347,6 +368,26 @@ mtc::Stage::pointer MTCConveyorNode::retreatStage(std::string stage_name)
 }
 
 // Private: Utiltiy functions
+void MTCConveyorNode::addBasketCollisionObj(moveit::planning_interface::PlanningSceneInterface& psi,
+                                            std::string frame_id, double x, double y, double z)
+{
+  moveit_msgs::msg::CollisionObject basket;
+  basket.id = frame_id;
+  basket.header.frame_id = "world";
+  basket.primitives.resize(1);
+  basket.primitives[0].type = shape_msgs::msg::SolidPrimitive::BOX;
+  basket.primitives[0].dimensions = { 0.6, 0.42, 0.37 };
+  basket.operation = moveit_msgs::msg::CollisionObject::ADD;
+
+  geometry_msgs::msg::Pose basket_pose;
+  basket_pose.position.x = x;
+  basket_pose.position.y = y;
+  basket_pose.position.z = z;
+  basket.pose = basket_pose;
+
+  psi.applyCollisionObject(basket);
+}
+
 void MTCConveyorNode::addToContainer(mtc::ContainerBase::pointer& container, mtc::Stage::pointer&& stage)
 {
   container->insert(std::move(stage));

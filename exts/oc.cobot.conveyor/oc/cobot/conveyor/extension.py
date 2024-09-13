@@ -10,6 +10,7 @@ from omni.isaac.ui.menu import make_menu_item_description
 from omni.kit.menu.utils.scripts.utils import add_menu_items, remove_menu_items
 
 import utils.log as log
+from utils.object import get_object_size
 from utils.path import get_proj_root_path
 from utils.ui import vstack
 
@@ -33,6 +34,11 @@ class Extension(omni.ext.IExt):
         self._setup_scene()
         self._create_menus()
         self._build_ui()
+
+        # print object size used for debugging
+        # we need to print this because
+        # isaac sim currently has no feature to show bounding box of object in GUI
+        self._print_object_size()
 
         # timeline callback
         world = World.instance()
@@ -137,6 +143,16 @@ class Extension(omni.ext.IExt):
 
         # clear callbacks
         world.clear_all_callbacks()
+
+    def _print_object_size(self):
+        # print object size used for debugging
+        # we need to print this because
+        # isaac sim currently has no feature to show bounding box of object in GUI
+        log.info("size: object size:")
+        log.info(f"size: table[w,l,h]: {get_object_size('/Main/PickingUnit/table')}")
+        log.info(
+            f"size: basket[w,l,h]: {get_object_size('/Main/PickingUnit/Baskets/basket1')}"
+        )
 
     ##
     # Handlers

@@ -56,6 +56,8 @@ private:
   void setupTaskStages();
 
   // Utility functions
+  void addBasketCollisionObj(moveit::planning_interface::PlanningSceneInterface& psi, std::string frame_id, double x,
+                             double y, double z);
   void addToContainer(mtc::ContainerBase::pointer& container, mtc::Stage::pointer&& stage);
   void addToTask(mtc::Stage::pointer&& stage);
   void addToTask(mtc::ContainerBase::pointer& stage);
