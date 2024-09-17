@@ -104,7 +104,7 @@ For detailed information on our current features, updates and changes, see the [
   ```
 
 ## Simulation Customization
-You can customize conveyor scene behavior before running `sim.py` by creating `config.dev.toml` (see example in default configuration `config.toml`)
+You can customize conveyor scene behavior before running `sim.py` by creating `config.local.toml` (see example in default configuration `config.toml`)
 
 ### Spawner Module Configuration
 
