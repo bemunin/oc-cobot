@@ -144,6 +144,9 @@ class Extension(omni.ext.IExt):
         # clear callbacks
         world.clear_all_callbacks()
 
+    ##
+    # Helpers
+    ##
     def _print_object_size(self):
         # print object size used for debugging
         # we need to print this because
