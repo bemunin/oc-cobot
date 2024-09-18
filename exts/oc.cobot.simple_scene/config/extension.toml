@@ -1,0 +1,25 @@
+[core]
+reloadable = true
+order = 0
+
+[package]
+version = "0.0.0"
+category = "Simulation"
+title = "Omnicraft Cobot Simple Scene"
+description = "Extension for experiment a manipulator robot with isaac sim robot controller in simple scene"
+authors = ["Titiwat Munintravong (Omnicraft)"]
+repository = ""
+keywords = []
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+
+
+[dependencies]
+"omni.kit.uiapp" = {}
+"omni.isaac.ui" = {}
+"omni.isaac.core" = {}
+
+[[python.module]]
+name = "oc.cobot.simple_scene"
