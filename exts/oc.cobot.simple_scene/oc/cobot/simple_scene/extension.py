@@ -174,6 +174,8 @@ class Extension(omni.ext.IExt):
             )
             self._robot.apply_action(actions)
 
+            # Only for the pick and place controller, indicating if the state
+            # machine reached the final state.
             if self._controller.is_done():
                 self._controller.reset()
                 self._stage = "move_cube"
@@ -196,8 +198,19 @@ class Extension(omni.ext.IExt):
             self._controller = RMPFlowController(
                 name="robot_rmpflow_controller", robot_articulation=self._robot
             )
+
+            target_position = np.array([0.39, 0, 0.45])
             actions = self._controller.forward(
-                target_end_effector_position=np.array([0.39, 0, 0.45]),
+                target_end_effector_position=target_position
             )
+
             self._robot.apply_action(actions)
-            # self._stage = "done"
+
+            current_eef_position, _ = self._robot.end_effector.get_world_pose()
+
+            diff = np.linalg.norm(target_position - current_eef_position)
+            log.info(f"simple_scene: diff: {diff}")
+            if diff < 0.06:
+                self._stage = "done"
+                log.info("simple_scene: Done executing move items.")
+                self._world.pause()

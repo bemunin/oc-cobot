@@ -12,7 +12,7 @@ The goal of this project is to provide an example of how to create an NVIDIA Isa
 ## Roadmap
 - ✅ Create the entire scene, implement the object spawner module, and simulate conveyor functionality.
 - ⚠️ (**in-progress**) Example of a robot pick and place with MoveIt2
-  > **Notes**: From our experiment in the current version, our project has failed to perform the pick and place task using the MoveIt Task Constructor running natively on the host. A potential solution could be to run it within the Isaac ROS Docker environment. We are going to experiment it further and also investigating the compatibility of the MoveIt Task Constructor API with Isaac Sim v4.1.0.
+  > **Notes**: From our experiment in the current version, our project has failed to perform the pick and place task using MoveIt Task Constructor running on the bare metal host. A potential solution could be to run it within the Isaac ROS Docker environment. We are going to experiment it further and also investigating the compatibility of the MoveIt Task Constructor API with Isaac Sim v4.1.0.
 - Example of a robot pick and place using the NVIDIA Isaac Sim Core API.
 
 - Apply object detection algorithm.
@@ -26,7 +26,8 @@ For detailed information on our current features, updates and changes, see the [
 - `assets/`: Contains all USD models composed in the scene.
 - `docs/`: Stores the project's files and documentation.
 - `exts/`: Project's Isaac Sim extension. You can add new extensions to suit your work here.
-  - `oc.cobot.conveyor`: An extension that contains the simulation logic, scene setup of the conveyor scene.  
+  - `oc.cobot.conveyor`: An extension that contains the simulation logic, scene setup of the conveyor scene.
+  - `oc.cobot.simple_scene`: An extension that demonstrates how to control a robot manipulator using Isaac Sim API (without ROS). [See the usage](./exts/oc.cobot.simple_scene/docs/README.md)
 - `ros_ws/`: Contains ros2 packages using in this project.
   - `cobot`: Application logic to control robot. 
   - `moveit_task_constructor`: A copy of the moveit_task_constructor package from the MoveIt2 Humble branch. It is required for MoveIt Task Constructor and is not yet available through apt.
