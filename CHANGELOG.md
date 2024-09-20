@@ -1,5 +1,8 @@
 # Changelog
 
+## [v0.2.1] - 2024-09-20
+- **oc.cobot.simple_scene**: Add this extension to demonstate pick and place cube.usd and cylinder.usd objects with PickPlaceController and RMPFlowController
+
 ## [v0.2.0] - 2024-09-13
 - **Simulation**: Migrated isaac sim to version 4.1.0. Refactored sim.py and move all scene setup logic to extension oc.cobot.conveyor. Added Omnigraph to communicate between ROS2 and isaac sim scene workcell.usda.
 - **Assets**: Resized conveyor length in workcell.usda. Changed basket assets to nvidia bin crate. 

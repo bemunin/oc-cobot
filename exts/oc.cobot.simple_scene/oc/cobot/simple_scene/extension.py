@@ -7,7 +7,6 @@ import omni
 from omni.isaac.core import World
 from omni.isaac.core.prims import XFormPrim
 from omni.isaac.core.utils import stage
-from omni.isaac.core.utils.types import ArticulationAction
 from omni.isaac.franka import Franka
 from omni.isaac.franka.controllers import PickPlaceController
 from omni.isaac.franka.controllers.rmpflow_controller import RMPFlowController
