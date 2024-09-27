@@ -1,0 +1,6 @@
+[submodule "ros_ws/src/isaac_ros_common"]
+	path = ros_ws/src/isaac_ros_common
+	url = https://github.com/bemunin/isaac_ros_common.git
+[submodule "ros_ws/src/isaac_ros_cumotion"]
+	path = ros_ws/src/isaac_ros_cumotion
+	url = https://github.com/bemunin/isaac_ros_cumotion.git
