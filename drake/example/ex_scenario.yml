@@ -1,0 +1,49 @@
+directives:
+- add_model:
+    name: iiwa
+    file: package://drake_models/iiwa_description/sdf/iiwa7_no_collision.sdf
+    default_joint_positions:
+        iiwa_joint_1: [0]
+        iiwa_joint_2: [0.1]
+        iiwa_joint_3: [0]
+        iiwa_joint_4: [-1.2]
+        iiwa_joint_5: [0]
+        iiwa_joint_6: [ 1.6]
+        iiwa_joint_7: [0]
+- add_weld:
+    parent: world
+    child: iiwa::iiwa_link_0
+- add_model:
+    name: allegro
+    file: package://drake_models/allegro_hand_description/sdf/allegro_hand_description_right.sdf
+- add_weld:
+    parent: iiwa::iiwa_link_7
+    child: allegro::hand_root
+    X_PC:
+        translation: [0, 0, 0.05]
+        rotation: !Rpy { deg: [0, 0, 0]}
+# And now the environment:
+- add_model:
+    name: foam_brick
+    file: package://drake_models/manipulation_station/061_foam_brick.sdf
+    default_free_body_pose:
+        base_link:
+            translation: [0.6, 0, 0]
+- add_model:
+    name: robot_table
+    file: package://drake/examples/kuka_iiwa_arm/models/table/extra_heavy_duty_table_surface_only_collision.sdf
+- add_weld:
+    parent: world
+    child: robot_table::link
+    X_PC:
+        translation: [0, 0, -0.7645]
+- add_model:
+    name: work_table
+    file: package://drake/examples/kuka_iiwa_arm/models/table/extra_heavy_duty_table_surface_only_collision.sdf
+- add_weld:
+    parent: world
+    child: work_table::link
+    X_PC:
+        translation: [0.75, 0, -0.7645]
+model_drivers:
+    iiwa+allegro: !InverseDynamicsDriver {}

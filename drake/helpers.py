@@ -1,3 +1,19 @@
+from typing import Optional
+
+from pydrake.all import ModelVisualizer
+
+
+def model_visualizer(meshcat, robot_model_url: Optional[str] = None):
+    if not robot_model_url:
+        robot_model_url = (
+            "package://drake_models/franka_description/urdf/panda_arm_hand.urdf"
+        )
+    visualizer = ModelVisualizer(meshcat=meshcat)
+    visualizer.AddModels(url=robot_model_url)
+    visualizer.Run(loop_once=True)
+    meshcat.DeleteAddedControls()
+
+
 def run_sim_loop(simulator, context):
     # step the simulator in 0.1s intervals
     step = 0.1

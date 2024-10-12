@@ -712,7 +712,7 @@
         "~/anaconda3/envs/oc_cobot/lib/python3.10/site-packages/isaacsim/kit/kernel/py",
         "~/anaconda3/envs/oc_cobot/lib/python3.10/site-packages/isaacsim/kit/plugins/bindings-python",
         "~/anaconda3/envs/oc_cobot/lib/python3.10/site-packages/isaacsim/kit/python/lib/python3.10/site-packages",
-        "~/anaconda3/envs/oc_cobot/lib/python3.10/site-packages/pydrake/all",
+        "~/anaconda3/envs/oc_cobot/lib/python3.10/site-packages/pydrake",
         "~/anaconda3/envs/oc_cobot/lib/python3.10/site-packages/manipulation",        
 
     ],
