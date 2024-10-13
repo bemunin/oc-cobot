@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<sdf version="1.7">
+  <model name="conveyor">
+    <link name="conveyor_body">
+      <visual name="conveyor_visual">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>1.0 4 0.71</size>
+          </box>
+        </geometry>
+        <material>
+          <diffuse>0.15 0.15 0.15 1.0</diffuse>
+        </material>
+      </visual>
+      <collision name="conveyor_collision">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>1.0 4 0.71</size>
+          </box>
+        </geometry>
+      </collision>
+    </link>
+  </model>
+</sdf>

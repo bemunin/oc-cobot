@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<sdf version="1.7">
+  <model name="bin_model">
+    <link name="bin_base">
+
+      <visual name="visual_front">
+        <pose>0.29 0 0.185 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.02 0.42 0.37</size>
+          </box>
+        </geometry>
+        <material>
+          <diffuse>0.67 0.12 0.73 1.0</diffuse>
+        </material>
+      </visual>
+      <collision
+        name="collision_front">
+        <pose>0.29 0 0.185 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.02 0.42 0.37</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual
+        name="visual_back">
+        <pose>-0.29 0 0.185 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.02 0.42 0.37</size>
+          </box>
+        </geometry>
+        <material>
+          <diffuse>0.67 0.12 0.73 1.0</diffuse>
+        </material>
+      </visual>
+      <collision
+        name="collision_back">
+        <pose>-0.29 0 0.185 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.02 0.42 0.37</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual
+        name="visual_bottom">
+        <pose>0 0 0.01 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.56 0.38 0.02</size>
+          </box>
+        </geometry>
+        <material>
+          <diffuse>0.67 0.12 0.73 1.0</diffuse>
+        </material>
+      </visual>
+      <collision
+        name="collision_bottom">
+        <pose>0 0 0.01 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.56 0.38 0.02</size>
+          </box>
+        </geometry>
+      </collision>
+
+      <visual
+        name="visual_left">
+        <pose>0 -0.2 0.185 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.56 0.02 0.37</size>
+          </box>
+        </geometry>
+        <material>
+          <diffuse>0.67 0.12 0.73 1.0</diffuse>
+        </material>
+      </visual>
+      <collision
+        name="collision_left">
+        <pose>0 -0.2 0.185 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.56 0.02 0.37</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual
+        name="visual_right">
+        <pose>0 0.2 0.185 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.56 0.02 0.37</size>
+          </box>
+        </geometry>
+        <material>
+          <diffuse>0.67 0.12 0.73 1.0</diffuse>
+        </material>
+      </visual>
+      <collision
+        name="collision_right">
+        <pose>0 0.2 0.185 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.56 0.02 0.37</size>
+          </box>
+        </geometry>
+      </collision>
+    </link>
+  </model>
+</sdf>

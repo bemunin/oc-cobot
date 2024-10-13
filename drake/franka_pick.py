@@ -1,4 +1,6 @@
 # from pydrake.all import()
+import os
+
 from manipulation.station import LoadScenario, MakeHardwareStation
 from pydrake.all import Simulator, StartMeshcat
 
@@ -11,7 +13,9 @@ def main():
         scenario_data = file.read()
 
     scenario = LoadScenario(data=scenario_data)
-    station = MakeHardwareStation(scenario, meshcat)
+    station = MakeHardwareStation(
+        scenario, meshcat, package_xmls=[os.getcwd() + "/package.xml"]
+    )
 
     simulator = Simulator(station)
     context = simulator.get_mutable_context()

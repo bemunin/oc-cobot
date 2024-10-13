@@ -12,9 +12,82 @@ directives:
         panda_joint7: [-2.35]
         panda_finger_joint1: [0.04]
         panda_finger_joint2: [0.04]
-        
+
+- add_model:
+    name: conveyor
+    file: package://oc_cobot/models/conveyor.sdf
+
+- add_model:
+    name: table
+    file: package://oc_cobot/models/table.sdf
+
+- add_model:
+    name: sensor_emitter
+    file: package://oc_cobot/models/sensor.sdf
+
+- add_model:
+    name: sensor_receiver
+    file: package://oc_cobot/models/sensor.sdf
+
+- add_model:
+    name: basket1
+    file: package://oc_cobot/models/bin1.sdf
+
+- add_model:
+    name: basket2
+    file: package://oc_cobot/models/bin2.sdf
+
+- add_model:
+    name: basket3
+    file: package://oc_cobot/models/bin3.sdf
+
 - add_weld:
     parent: world
     child: panda::panda_link0
+
+- add_weld:
+    parent: world
+    child: conveyor::conveyor_body
+    X_PC:
+        translation: [0.82, -0.8671, -0.445]
+
+- add_weld:
+    parent: world
+    child: table::table_body
+    X_PC:
+        translation: [-0.49, 0, -0.4]
+
+- add_weld:
+    parent: conveyor::conveyor_body
+    child: sensor_emitter::sensor_body
+    X_PC:
+        translation: [-0.48, 0.8671, 0.375]
+
+- add_weld:
+    parent: conveyor::conveyor_body
+    child: sensor_receiver::sensor_body
+    X_PC:
+        translation: [0.48, 0.8671, 0.375]
+
+- add_weld:
+    parent: world
+    child: basket1::bin_base
+    X_PC:
+        translation: [-0.74, 0.46, 0]
+
+- add_weld:
+    parent: world
+    child: basket2::bin_base
+    X_PC:
+        translation: [-0.74, 0, 0]
+
+- add_weld:
+    parent: world
+    child: basket3::bin_base
+    X_PC:
+        translation: [-0.74, -0.46, 0]
+
+
+
 model_drivers:
     panda: !InverseDynamicsDriver {}
