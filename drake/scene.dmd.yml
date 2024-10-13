@@ -1,19 +1,5 @@
 directives:
 - add_model:
-    name: panda
-    file: package://drake_models/franka_description/urdf/panda_arm_hand.urdf
-    default_joint_positions:
-        panda_joint1: [0]
-        panda_joint2: [0.1]
-        panda_joint3: [0]
-        panda_joint4: [-1.2]
-        panda_joint5: [0]
-        panda_joint6: [1.6]
-        panda_joint7: [-2.35]
-        panda_finger_joint1: [0.04]
-        panda_finger_joint2: [0.04]
-
-- add_model:
     name: conveyor
     file: package://oc_cobot/models/conveyor.sdf
 
@@ -41,9 +27,12 @@ directives:
     name: basket3
     file: package://oc_cobot/models/bin3.sdf
 
-- add_weld:
-    parent: world
-    child: panda::panda_link0
+- add_model:
+    name: brick
+    file: package://drake_models/manipulation_station/061_foam_brick.sdf
+    default_free_body_pose:
+        base_link:
+            translation: [0.82, -0.03, -0.046]
 
 - add_weld:
     parent: world
@@ -86,8 +75,3 @@ directives:
     child: basket3::bin_base
     X_PC:
         translation: [-0.74, -0.46, 0]
-
-
-
-model_drivers:
-    panda: !InverseDynamicsDriver {}
