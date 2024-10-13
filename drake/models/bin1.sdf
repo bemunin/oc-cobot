@@ -2,7 +2,17 @@
 <sdf version="1.7">
   <model name="bin_model">
     <link name="bin_base">
-
+      <inertial>
+        <mass>18.70</mass>
+        <inertia>
+          <ixx>0.79</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.53</iyy>
+          <iyz>0</iyz>
+          <izz>1.2</izz>
+        </inertia>
+      </inertial>
       <visual name="visual_front">
         <pose>0.29 0 0.185 0 0 0</pose>
         <geometry>
