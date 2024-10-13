@@ -61,13 +61,13 @@ directives:
     parent: conveyor::conveyor_body
     child: sensor_emitter::sensor_body
     X_PC:
-        translation: [-0.48, 0.8671, 0.375]
+        translation: [-0.48, 0.8371, 0.375]
 
 - add_weld:
     parent: conveyor::conveyor_body
     child: sensor_receiver::sensor_body
     X_PC:
-        translation: [0.48, 0.8671, 0.375]
+        translation: [0.48, 0.8371, 0.375]
 
 - add_weld:
     parent: world
