@@ -1,6 +1,8 @@
 # from pydrake.all import()
 import os
 
+from make_gripper_frames import sketch_gripper
+
 # import numpy as np
 # import pydot
 # from helpers import show_svg
@@ -13,14 +15,6 @@ from pydrake.all import (
 
 
 meshcat = StartMeshcat()
-
-
-def sketch_gripper():
-    pass
-
-
-def get_initial_pose():
-    pass
 
 
 def main():
@@ -62,5 +56,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    sketch_gripper()
     input("Done exection, press Enter to exit...")
