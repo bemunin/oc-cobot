@@ -1,6 +1,19 @@
+from io import BytesIO
 from typing import Optional
 
+import cairosvg
+from matplotlib import pyplot as plt
+from PIL import Image
 from pydrake.all import ModelVisualizer
+
+
+def show_svg(plt_figure_num, svg_data):
+    png_data = cairosvg.svg2png(bytestring=svg_data)
+    img = Image.open(BytesIO(png_data))
+    plt.figure(plt_figure_num)
+    plt.imshow(img)
+    plt.axis("off")
+    plt.show(block=False)
 
 
 def model_visualizer(meshcat, robot_model_url: Optional[str] = None):

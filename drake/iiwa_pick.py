@@ -1,6 +1,8 @@
 # from pydrake.all import()
 import os
 
+import pydot
+from helpers import show_svg
 from manipulation.station import LoadScenario, MakeHardwareStation
 from pydrake.all import (
     Simulator,
@@ -9,6 +11,10 @@ from pydrake.all import (
 
 
 meshcat = StartMeshcat()
+
+
+def sketch_gripper():
+    pass
 
 
 def main():
@@ -26,6 +32,10 @@ def main():
     x0 = station.GetOutputPort("iiwa+wsg.state_estimated").Eval(context)
     station.GetInputPort("iiwa+wsg.desired_state").FixValue(context, x0)
 
+    plant = station.GetSubsystemByName("plant")
+    # SVG(pydot.graph_from_dot_data(plant.GetTopologyGraphvizString())[0].create_svg())
+    svg = pydot.graph_from_dot_data(plant.GetTopologyGraphvizString())[0].create_svg()
+    show_svg(plt_figure_num=0, svg_data=svg)
     # Confirm that simulation works:
     simulator.AdvanceTo(0.1)
 
