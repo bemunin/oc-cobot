@@ -1,10 +1,12 @@
 # from pydrake.all import()
 import os
 
-import pydot
-from helpers import show_svg
+# import numpy as np
+# import pydot
+# from helpers import show_svg
 from manipulation.station import LoadScenario, MakeHardwareStation
 from pydrake.all import (
+    DiagramBuilder,
     Simulator,
     StartMeshcat,
 )
@@ -17,26 +19,45 @@ def sketch_gripper():
     pass
 
 
+def get_initial_pose():
+    pass
+
+
 def main():
+    # setup scene
     with open("./scenario_iiwa.dmd.yml", "r") as file:
         scenario_data = file.read()
 
+    builder = DiagramBuilder()
     scenario = LoadScenario(data=scenario_data)
-    station = MakeHardwareStation(
-        scenario, meshcat, package_xmls=[os.getcwd() + "/package.xml"]
+    station = builder.AddSystem(
+        MakeHardwareStation(
+            scenario, meshcat, package_xmls=[os.getcwd() + "/package.xml"]
+        )
     )
-
-    simulator = Simulator(station)
-    context = simulator.get_mutable_context()
-
-    x0 = station.GetOutputPort("iiwa+wsg.state_estimated").Eval(context)
-    station.GetInputPort("iiwa+wsg.desired_state").FixValue(context, x0)
-
     plant = station.GetSubsystemByName("plant")
-    # SVG(pydot.graph_from_dot_data(plant.GetTopologyGraphvizString())[0].create_svg())
-    svg = pydot.graph_from_dot_data(plant.GetTopologyGraphvizString())[0].create_svg()
-    show_svg(plt_figure_num=0, svg_data=svg)
-    # Confirm that simulation works:
+    temp_context = station.CreateDefaultContext()
+    temp_plant_context = plant.GetMyContextFromRoot(temp_context)
+    X_G = {
+        "initial": plant.EvalBodyPoseInWorld(
+            temp_plant_context, plant.GetBodyByName("body")
+        )
+    }
+
+    print(X_G["initial"])
+
+    # Run simulation
+    diagram = builder.Build()
+    diagram.set_name("iiwa_pick")
+
+    simulator = Simulator(diagram)
+    context = simulator.get_mutable_context()
+    station_context = station.GetMyContextFromRoot(context)
+
+    x0 = station.GetOutputPort("iiwa+wsg.state_estimated").Eval(station_context)
+    station.GetInputPort("iiwa+wsg.desired_state").FixValue(station_context, x0)
+
+    # Run simulation
     simulator.AdvanceTo(0.1)
 
 
