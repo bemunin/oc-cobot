@@ -84,7 +84,7 @@ def sketch_gripper(meshcat):
     R_Ogoal = RotationMatrix.MakeZRotation(np.pi / 2.0)
 
     X_O = {
-        "initial": RigidTransform(RotationMatrix(), [0.82, -0.03, -0.088]),
+        "initial": RigidTransform(RotationMatrix(), [0.82, -0.03, -0.046]),
         "goal": RigidTransform(R_Ogoal, [-0.63, -0.03, 0.054]),
     }
 
