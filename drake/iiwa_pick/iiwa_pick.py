@@ -26,7 +26,7 @@ def main():
     scenario = LoadScenario(data=scenario_data)
     station = builder.AddSystem(
         MakeHardwareStation(
-            scenario, meshcat, package_xmls=[os.getcwd() + "/package.xml"]
+            scenario, meshcat, package_xmls=[os.getcwd() + "/../package.xml"]
         )
     )
     plant = station.GetSubsystemByName("plant")
