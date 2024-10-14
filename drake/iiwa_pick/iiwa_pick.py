@@ -19,7 +19,7 @@ meshcat = StartMeshcat()
 
 def main():
     # setup scene
-    with open("./scenario_iiwa.dmd.yml", "r") as file:
+    with open("./scenario_iiwa.dmd.yaml", "r") as file:
         scenario_data = file.read()
 
     builder = DiagramBuilder()
@@ -32,13 +32,20 @@ def main():
     plant = station.GetSubsystemByName("plant")
     temp_context = station.CreateDefaultContext()
     temp_plant_context = plant.GetMyContextFromRoot(temp_context)
+
     X_G = {
         "initial": plant.EvalBodyPoseInWorld(
             temp_plant_context, plant.GetBodyByName("body")
         )
     }
 
-    print(X_G["initial"])
+    X_O = {
+        "initial": plant.EvalBodyPoseInWorld(
+            temp_plant_context, plant.GetBodyByName("base_link")
+        )
+    }
+
+    print(X_O["initial"])
 
     # Run simulation
     diagram = builder.Build()
@@ -56,5 +63,5 @@ def main():
 
 
 if __name__ == "__main__":
-    sketch_gripper()
+    sketch_gripper(meshcat)
     input("Done exection, press Enter to exit...")
