@@ -28,6 +28,10 @@ directives:
     X_PC:
         translation: [0, 0, 0.09]
         rotation: !Rpy { deg: [90, 0, 90]}
+        
+- add_model:
+    name: brick
+    file: package://drake_models/manipulation_station/061_foam_brick.sdf
 
 model_drivers:
     iiwa+wsg: !InverseDynamicsDriver {}

@@ -27,13 +27,6 @@ directives:
     name: basket3
     file: package://oc_cobot/models/bin3.sdf
 
-- add_model:
-    name: brick
-    file: package://drake_models/manipulation_station/061_foam_brick.sdf
-    default_free_body_pose:
-        base_link:
-            translation: [0.82, -0.03, -0.046]
-
 - add_weld:
     parent: world
     child: conveyor::conveyor_body

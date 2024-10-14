@@ -21,6 +21,10 @@ directives:
         panda_finger_joint1: [0.04]
         panda_finger_joint2: [0.04]
 
+- add_model:
+    name: brick
+    file: package://drake_models/manipulation_station/061_foam_brick.sdf
+
 - add_weld:
     parent: world
     child: panda_arm::panda_link0

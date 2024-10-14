@@ -79,18 +79,13 @@ def sketch_gripper(meshcat):
             ]
         )
     )
-    p_Ginitial = np.array([0.4656, 0, 0.6793])
-    X_G = {"initial": RigidTransform(R_Ginitial, p_Ginitial)}
-
-    R_Oinitial = RotationMatrix()  # Identity
-    p_Oinitial = np.array([0.82, -0.03, -0.046])
+    X_G = {"initial": RigidTransform(R_Ginitial, [0.4656, 0, 0.6793])}
 
     R_Ogoal = RotationMatrix.MakeZRotation(np.pi / 2.0)
-    p_Ogoal = p_Oinitial.copy() + np.array([-1.45, 0, 0.1])
 
     X_O = {
-        "initial": RigidTransform(R_Oinitial, p_Oinitial),
-        "goal": RigidTransform(R_Ogoal, p_Ogoal),
+        "initial": RigidTransform(RotationMatrix(), [0.82, -0.03, -0.088]),
+        "goal": RigidTransform(R_Ogoal, [-0.63, -0.03, 0.054]),
     }
 
     visualize_gripper_frames(X_G, X_O, meshcat)
