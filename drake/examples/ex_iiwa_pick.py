@@ -176,27 +176,6 @@ class PseudoInverseController(LeafSystem):
 
 
 if __name__ == "__main__":
-    X_G = {
-        "initial": RigidTransform(
-            RotationMatrix.MakeXRotation(-np.pi / 2.0), [0, -0.25, 0.25]
-        )
-    }
-
-    X_O = {
-        "initial": RigidTransform(
-            RotationMatrix.MakeZRotation(np.pi / 2.0), [-0.2, -0.75, 0.025]
-        ),
-        "goal": RigidTransform(RotationMatrix.MakeZRotation(np.pi), [0.75, 0, 0.025]),
-    }
-    X_G, times = MakeGripperFrames(X_G, X_O)
-
-    traj_X_G = MakeGripperPoseTrajectory(X_G, times)
-    traj_p_G = traj_X_G.get_position_trajectory()
-
-    p_G = traj_p_G.vector_values(traj_p_G.get_segment_times())
-    traj_v_G = traj_p_G.MakeDerivative()
-    v_G = traj_v_G.vector_values(traj_v_G.get_segment_times())
-
     X_O = {
         "initial": RigidTransform(
             RotationMatrix.MakeZRotation(np.pi / 2.0), [0, -0.6, 0.0]
@@ -244,6 +223,7 @@ model_drivers:
 
     # Make the trajectories
     traj = MakeGripperPoseTrajectory(X_G, times)
+    traj_p_G = traj.get_position_trajectory()
     traj_V_G = traj.MakeDerivative()
 
     V_G_source = builder.AddSystem(TrajectorySource(traj_V_G))
