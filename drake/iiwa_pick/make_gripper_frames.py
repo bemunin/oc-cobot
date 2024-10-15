@@ -81,7 +81,35 @@ def MakeGripperFrames(X_WG, X_WO):
     X_WG["clearance2"] = X_WG["clearance1"] @ X_Gclearance1Gclearance2
 
     # times
-    times["initial"] = 0.0
+    times = {"initial": 0}
+    X_GinitialGprepick = X_WG["initial"].inverse() @ X_WG["prepick"]
+    times["prepick"] = times["initial"] + 10.0 * np.linalg.norm(
+        X_GinitialGprepick.translation()
+    )
+
+    # Allow some time for the gripper to close.
+    times["pick_start"] = times["prepick"] + 2.0
+    times["pick_end"] = times["pick_start"] + 2.0
+    X_WG["pick_start"] = X_WG["pick"]
+    X_WG["pick_end"] = X_WG["pick"]
+    times["postpick"] = times["pick_end"] + 2.0
+    X_WG["postpick"] = X_WG["prepick"]
+
+    time_to_from_clearance1 = 10.0 * np.linalg.norm(X_GprepickGclearance1.translation())
+    times["clearance1"] = times["postpick"] + time_to_from_clearance1
+
+    time_to_from_clearance2 = 10.0 * np.linalg.norm(
+        X_Gclearance1Gclearance2.translation()
+    )
+
+    times["clearance2"] = times["clearance1"] + time_to_from_clearance2
+    times["preplace"] = times["clearance2"] + 2.0
+    times["place_start"] = times["preplace"] + 2.0
+    times["place_end"] = times["place_start"] + 2.0
+    X_WG["place_start"] = X_WG["place"]
+    X_WG["place_end"] = X_WG["place"]
+    times["postplace"] = times["place_end"] + 2.0
+    X_WG["postplace"] = X_WG["preplace"]
 
     return X_WG, times
 
