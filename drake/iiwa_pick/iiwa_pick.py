@@ -1,15 +1,16 @@
 # from pydrake.all import()
 import os
 
-from make_gripper_frames import sketch_gripper
+import numpy as np
+from make_gripper_frames import MakeGripperFrames, visualize_gripper_frames
 
-# import numpy as np
 # import pydot
 # from helpers import show_svg
 from manipulation.station import LoadScenario, MakeHardwareStation
 from pydrake.all import (
     DiagramBuilder,
     RigidTransform,
+    RotationMatrix,
     Simulator,
     StartMeshcat,
 )
@@ -62,7 +63,43 @@ def main():
     simulator.AdvanceTo(0.1)
 
 
+def sketch_gripper(meshcat):
+    R_Ginitial = RotationMatrix(
+        np.array(
+            [
+                [
+                    0,
+                    0.24,
+                    -0.97,
+                ],
+                [
+                    1,
+                    0,
+                    0,
+                ],
+                [
+                    0,
+                    -0.97,
+                    -0.24,
+                ],
+            ]
+        )
+    )
+    X_G = {"initial": RigidTransform(R_Ginitial, [0.4656, 0, 0.6793])}
+
+    R_Ogoal = RotationMatrix.MakeZRotation(np.pi / 2.0)
+
+    X_O = {
+        # foam brick height = 0.049, move down -0.04 = -0.089
+        "initial": RigidTransform([0.82, -0.03, -0.089]),
+        "goal": RigidTransform(R_Ogoal, [-0.63, -0.03, 0.054]),
+    }
+
+    X_G, _ = MakeGripperFrames(X_G, X_O)
+    visualize_gripper_frames(X_G, X_O, meshcat)
+
+
 if __name__ == "__main__":
     # main()
-    sketch_gripper(meshcat)
+    sketch_gripper()
     input("Done exection, press Enter to exit...")
