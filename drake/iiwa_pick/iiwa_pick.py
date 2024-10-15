@@ -2,7 +2,11 @@
 import os
 
 import numpy as np
-from gripper_trajectory import MakeGripperPoseTrajectory, plot_graph
+from gripper_trajectory import (
+    MakeGripperCommandTrajectory,
+    MakeGripperPoseTrajectory,
+    plot_graph,
+)
 from make_gripper_frames import MakeGripperFrames, visualize_gripper_frames
 
 # import pydot
@@ -107,6 +111,10 @@ def sketch_gripper():
 
     plot_graph("p_G", ["x", "y", "z"], traj_p_G)
     plot_graph("R_G", ["qx", "qy", "qz", "qw"], traj_R_G)
+
+    # create end effector command trajectory
+    traj_wsg_command = MakeGripperCommandTrajectory(times)
+    plot_graph("wsg_command", None, traj_wsg_command)
 
 
 if __name__ == "__main__":
