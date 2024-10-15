@@ -84,7 +84,8 @@ def sketch_gripper(meshcat):
     R_Ogoal = RotationMatrix.MakeZRotation(np.pi / 2.0)
 
     X_O = {
-        "initial": RigidTransform(RotationMatrix(), [0.82, -0.03, -0.046]),
+        # foam brick height = 0.049, move down -0.04 = -0.089
+        "initial": RigidTransform(RotationMatrix(), [0.82, -0.03, -0.089]),
         "goal": RigidTransform(R_Ogoal, [-0.63, -0.03, 0.054]),
     }
 

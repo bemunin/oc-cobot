@@ -32,6 +32,7 @@ def main():
         )
     )
     plant = station.GetSubsystemByName("plant")
+
     temp_context = station.CreateDefaultContext()
     temp_plant_context = plant.GetMyContextFromRoot(temp_context)
 
@@ -40,12 +41,12 @@ def main():
             temp_plant_context, plant.GetBodyByName("body")
         )
     }
-
-    X_O = {"initial": RigidTransform(RotationMatrix(), [0.82, -0.03, -0.046])}
-
+    X_O = {"initial": RigidTransform(RotationMatrix(), [0.82, -0.03, -0.089])}
     plant.SetDefaultFreeBodyPose(plant.GetBodyByName("base_link"), X_O["initial"])
 
     print(X_O["initial"])
+
+    print(X_G["initial"])
 
     # Run simulation
     diagram = builder.Build()
@@ -63,5 +64,6 @@ def main():
 
 
 if __name__ == "__main__":
+    # main()
     sketch_gripper(meshcat)
     input("Done exection, press Enter to exit...")
