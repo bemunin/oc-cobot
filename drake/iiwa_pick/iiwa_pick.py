@@ -6,6 +6,7 @@ from gripper_trajectory import (
     MakeGripperCommandTrajectory,
     MakeGripperPoseTrajectory,
     plot_graph,
+    visualize_pick_and_place_trajectory,
 )
 from make_gripper_frames import MakeGripperFrames, visualize_gripper_frames
 
@@ -115,6 +116,13 @@ def sketch_gripper():
     # create end effector command trajectory
     traj_wsg_command = MakeGripperCommandTrajectory(times)
     plot_graph("wsg_command", None, traj_wsg_command)
+
+    visualize_pick_and_place_trajectory(
+        traj_p_G, traj_R_G, traj_wsg_command, X_O, meshcat
+    )
+
+    traj_v_G = traj_p_G.MakeDerivative()
+    plot_graph("v_G", ["vx", "vy", "vz"], traj_v_G)
 
 
 if __name__ == "__main__":
