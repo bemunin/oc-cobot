@@ -4,7 +4,6 @@ from pydrake.all import (
     AddMultibodyPlantSceneGraph,
     AngleAxis,
     DiagramBuilder,
-    JacobianWrtVariable,
     LeafSystem,
     MeshcatVisualizer,
     MultibodyPlant,

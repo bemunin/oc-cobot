@@ -2,6 +2,7 @@
 import os
 
 import numpy as np
+from gripper_trajectory import MakeGripperPoseTrajectory, plot_graph
 from make_gripper_frames import MakeGripperFrames, visualize_gripper_frames
 
 # import pydot
@@ -63,7 +64,7 @@ def main():
     simulator.AdvanceTo(0.1)
 
 
-def sketch_gripper(meshcat):
+def sketch_gripper():
     R_Ginitial = RotationMatrix(
         np.array(
             [
@@ -95,8 +96,17 @@ def sketch_gripper(meshcat):
         "goal": RigidTransform(R_Ogoal, [-0.63, -0.03, 0.054]),
     }
 
-    X_G, _ = MakeGripperFrames(X_G, X_O)
+    X_G, times = MakeGripperFrames(X_G, X_O)
     visualize_gripper_frames(X_G, X_O, meshcat)
+
+    # create gripper trajectory from keyframes
+    traj_X_G = MakeGripperPoseTrajectory(X_G, times)
+
+    traj_p_G = traj_X_G.get_position_trajectory()
+    traj_R_G = traj_X_G.get_orientation_trajectory()
+
+    plot_graph("p_G", ["x", "y", "z"], traj_p_G)
+    plot_graph("R_G", ["qx", "qy", "qz", "qw"], traj_R_G)
 
 
 if __name__ == "__main__":
