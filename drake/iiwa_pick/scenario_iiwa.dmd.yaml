@@ -34,4 +34,7 @@ directives:
     file: package://drake_models/manipulation_station/061_foam_brick.sdf
 
 model_drivers:
-    iiwa+wsg: !InverseDynamicsDriver {}
+    iiwa: !IiwaDriver
+        control_mode: position_only
+        hand_model_name: wsg
+    wsg: !SchunkWsgDriver {}
