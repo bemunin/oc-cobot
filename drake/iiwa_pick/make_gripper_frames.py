@@ -83,7 +83,7 @@ def MakeGripperFrames(X_WG, X_WO):
     # times
     times = {"initial": 0}
     X_GinitialGprepick = X_WG["initial"].inverse() @ X_WG["prepick"]
-    times["prepick"] = times["initial"] + 10.0 * np.linalg.norm(
+    times["prepick"] = times["initial"] + 5.0 * np.linalg.norm(
         X_GinitialGprepick.translation()
     )
 
@@ -95,10 +95,10 @@ def MakeGripperFrames(X_WG, X_WO):
     times["postpick"] = times["pick_end"] + 2.0
     X_WG["postpick"] = X_WG["prepick"]
 
-    time_to_from_clearance1 = 10.0 * np.linalg.norm(X_GprepickGclearance1.translation())
+    time_to_from_clearance1 = 5.0 * np.linalg.norm(X_GprepickGclearance1.translation())
     times["clearance1"] = times["postpick"] + time_to_from_clearance1
 
-    time_to_from_clearance2 = 10.0 * np.linalg.norm(
+    time_to_from_clearance2 = 5.0 * np.linalg.norm(
         X_Gclearance1Gclearance2.translation()
     )
 
