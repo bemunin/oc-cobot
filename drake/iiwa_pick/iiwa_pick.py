@@ -10,7 +10,6 @@ from manipulation.station import LoadScenario, MakeHardwareStation
 from pydrake.all import (
     DiagramBuilder,
     RigidTransform,
-    RotationMatrix,
     Simulator,
     StartMeshcat,
 )
@@ -41,7 +40,7 @@ def main():
             temp_plant_context, plant.GetBodyByName("body")
         )
     }
-    X_O = {"initial": RigidTransform(RotationMatrix(), [0.82, -0.03, -0.089])}
+    X_O = {"initial": RigidTransform([0.82, -0.03, -0.089])}
     plant.SetDefaultFreeBodyPose(plant.GetBodyByName("base_link"), X_O["initial"])
 
     print(X_O["initial"])
