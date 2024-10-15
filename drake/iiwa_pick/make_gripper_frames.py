@@ -12,6 +12,15 @@ from pydrake.all import (
 )
 
 
+X_O = {
+    # foam brick height = 0.049, move down -0.04 = -0.089
+    "initial": RigidTransform([0.6, -0.03, -0.089]),
+    "goal": RigidTransform(
+        RotationMatrix.MakeZRotation(np.pi / 2.0), [-0.4, 0.45, 0.049]
+    ),
+}
+
+
 def visualize_gripper_frames(X_G, X_O, meshcat):
     builder = DiagramBuilder()
 
@@ -69,21 +78,19 @@ def MakeGripperFrames(X_WG, X_WO):
     angle_axis = X_GprepickGpreplace.rotation().ToAngleAxis()
     X_GprepickGclearance1 = RigidTransform(
         AngleAxis(angle=angle_axis.angle() / 2.0, axis=angle_axis.axis()),
-        X_GprepickGpreplace.translation() / 2.0 + np.array([-0.5, -0.35, 0]),
+        X_GprepickGpreplace.translation() / 2.0 + np.array([-0.2, -0.3, 0]),
     )
     X_WG["clearance1"] = X_WG["prepick"] @ X_GprepickGclearance1
 
-    X_Gclearance1Gclearance2 = RigidTransform(
+    X_WG["clearance2"] = X_WG["clearance1"] @ RigidTransform(
         AngleAxis(angle=angle_axis.angle() / 2.0, axis=angle_axis.axis()),
-        X_GprepickGpreplace.translation() / 2.0 + np.array([-0.12, 0, -0.12]),
+        np.array([-0.3, 0.1, -0.2]),
     )
-
-    X_WG["clearance2"] = X_WG["clearance1"] @ X_Gclearance1Gclearance2
 
     # times
     times = {"initial": 0}
     X_GinitialGprepick = X_WG["initial"].inverse() @ X_WG["prepick"]
-    times["prepick"] = times["initial"] + 5.0 * np.linalg.norm(
+    times["prepick"] = times["initial"] + 10.0 * np.linalg.norm(
         X_GinitialGprepick.translation()
     )
 
@@ -95,14 +102,10 @@ def MakeGripperFrames(X_WG, X_WO):
     times["postpick"] = times["pick_end"] + 2.0
     X_WG["postpick"] = X_WG["prepick"]
 
-    time_to_from_clearance1 = 5.0 * np.linalg.norm(X_GprepickGclearance1.translation())
+    time_to_from_clearance1 = 10.0 * np.linalg.norm(X_GprepickGclearance1.translation())
     times["clearance1"] = times["postpick"] + time_to_from_clearance1
+    times["clearance2"] = times["clearance1"] + time_to_from_clearance1
 
-    time_to_from_clearance2 = 5.0 * np.linalg.norm(
-        X_Gclearance1Gclearance2.translation()
-    )
-
-    times["clearance2"] = times["clearance1"] + time_to_from_clearance2
     times["preplace"] = times["clearance2"] + 2.0
     times["place_start"] = times["preplace"] + 2.0
     times["place_end"] = times["place_start"] + 2.0

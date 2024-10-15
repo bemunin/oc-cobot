@@ -55,16 +55,16 @@ directives:
     parent: world
     child: basket1::bin_base
     X_PC:
-        translation: [-0.74, 0.46, 0]
+        translation: [-0.5, 0.46, 0]
 
 - add_weld:
     parent: world
     child: basket2::bin_base
     X_PC:
-        translation: [-0.74, 0, 0]
+        translation: [-0.5, 0, 0]
 
 - add_weld:
     parent: world
     child: basket3::bin_base
     X_PC:
-        translation: [-0.74, -0.46, 0]
+        translation: [-0.5, -0.46, 0]
