@@ -227,8 +227,6 @@ def main():
     with open("./.diagram/diagram_output.svg", "wb") as f:
         f.write(svg_data)
 
-    input("Done exection, press Enter to exit...")
-
 
 if __name__ == "__main__":
     args = sys.argv[1:]
