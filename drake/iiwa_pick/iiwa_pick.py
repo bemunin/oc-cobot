@@ -96,6 +96,7 @@ def generatePisewiseTrajectory(station, plant):
     X_O["initial"] = plant.EvalBodyPoseInWorld(
         temp_plant_context, plant.GetBodyByName("base_link")
     )
+
     X_G, times = MakeGripperFrames(X_G, X_O)
 
     traj = MakeGripperPoseTrajectory(X_G, times)
