@@ -12,15 +12,6 @@ from pydrake.all import (
 )
 
 
-X_O = {
-    # foam brick height = 0.049, move down -0.04 = -0.089
-    "initial": RigidTransform([0.6, -0.03, -0.089]),
-    "goal": RigidTransform(
-        RotationMatrix.MakeZRotation(np.pi / 2.0), [-0.4, 0.45, 0.049]
-    ),
-}
-
-
 def visualize_gripper_frames(X_G, X_O, meshcat):
     builder = DiagramBuilder()
 
@@ -87,6 +78,10 @@ def MakeGripperFrames(X_WG, X_WO):
         np.array([-0.3, 0.1, -0.2]),
     )
 
+    X_WG["end_pose"] = X_WG["postplace"] = X_WG["preplace"] @ RigidTransform(
+        [0, -0.15, 0]
+    )
+
     # times
     times = {"initial": 0}
     X_GinitialGprepick = X_WG["initial"].inverse() @ X_WG["prepick"]
@@ -113,5 +108,7 @@ def MakeGripperFrames(X_WG, X_WO):
     X_WG["place_end"] = X_WG["place"]
     times["postplace"] = times["place_end"] + 2.0
     X_WG["postplace"] = X_WG["preplace"]
+
+    times["end_pose"] = times["postplace"] + 5.0
 
     return X_WG, times

@@ -1,11 +1,13 @@
 import os
+import sys
 
 import numpy as np
 from gripper_trajectory import (
     MakeGripperCommandTrajectory,
     MakeGripperPoseTrajectory,
+    plot_graph,
 )
-from make_gripper_frames import X_O, MakeGripperFrames
+from make_gripper_frames import MakeGripperFrames, visualize_gripper_frames
 
 # import pydot
 # from helpers import show_svg
@@ -15,6 +17,8 @@ from pydrake.all import (
     Integrator,
     JacobianWrtVariable,
     LeafSystem,
+    RigidTransform,
+    RotationMatrix,
     Simulator,
     StartMeshcat,
     TrajectorySource,
@@ -22,6 +26,14 @@ from pydrake.all import (
 
 
 meshcat = StartMeshcat()
+
+X_O = {
+    # foam brick height = 0.049, move down -0.04 = -0.089
+    "initial": RigidTransform([0.6, -0.03, -0.089]),
+    "goal": RigidTransform(
+        RotationMatrix.MakeZRotation(np.pi / 2.0), [-0.4, 0.45, 0.049]
+    ),
+}
 
 
 class PseudoInverseController(LeafSystem):
@@ -56,9 +68,7 @@ class PseudoInverseController(LeafSystem):
         output.SetFromVector(v)
 
 
-def main():
-    builder = DiagramBuilder()
-
+def createStation(builder):
     # setup scene
     with open("./scenario_iiwa.dmd.yaml", "r") as file:
         scenario_data = file.read()
@@ -71,8 +81,10 @@ def main():
 
     plant = station.GetSubsystemByName("plant")
     plant.SetDefaultFreeBodyPose(plant.GetBodyByName("base_link"), X_O["initial"])
+    return station, plant
 
-    # state 1: make gripper frame
+
+def generatePisewiseTrajectory(station, plant):
     temp_context = station.CreateDefaultContext()
     temp_plant_context = plant.GetMyContextFromRoot(temp_context)
     X_G = {
@@ -85,13 +97,21 @@ def main():
     )
     X_G, times = MakeGripperFrames(X_G, X_O)
 
-    # state 2: add the gripper's trajectory
     traj = MakeGripperPoseTrajectory(X_G, times)
-    traj_p_G = traj.get_position_trajectory()
+    return traj, times
+
+
+def createControllerDiagram(
+    builder,
+    station,
+    plant,
+    traj,
+):
     traj_V_G = traj.MakeDerivative()
 
     V_G_source = builder.AddSystem(TrajectorySource(traj_V_G))
     V_G_source.set_name("v_WG")
+
     controller = builder.AddSystem(PseudoInverseController(plant))
     controller.set_name("PseudoInverseController")
     builder.Connect(V_G_source.get_output_port(), controller.GetInputPort("V_WG"))
@@ -105,19 +125,21 @@ def main():
         controller.GetInputPort("iiwa.position"),
     )
 
-    # state 3: add the end-effector's trajectory
+    return integrator
+
+
+def createEndeffectorCommandDiagram(builder, station, times):
     traj_wsg_command = MakeGripperCommandTrajectory(times)
     wsg_source = builder.AddSystem(TrajectorySource(traj_wsg_command))
     wsg_source.set_name("wsg.command")
     builder.Connect(wsg_source.get_output_port(), station.GetInputPort("wsg.position"))
 
-    # state 4: run simulation
-    diagram = builder.Build()
-    diagram.set_name("pick_and_place")
 
+def runSimulator(diagram, station, plant, integrator, endtime):
     simulator = Simulator(diagram)
     context = simulator.get_mutable_context()
     _ = station.GetMyContextFromRoot(context)
+
     integrator.set_integral_value(
         integrator.GetMyContextFromRoot(context),
         plant.GetPositions(
@@ -128,13 +150,82 @@ def main():
 
     diagram.ForcedPublish(context)
     meshcat.StartRecording()
-    simulator.AdvanceTo(traj_p_G.end_time())
+
+    simulator.AdvanceTo(endtime)
     meshcat.PublishRecording()
+
+    return simulator, context
+
+
+def sketch():
+    R_Ginitial = RotationMatrix(
+        np.array(
+            [
+                [
+                    0,
+                    0.24,
+                    -0.97,
+                ],
+                [
+                    1,
+                    0,
+                    0,
+                ],
+                [
+                    0,
+                    -0.97,
+                    -0.24,
+                ],
+            ]
+        )
+    )
+    X_G = {"initial": RigidTransform(R_Ginitial, [0.4656, 0, 0.6793])}
+
+    X_G, times = MakeGripperFrames(X_G, X_O)
+    visualize_gripper_frames(X_G, X_O, meshcat)
+
+    # create gripper trajectory from keyframes
+    traj_X_G = MakeGripperPoseTrajectory(X_G, times)
+
+    traj_p_G = traj_X_G.get_position_trajectory()
+    traj_R_G = traj_X_G.get_orientation_trajectory()
+
+    plot_graph("p_G", ["x", "y", "z"], traj_p_G)
+    plot_graph("R_G", ["qx", "qy", "qz", "qw"], traj_R_G)
+
+    # # create end effector command trajectory
+    traj_wsg_command = MakeGripperCommandTrajectory(times)
+    plot_graph("wsg_command", None, traj_wsg_command)
+
+    traj_v_G = traj_p_G.MakeDerivative()
+    plot_graph("v_G", ["vx", "vy", "vz"], traj_v_G)
+
+
+def main():
+    builder = DiagramBuilder()
+    station, plant = createStation(builder)
+
+    traj, times = generatePisewiseTrajectory(station, plant)
+
+    integrator = createControllerDiagram(builder, station, plant, traj)
+
+    createEndeffectorCommandDiagram(builder, station, times)
+
+    diagram = builder.Build()
+    diagram.set_name("pick_and_place")
+    sim_endtime = traj.get_position_trajectory().end_time()
+
+    runSimulator(diagram, station, plant, integrator, sim_endtime)
 
     # RenderDiagram(diagram, max_depth=1)
     input("Done exection, press Enter to exit...")
 
 
 if __name__ == "__main__":
-    main()
+    args = sys.argv[1:]
+    mode = args[0] if args else None
+    if mode == "-s":
+        sketch()
+    else:
+        main()
     input("Done exection, press Enter to exit...")

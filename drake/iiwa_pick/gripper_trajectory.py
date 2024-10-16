@@ -37,6 +37,7 @@ def MakeGripperPoseTrajectory(X_G, times):
         "place_start",
         "place_end",
         "postplace",
+        "end_pose",
     ]:
         sample_times.append(times[name])
         poses.append(X_G[name])
