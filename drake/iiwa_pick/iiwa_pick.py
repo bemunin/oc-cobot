@@ -2,6 +2,7 @@ import os
 import sys
 
 import numpy as np
+import pydot
 from gripper_trajectory import (
     MakeGripperCommandTrajectory,
     MakeGripperPoseTrajectory,
@@ -217,7 +218,15 @@ def main():
 
     runSimulator(diagram, station, plant, integrator, sim_endtime)
 
+    # Jupyter notebook, using this line to show diagram
     # RenderDiagram(diagram, max_depth=1)
+
+    # save render diagram image
+    pydot_data = pydot.graph_from_dot_data(diagram.GetGraphvizString(max_depth=1))[0]
+    svg_data = pydot_data.create_svg()
+    with open("./.diagram/diagram_output.svg", "wb") as f:
+        f.write(svg_data)
+
     input("Done exection, press Enter to exit...")
 
 

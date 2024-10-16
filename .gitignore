@@ -60,3 +60,4 @@ _build
 # OmniCraft Cobot
 **/config.local.toml
 **/environment.local.yml
+**/*/.diagram
