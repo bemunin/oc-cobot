@@ -192,17 +192,49 @@ class FrankaManager(BaseTask):
             {
                 keys.CREATE_NODES: [
                     ("tick", "omni.graph.action.OnPlaybackTick"),
-                    ("ros_context", "omni.isaac.ros2_bridge.ROS2Context"),
+                    ("context", "omni.isaac.ros2_bridge.ROS2Context"),
                     ("sim_time", "omni.isaac.core_nodes.IsaacReadSimulationTime"),
                     ("sub_joints", "omni.isaac.ros2_bridge.ROS2SubscribeJointState"),
                     ("pub_clock", "omni.isaac.ros2_bridge.ROS2PublishClock"),
                     ("pub_joints", "omni.isaac.ros2_bridge.ROS2PublishJointState"),
                     (
-                        "sim_controller",
+                        "controller",
                         "omni.isaac.core_nodes.IsaacArticulationController",
                     ),
                 ],
-                keys.SET_VALUES: [],
-                keys.CONNECT: [],
+                keys.SET_VALUES: [
+                    ("sub_joints.inputs:topicName", "isaac_joint_commands"),
+                    ("pub_joints.inputs:targetPrim", "/World/Franka"),
+                    ("pub_joints.inputs:topicName", "isaac_joint_states"),
+                    ("controller.inputs:robotPath", "/World/Franka"),
+                ],
+                keys.CONNECT: [
+                    # pub_clock
+                    ("tick.outputs:tick", "pub_clock.inputs:execIn"),
+                    ("context.outputs:context", "pub_clock.inputs:context"),
+                    ("sim_time.outputs:simulationTime", "pub_clock.inputs:timeStamp"),
+                    # pub_joints
+                    ("tick.outputs:tick", "pub_joints.inputs:execIn"),
+                    ("context.outputs:context", "pub_joints.inputs:context"),
+                    ("sim_time.outputs:simulationTime", "pub_joints.inputs:timeStamp"),
+                    # controller
+                    ("tick.outputs:tick", "controller.inputs:execIn"),
+                    (
+                        "sub_joints.outputs:effortCommand",
+                        "controller.inputs:effortCommand",
+                    ),
+                    ("sub_joints.outputs:jointNames", "controller.inputs:jointNames"),
+                    (
+                        "sub_joints.outputs:positionCommand",
+                        "controller.inputs:positionCommand",
+                    ),
+                    (
+                        "sub_joints.outputs:velocityCommand",
+                        "controller.inputs:velocityCommand",
+                    ),
+                    # sub_joints
+                    ("tick.outputs:tick", "sub_joints.inputs:execIn"),
+                    ("context.outputs:context", "sub_joints.inputs:context"),
+                ],
             },
         )
