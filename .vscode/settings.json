@@ -606,9 +606,21 @@
         "**/_compiler/**": true
     },
     "files.associations": {
+        "*.sdf": "xml",
         "*.tpp": "cpp",
         "*.kit": "toml",
-        "*.rst": "restructuredtext"
+        "*.rst": "restructuredtext",
+        "*.tcc": "cpp",
+        "deque": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "string": "cpp",
+        "vector": "cpp",
+        "hash_map": "cpp",
+        "hash_set": "cpp",
+        "slist": "cpp",
+        "valarray": "cpp",
+        "any": "cpp"
     },
 
     "files.exclude": {
