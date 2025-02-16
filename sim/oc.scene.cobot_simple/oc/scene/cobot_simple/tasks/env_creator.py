@@ -16,7 +16,7 @@ class EnvCreator(CreatorTask):
         # cylinder
         height_m = 0.1
         radius_m = 0.02
-        mass_kg = 0.1  # kg
+        mass_kg = 0.01  # kg
         scene.add(
             DynamicCylinder(
                 prim_path="/World/Cylinder",
