@@ -1,5 +1,5 @@
 #!/bin/bash
-available_scenes=("cobot_simple" "conveyor")
+available_scenes=("cobot_simple" "cobot_conveyor")
 
 MOUNT_POINT="/mnt/ssd_nvidia"
 MOUNT_SOURCE="/dev/sda1"
