@@ -62,3 +62,4 @@ assets
 **/build/
 **/install/
 **/log/
+!sim/**/assets
