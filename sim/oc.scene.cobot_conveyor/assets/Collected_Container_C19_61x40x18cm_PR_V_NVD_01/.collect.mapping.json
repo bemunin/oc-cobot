@@ -1,0 +1,173 @@
+{
+    "version": "1.0",
+    "file_records": [
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Colors/T_Plastic_Black_A_Albedo.png",
+            "source_hash": "b3c70cf20e13213200a58c1e8e899ee91dc36556",
+            "target_url": "./Materials/Base/Plastics/Colors/T_Plastic_Black_A_Albedo.png",
+            "target_hash": "d2bb346a5103025d5c79583fcb70c96a0bb98d6b"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Colors/T_Plastic_Black_A_ORM.png",
+            "source_hash": "bd354063e41b70b95c2588f3898d3cc608a956be",
+            "target_url": "./Materials/Base/Plastics/Colors/T_Plastic_Black_A_ORM.png",
+            "target_hash": "bfe2630ee5983ad6ec659785f73a146023298c8e"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Colors/T_Plastic_Blue_A_Albedo.png",
+            "source_hash": "c7135ee7b494c4f208b76f756ec7a4b67192e25f",
+            "target_url": "./Materials/Base/Plastics/Colors/T_Plastic_Blue_A_Albedo.png",
+            "target_hash": "96e838d8db072e86f40812ecf731c9618ff5c655"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Colors/T_Plastic_Blue_A_ORM.png",
+            "source_hash": "e52cfed9162fbfbfc2535d302d9475d46444ed35",
+            "target_url": "./Materials/Base/Plastics/Colors/T_Plastic_Blue_A_ORM.png",
+            "target_hash": "df46b28f163d31ae6ae33ae553a6be42efd07ece"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Colors/T_Plastic_Brown_A_Albedo.png",
+            "source_hash": "732d8f066511d4b978179b3b695ca65320edbee1",
+            "target_url": "./Materials/Base/Plastics/Colors/T_Plastic_Brown_A_Albedo.png",
+            "target_hash": "b67987eedb48e74b3a47017443a21437e2b9c001"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Colors/T_Plastic_Brown_A_ORM.png",
+            "source_hash": "44ace37389db836acc66b827ed4be585ccb7e0df",
+            "target_url": "./Materials/Base/Plastics/Colors/T_Plastic_Brown_A_ORM.png",
+            "target_hash": "60a01c217ca325e65aae120e7a013071d7bdb22e"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Colors/T_Plastic_Glossy_Black_A_Albedo.png",
+            "source_hash": "1d34a82ed75e5e5797ca552747d368d0a15c8106",
+            "target_url": "./Materials/Base/Plastics/Colors/T_Plastic_Glossy_Black_A_Albedo.png",
+            "target_hash": "9aead2bbaf44bf7db9b8430542d2aa4cc4ecd970"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Colors/T_Plastic_Glossy_Black_A_ORM.png",
+            "source_hash": "ac29225fb759984c9a033bb1f8e6720823d78b1f",
+            "target_url": "./Materials/Base/Plastics/Colors/T_Plastic_Glossy_Black_A_ORM.png",
+            "target_hash": "b659640fe7887eb8e930a7cbe35f2a47cc147737"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Colors/T_Plastic_Gray_A_Albedo.png",
+            "source_hash": "ea5ed3e49f9c01129428f331d6646197a02abd16",
+            "target_url": "./Materials/Base/Plastics/Colors/T_Plastic_Gray_A_Albedo.png",
+            "target_hash": "013cbbc0da9b4e40b594739b5296ec7c9c3bc892"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Colors/T_Plastic_Gray_A_ORM.png",
+            "source_hash": "db1ac96c5aaa4e8e937460aa8b504f986266b26e",
+            "target_url": "./Materials/Base/Plastics/Colors/T_Plastic_Gray_A_ORM.png",
+            "target_hash": "52adf6920996ad08df79e4c8c9c9521c72109ce4"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Colors/T_Plastic_Green_A_Albedo.png",
+            "source_hash": "4bc6089d85a4040146fa55b5a1d1ba648f733f1e",
+            "target_url": "./Materials/Base/Plastics/Colors/T_Plastic_Green_A_Albedo.png",
+            "target_hash": "8725d586046c7028f3f78d14527609dbd681ef28"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Colors/T_Plastic_Green_A_ORM.png",
+            "source_hash": "58d82407d78ed7d305c0bdf656aebc81684c67b2",
+            "target_url": "./Materials/Base/Plastics/Colors/T_Plastic_Green_A_ORM.png",
+            "target_hash": "9537b7ac8c3386f6cd83ea88b9b55f1e8844987c"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Colors/T_Plastic_Orange_A_Albedo.png",
+            "source_hash": "7e71f9e0b02bd18405775db7ae468731e4bde276",
+            "target_url": "./Materials/Base/Plastics/Colors/T_Plastic_Orange_A_Albedo.png",
+            "target_hash": "484e16a55a456d0e94a87a427bd5b8579fa2240b"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Colors/T_Plastic_Orange_A_ORM.png",
+            "source_hash": "739a092846c0a6755c4c235a90c6eda5d6256e13",
+            "target_url": "./Materials/Base/Plastics/Colors/T_Plastic_Orange_A_ORM.png",
+            "target_hash": "2df3d36266d29d5bafdb6e59a4f64f34a45d5983"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Colors/T_Plastic_Red_A_Albedo.png",
+            "source_hash": "85577e8a58290c2b2947d0bb553f196495f48283",
+            "target_url": "./Materials/Base/Plastics/Colors/T_Plastic_Red_A_Albedo.png",
+            "target_hash": "3bf1c4cbe1ed49f96187c892ee163a3f64f1ae56"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Colors/T_Plastic_Red_A_ORM.png",
+            "source_hash": "f5b4a124089331babcafc5c6156752dc0c3725e5",
+            "target_url": "./Materials/Base/Plastics/Colors/T_Plastic_Red_A_ORM.png",
+            "target_hash": "69587a863d6f35d218843b41bc65516d58659e91"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Colors/T_Plastic_Violet_A_Albedo.png",
+            "source_hash": "18297858d7704bf1b79a7bf923f821fd8ac0da45",
+            "target_url": "./Materials/Base/Plastics/Colors/T_Plastic_Violet_A_Albedo.png",
+            "target_hash": "84a8b7ec9bb536e63b02fe63b8aab35248792427"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Colors/T_Plastic_Violet_A_ORM.png",
+            "source_hash": "f0437843f09fad3ffe6af4070d560cc5a187e926",
+            "target_url": "./Materials/Base/Plastics/Colors/T_Plastic_Violet_A_ORM.png",
+            "target_hash": "e23cd0c8e95f2304a9ec9848d6f8511f196efc70"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Colors/T_Plastic_White_A_Albedo.png",
+            "source_hash": "9f5559bc6ac6d8008527bc9865d35adb6d02894c",
+            "target_url": "./Materials/Base/Plastics/Colors/T_Plastic_White_A_Albedo.png",
+            "target_hash": "48edab4d8e3dc8acf6dbca2fac353f0db8f9d961"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Colors/T_Plastic_White_A_ORM.png",
+            "source_hash": "ac846d9e33b440c3d7e5b49be00d317f1607b0dd",
+            "target_url": "./Materials/Base/Plastics/Colors/T_Plastic_White_A_ORM.png",
+            "target_hash": "1629842945f08a69c05cd6f69f667bdebe278267"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Colors/T_Plastic_Yellow_A_Albedo.png",
+            "source_hash": "82e795079875c4aa383296f3c3215c59c462423e",
+            "target_url": "./Materials/Base/Plastics/Colors/T_Plastic_Yellow_A_Albedo.png",
+            "target_hash": "c08d5f6f9362a324aa456a62b1bd1e33b4bef578"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Colors/T_Plastic_Yellow_A_ORM.png",
+            "source_hash": "b5f2bc1dd827175d8c3d3f7b09f72c64d54d7cbc",
+            "target_url": "./Materials/Base/Plastics/Colors/T_Plastic_Yellow_A_ORM.png",
+            "target_hash": "e114ecb405c9c1344d8358c5570f778620f6f28c"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Misc/T_Plastic_Normal_1k.png",
+            "source_hash": "95886a17f611a626c56f1034435656fd8564160f",
+            "target_url": "./Materials/Base/Plastics/Misc/T_Plastic_Normal_1k.png",
+            "target_hash": "51eeeb767dbb687165c8039d85fe54be18b62638"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Misc/T_Plastic_ORM_1k.png",
+            "source_hash": "9e23390c698cbea49c376d124d956a8a500bdff3",
+            "target_url": "./Materials/Base/Plastics/Misc/T_Plastic_ORM_1k.png",
+            "target_hash": "dfdca6375eb5cf60fc7699e702b1c1de38c5cc9f"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Rough/T_Plastic_Rough_Black_A_Albedo.png",
+            "source_hash": "2f8d5996bfa83f8528b70f6aded656c383a61776",
+            "target_url": "./Materials/Base/Plastics/Rough/T_Plastic_Rough_Black_A_Albedo.png",
+            "target_hash": "8d1dcb7893f40494a9151d6cea5bbf5dd65c30b6"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Rough/T_Plastic_Rough_Black_A_Normal.png",
+            "source_hash": "e4a62a6b926e95e397353b761d2b51048a39b935",
+            "target_url": "./Materials/Base/Plastics/Rough/T_Plastic_Rough_Black_A_Normal.png",
+            "target_hash": "c24d38ea2737892a50f712b033dc0f242195fdaf"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Rough/T_Plastic_Rough_Black_A_ORM.png",
+            "source_hash": "1fa8954334883388334fae5d68cab3e056a0ef36",
+            "target_url": "./Materials/Base/Plastics/Rough/T_Plastic_Rough_Black_A_ORM.png",
+            "target_hash": "07807c5f6ba358e7b0d9cbe2e62b28b29f6a7fd6"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Assets/DigitalTwin/Materials/Base/Plastics/Plastic_B.mdl",
+            "source_hash": "9bd925e2ab31dc2ff9d2c06dc88f96673b8b34b8",
+            "target_url": "./Materials/Base/Plastics/Plastic_B.mdl",
+            "target_hash": "892e5ba1cb851faf6621ecdc4e6c17579eac4642"
+        }
+    ]
+}
