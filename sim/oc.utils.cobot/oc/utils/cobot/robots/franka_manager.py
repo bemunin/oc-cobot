@@ -47,7 +47,9 @@ class FrankaManager(BaseTask):
 
     def set_up_scene(self, scene: Scene):
         super().set_up_scene(scene)
-        self._franka = Franka(prim_path="/World/Franka", name="franka")
+        self._franka = Franka(
+            prim_path="/World/Franka", name="franka", position=self._offset
+        )
 
         scene.add(self._franka)
 
