@@ -1,0 +1,101 @@
+{
+    "version": "1.0",
+    "file_records": [
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Materials/Base/Plastics/Rubber_Smooth.mdl",
+            "source_hash": "43b0182bc85ef4a28394a5a9c0407a28b3a4d10c",
+            "target_url": "./Materials/Base/Plastics/Rubber_Smooth.mdl",
+            "target_hash": "b3cc1f31cb71450055bdfaa5e8329b7f83280dcb"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Materials/vMaterials_2/Metal/Aluminum_Brushed.mdl",
+            "source_hash": "1e69f3fc4dd52279a3bb436b397970df6b9e798b",
+            "target_url": "./Materials/vMaterials_2/Metal/Aluminum_Brushed.mdl",
+            "target_hash": "d2a82bc76190f802b14e12dd3638efa20cdb7469"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Materials/vMaterials_2/Metal/Aluminum_Scratched.mdl",
+            "source_hash": "b1ef881e9d67069b5364fe0c337224782033fd5a",
+            "target_url": "./Materials/vMaterials_2/Metal/Aluminum_Scratched.mdl",
+            "target_hash": "a053902277c9d1c53b48b387badd924cfdbe2136"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Materials/vMaterials_2/Metal/Stainless_Steel.mdl",
+            "source_hash": "9b218add356579ec97d43fef75c59efa2243fa9e",
+            "target_url": "./Materials/vMaterials_2/Metal/Stainless_Steel.mdl",
+            "target_hash": "7457e5f37502bc2438e5073acd12e3205ea78311"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Materials/Base/Plastics/Rubber_Smooth/Rubber_Smooth_BaseColor.png",
+            "source_hash": "19888b45e3445d03f76e8ce7d793b6f72e7cefbd",
+            "target_url": "./Materials/Base/Plastics/Rubber_Smooth/Rubber_Smooth_BaseColor.png",
+            "target_hash": "51ea22ede553e2a35e144dffe2ae3d4f36f9df5c"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Materials/Base/Plastics/Rubber_Smooth/Rubber_Smooth_ORM.png",
+            "source_hash": "8fae8178a158baf5b4b17b83a2e64a6eaa942530",
+            "target_url": "./Materials/Base/Plastics/Rubber_Smooth/Rubber_Smooth_ORM.png",
+            "target_hash": "6390bc82363ababad08415432a392de9c2cba5d9"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Materials/Base/Plastics/Rubber_Smooth/Rubber_Smooth_Normal.png",
+            "source_hash": "2a738874428088ad5d8b8380bb40a2844579be41",
+            "target_url": "./Materials/Base/Plastics/Rubber_Smooth/Rubber_Smooth_Normal.png",
+            "target_hash": "6d0bde862eb1fd26f6fb2a2691fb5f90ba650f26"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Materials/vMaterials_2/Metal/textures/brushed_metal_linear_R_rough_G_scratchvar_B_impurities.jpg",
+            "source_hash": "4ab2a17d7e01c8e04684cfd092aeab79929a03ee",
+            "target_url": "./Materials/vMaterials_2/Metal/textures/brushed_metal_linear_R_rough_G_scratchvar_B_impurities.jpg",
+            "target_hash": "542feb3bfa8d7c4d81d0578d07b4edb5bda62b00"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Materials/vMaterials_2/Metal/textures/brushed_metal_linear_norm.jpg",
+            "source_hash": "10c795e0f5d7342cfc6815cf44dab84fb39d4051",
+            "target_url": "./Materials/vMaterials_2/Metal/textures/brushed_metal_linear_norm.jpg",
+            "target_hash": "364dc71c369a83b0f3c28649e47005470d8f61c0"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Materials/vMaterials_2/Metal/textures/stainless_multi_R_diff_G_rough_B_dents.jpg",
+            "source_hash": "f7dcb863faf2a654299bc23c9e111ea38a3f8262",
+            "target_url": "./Materials/vMaterials_2/Metal/textures/stainless_multi_R_diff_G_rough_B_dents.jpg",
+            "target_hash": "c7762ca477ad2e0ad681094e03e936e9b655537c"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Materials/vMaterials_2/Metal/textures/stainless_smudges.jpg",
+            "source_hash": "44886b253a7ec467755dac00a77891e7f17719c5",
+            "target_url": "./Materials/vMaterials_2/Metal/textures/stainless_smudges.jpg",
+            "target_hash": "14cc9a24904b0a45123b5a8ab21e140ed9c91022"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Materials/vMaterials_2/Metal/textures/metal_scratched_R_diff_G_scratchvar_B_dirt.jpg",
+            "source_hash": "97c86abca9e419467ede3f80c3d6b62e77b61310",
+            "target_url": "./Materials/vMaterials_2/Metal/textures/metal_scratched_R_diff_G_scratchvar_B_dirt.jpg",
+            "target_hash": "9296effca8e61c0c0160634c217c9b5906e02557"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Materials/vMaterials_2/Metal/textures/stainless_damages_norm.jpg",
+            "source_hash": "dc7701d36c9c5cdb2f63d9409e5fcdcc1ae2f15b",
+            "target_url": "./Materials/vMaterials_2/Metal/textures/stainless_damages_norm.jpg",
+            "target_hash": "3a3b048f65313e56e4e14a80cbe9e10656bd766a"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Materials/vMaterials_2/Metal/textures/metal_scratched_R_scratch1_G_scratch2_B_scratch3.jpg",
+            "source_hash": "1491484d43415d891a0edeb6b903db84e62efb5b",
+            "target_url": "./Materials/vMaterials_2/Metal/textures/metal_scratched_R_scratch1_G_scratch2_B_scratch3.jpg",
+            "target_hash": "a0c537be2739392a80aa098245822a953c61cfaf"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Materials/vMaterials_2/Metal/textures/stainless_norm.jpg",
+            "source_hash": "205454802fa2aed70d3a6082f1e1a4683422b4b5",
+            "target_url": "./Materials/vMaterials_2/Metal/textures/stainless_norm.jpg",
+            "target_hash": "3dfb8de2135110d0d758119a0e13236cd33ed549"
+        },
+        {
+            "source_url": "/mnt/ssd_nvidia/NVIDIA/Materials/vMaterials_2/Metal/textures/metal_scratched_scratch_norm.jpg",
+            "source_hash": "a32e47070141eb1a28fedd29d3e257bab92138c1",
+            "target_url": "./Materials/vMaterials_2/Metal/textures/metal_scratched_scratch_norm.jpg",
+            "target_hash": "5c1aca3a253ab203d90e7b28c8ac24ce984b8d63"
+        }
+    ]
+}

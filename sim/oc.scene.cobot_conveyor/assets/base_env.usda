@@ -7,8 +7,8 @@
                 double radius = 5
             }
             dictionary Perspective = {
-                double3 position = (2.044227397963628, -16.298860478497456, 13.640921058297046)
-                double3 target = (2.6080723359451956, 3.4842290914959477, -2.0587634055245143)
+                double3 position = (-2.9883197244387527, -5.850418713413729, 3.6874871951640014)
+                double3 target = (-2.3651988000647775, 4.200909137377254, -1.6667854045716934)
             }
             dictionary Right = {
                 double3 position = (0.9228685913715428, -49999.52418893517, 0.8031896678556314)
@@ -21,7 +21,7 @@
             string boundCamera = "/OmniverseKit_Persp"
         }
         dictionary omni_layer = {
-            string authoring_layer = "./base_scene.usda"
+            string authoring_layer = "./base_env.usda"
             dictionary locked = {
             }
             dictionary muteness = {
@@ -385,69 +385,42 @@ def Xform "World"
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:translate:pivot", "xformOp:rotateXYZ", "xformOp:scale", "!invert!xformOp:translate:pivot"]
 
             def "thor_table" (
-                prepend payload = @../../../../../../../mnt/ssd_nvidia/NVIDIA/Assets/Isaac/4.2/Isaac/Props/Mounts/thor_table.usd@
+                prepend payload = @./Collected_thor_table/thor_table.usd@
             )
             {
-                quatf xformOp:orient = (0.7102473, 0, 0, 0.70395225)
+                quatf xformOp:orient = (0.70710677, 0, 0, 0.70710677)
                 float3 xformOp:scale = (1, 1, 1)
-                double3 xformOp:translate = (0.2987697590460764, -0.25725995239576616, 0.8124643495451043)
+                double3 xformOp:translate = (0.29877, -0.25726, 0.81246)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
             }
 
             def "thor_table_01" (
-                prepend payload = @/mnt/ssd_nvidia/NVIDIA/Assets/Isaac/4.2/Isaac/Props/Mounts/thor_table.usd@
+                prepend payload = @./Collected_thor_table/thor_table.usd@
             )
             {
                 quatf xformOp:orient = (0.70710677, 0, 0, -0.70710677)
                 float3 xformOp:scale = (1, 1, 1)
-                double3 xformOp:translate = (0.3000000000000008, 1.1952410188935474, 0.8124643495451043)
+                double3 xformOp:translate = (0.3, 1.19524, 0.81246)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-
-                over "Thor_table"
-                {
-                    over "Top"
-                    {
-                        over "mount_plate"
-                        {
-                            token visibility = "inherited"
-                        }
-                    }
-                }
             }
 
             def "thor_table_02" (
-                prepend payload = @/mnt/ssd_nvidia/NVIDIA/Assets/Isaac/4.2/Isaac/Props/Mounts/thor_table.usd@
+                prepend payload = @./Collected_thor_table/thor_table.usd@
             )
             {
                 quatf xformOp:orient = (0.70710677, 0, 0, -0.70710677)
                 float3 xformOp:scale = (1, 1, 1)
-                double3 xformOp:translate = (-0.45579453491507166, 1.1952410188935474, 0.8124643495451043)
+                double3 xformOp:translate = (-0.45579, 1.19524, 0.81246)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-
-                over "Thor_table"
-                {
-                    over "Top"
-                    {
-                        over "mount_plate"
-                        {
-                            token visibility = "inherited"
-                        }
-
-                        over "_07332_11_Top_Skin_750_x_900_x_6mm"
-                        {
-                            double3 xformOp:translate = (0.27499999999998925, 0, -0.018999999999999684)
-                        }
-                    }
-                }
             }
 
             def "thor_table_03" (
-                prepend payload = @/mnt/ssd_nvidia/NVIDIA/Assets/Isaac/4.2/Isaac/Props/Mounts/thor_table.usd@
+                prepend payload = @./Collected_thor_table/thor_table.usd@
             )
             {
-                quatf xformOp:orient = (0.7102473, 0, 0, 0.70395225)
+                quatf xformOp:orient = (0.70710677, 0, 0, 0.70710677)
                 float3 xformOp:scale = (1, 1, 1)
-                double3 xformOp:translate = (-0.45579, -0.25725995239576616, 0.8124643495451043)
+                double3 xformOp:translate = (-0.45579, -0.25726, 0.81246)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
             }
         }
