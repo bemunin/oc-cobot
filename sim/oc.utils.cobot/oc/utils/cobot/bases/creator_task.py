@@ -49,7 +49,7 @@ class CreatorTask(BaseTask):
                 name=name,
                 scale=scale,
                 position=position,
-                orientatio=orientation,
+                orientation=orientation,
             )
         else:
             return XFormPrim(
