@@ -17,7 +17,7 @@ class InfraredSensorManager(BaseTask):
     def set_up_scene(self, scene):
         super().set_up_scene(scene)
         # config vars
-        self._lb_sensor = _sensor.acquire_lightbeam_sensor_interface()
+        self._sensor = _sensor.acquire_lightbeam_sensor_interface()
         self._debug = True
         self._enable = True
 
@@ -134,9 +134,7 @@ class InfraredSensorManager(BaseTask):
                 - A float representing the depth of the detected object in meters.
                 - A float representing the hit position of the detected object along forward axis set in IsaacSensorCreateLightBeamSensor.
         """
-        is_detected = self._lb_sensor.get_beam_hit_data(self._light_beam_path).astype(
-            bool
-        )
-        depth_meter = self._lb_sensor.get_linear_depth_data(self._light_beam_path)
-        hit_pos = self._lb_sensor.get_hit_pos_data(self._light_beam_path)
+        is_detected = self._sensor.get_beam_hit_data(self._light_beam_path).astype(bool)
+        depth_meter = self._sensor.get_linear_depth_data(self._light_beam_path)
+        hit_pos = self._sensor.get_hit_pos_data(self._light_beam_path)
         return (is_detected, depth_meter, hit_pos)
