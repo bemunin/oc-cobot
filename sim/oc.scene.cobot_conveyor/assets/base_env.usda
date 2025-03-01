@@ -8,7 +8,7 @@
             }
             dictionary Perspective = {
                 double3 position = (-0.2853812899114497, -2.625683996392151, 1.9517964269164856)
-                double3 target = (0.12989558000676837, 4.072992314072614, -1.616543103127079)
+                double3 target = (0.12989558000676843, 4.072992314072614, -1.616543103127079)
             }
             dictionary Right = {
                 double3 position = (0.9228685913715428, -49999.52418893517, 0.8031896678556314)
@@ -266,7 +266,7 @@ def Xform "World"
             float3 xformOp:translate:pivot = (0.92287, 0, 0.82031)
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:translate:pivot", "xformOp:rotateXYZ", "xformOp:scale", "!invert!xformOp:translate:pivot"]
 
-            def Xform "LightSensor_Emitter" (
+            def Xform "InfraredSensor_Emitter" (
                 kind = "group"
             )
             {
@@ -326,7 +326,7 @@ def Xform "World"
                 }
             }
 
-            def Xform "LightSensor_Reciever" (
+            def Xform "InfraredSensor_Reciever" (
                 kind = "group"
             )
             {

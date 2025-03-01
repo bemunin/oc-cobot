@@ -3,6 +3,7 @@ from typing import Tuple
 import omni
 import omni.graph.core as og
 import omni.kit.commands
+import utils.log as log
 from omni.isaac.core.prims.xform_prim import XFormPrim
 from omni.isaac.core.utils.prims import (
     delete_prim,
@@ -12,8 +13,6 @@ from omni.isaac.core.utils.prims import (
 from omni.isaac.core.utils.rotations import euler_angles_to_quat
 from omni.isaac.sensor import _sensor
 from pxr import Gf
-
-import utils.log as log
 
 
 class LightBeamSensor(XFormPrim):
