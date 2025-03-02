@@ -51,3 +51,7 @@ class ConveyorManager(BaseTask):
         surface_linear_vel = Gf.Vec3f(0.0, 0.0, 0.0)
         self._surface_api.GetSurfaceVelocityEnabledAttr().Set(False)
         self._surface_api.GetSurfaceVelocityAttr().Set(surface_linear_vel)
+
+    @property
+    def status(self):
+        return self._status
