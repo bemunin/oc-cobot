@@ -26,6 +26,7 @@ class InfraredSensorManager(BaseTask):
 
         is_detected, _, _ = self._sensor.sense()
 
+        carb.log_info(f"InfraredSensorManager:  is_detected: {is_detected}")
         try:
             if is_detected:
                 self._conveyor.stop()

@@ -23,10 +23,12 @@ class ConveyorManager(BaseTask):
             "/World/Environment/Workspace/ConveyorBelt_A08/Rollers"
         )
 
+        self._surface_api = None
+
     def post_reset(self):
         surface_linear_vel = Gf.Vec3f(-self._belt_speed, 0.0, 0.0)
-        surface_vel_api = PhysxSchema.PhysxSurfaceVelocityAPI(self._rollers)
-        surface_vel_api.GetSurfaceVelocityAttr().Set(surface_linear_vel)
+        self._surface_api = PhysxSchema.PhysxSurfaceVelocityAPI(self._rollers)
+        self._surface_api.GetSurfaceVelocityAttr().Set(surface_linear_vel)
 
     def pre_step(self, time_step_index, simulation_time):
         super().pre_step(time_step_index, simulation_time)
@@ -38,8 +40,8 @@ class ConveyorManager(BaseTask):
 
         self._status = "start"
         surface_linear_vel = Gf.Vec3f(-self._belt_speed, 0.0, 0.0)
-        surface_vel_api = PhysxSchema.PhysxSurfaceVelocityAPI(self._rollers)
-        surface_vel_api.GetSurfaceVelocityAttr().Set(surface_linear_vel)
+        self._surface_api.GetSurfaceVelocityEnabledAttr().Set(True)
+        self._surface_api.GetSurfaceVelocityAttr().Set(surface_linear_vel)
 
     def stop(self):
         if self._status == "stop":
@@ -47,5 +49,5 @@ class ConveyorManager(BaseTask):
 
         self._status = "stop"
         surface_linear_vel = Gf.Vec3f(0.0, 0.0, 0.0)
-        surface_vel_api = PhysxSchema.PhysxSurfaceVelocityAPI(self._rollers)
-        surface_vel_api.GetSurfaceVelocityAttr().Set(surface_linear_vel)
+        self._surface_api.GetSurfaceVelocityEnabledAttr().Set(False)
+        self._surface_api.GetSurfaceVelocityAttr().Set(surface_linear_vel)
