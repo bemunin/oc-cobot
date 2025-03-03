@@ -1,7 +1,9 @@
 import carb
 from oc.utils.cobot.bases.creator_task import CreatorTask
 from omni.isaac.core import World
+from omni.isaac.robot_description_editor import XFormPrim
 from omni.physx.scripts import utils
+from pxr import UsdPhysics
 
 from ..utils import ext_assets_path
 
@@ -31,12 +33,13 @@ class TrayCreator(CreatorTask):
         # variables
         self._spawn_period_sec = 2.5
         self._timer = Timer(self._spawn_period_sec)
-        self._item_count = 0
+        self._tray_count = 0
         self._conveyor = None
 
     def post_reset(self):
         super().post_reset()
         self._spawn_tray()
+        self._spawn_objects()
         self._conveyor = World.instance().get_task("conveyor_manager")
 
     def pre_step(self, time_step_index, simulation_time):
@@ -49,15 +52,16 @@ class TrayCreator(CreatorTask):
         if timer_triggered:
             carb.log_info("TrayCreator: spawn new tray")
             self._spawn_tray()
+            self._spawn_objects()
 
     def _spawn_tray(self):
-        self._item_count += 1
+        self._tray_count += 1
         container_usd_path = "Collected_Container_C19_61x40x18cm_PR_V_NVD_01/Container_C19_61x40x18cm_PR_V_NVD_01.usd"
 
         xform = self._import_obj(
             usd_path=f"{ext_assets_path()}/{container_usd_path}",
-            prim_path=f"/World/Execute/Tray{self._item_count:03}",  # aka. ContainerA
-            name=f"tray{self._item_count:03}",
+            prim_path=f"/World/Execute/Tray{self._tray_count:03}",  # aka. ContainerA
+            name=f"tray{self._tray_count:03}",
             position=[1.1, 0, 0.8],
             orientation_deg=[0, 0, 90],
             scale=[0.01, 0.01, 0.01],
@@ -65,4 +69,21 @@ class TrayCreator(CreatorTask):
         )
         # set object collision
         utils.setRigidBody(xform.prim, "convexDecomposition", False)
-        self._scene.add(xform)
+
+    def _spawn_objects(self):
+        current_tray = XFormPrim(f"/World/Execute/Tray{self._tray_count:03}")
+        tray_pos, _ = current_tray.get_world_pose()
+        obj_pos = tray_pos + [0, 0, 0.02]
+        # spawn objects
+        xform_obj = self._import_obj(
+            usd_path=f"{ext_assets_path()}/objects/cube.usda",
+            prim_path=f"/World/Execute/ObjectSet{self._tray_count:03}/Cube01",
+            name="cube01",
+            position=obj_pos,
+            orientation_deg=[0, 0, 0],
+            scale=[1, 1, 1],
+            prim_type="XForm",
+        )
+        utils.setRigidBody(xform_obj.prim, "convexHull", False)
+        mass_api = UsdPhysics.MassAPI.Apply(xform_obj.prim)
+        mass_api.CreateMassAttr(0.1)  # 0.1kg
