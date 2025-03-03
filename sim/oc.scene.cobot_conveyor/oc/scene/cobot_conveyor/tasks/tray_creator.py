@@ -54,15 +54,15 @@ class TrayCreator(CreatorTask):
         self._item_count += 1
         container_usd_path = "Collected_Container_C19_61x40x18cm_PR_V_NVD_01/Container_C19_61x40x18cm_PR_V_NVD_01.usd"
 
-        rigid = self._import_obj(
+        xform = self._import_obj(
             usd_path=f"{ext_assets_path()}/{container_usd_path}",
             prim_path=f"/World/Execute/Tray{self._item_count:03}",  # aka. ContainerA
             name=f"tray{self._item_count:03}",
             position=[1.1, 0, 0.8],
             orientation_deg=[0, 0, 90],
             scale=[0.01, 0.01, 0.01],
-            prim_type="RigidPrim",
+            prim_type="XFormPrim",
         )
         # set object collision
-        utils.setRigidBody(rigid.prim, "convexDecomposition", False)
-        self._scene.add(rigid)
+        utils.setRigidBody(xform.prim, "convexDecomposition", False)
+        self._scene.add(xform)
