@@ -620,7 +620,14 @@
         "hash_set": "cpp",
         "slist": "cpp",
         "valarray": "cpp",
-        "any": "cpp"
+        "any": "cpp",
+        "array": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "regex": "cpp",
+        "memory": "cpp"
     },
 
     "files.exclude": {
