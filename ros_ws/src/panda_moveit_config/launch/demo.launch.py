@@ -1,16 +1,15 @@
 import os
+
+from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration
 from launch.conditions import IfCondition, UnlessCondition
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
-from launch.actions import ExecuteProcess
-from ament_index_python.packages import get_package_share_directory
 from moveit_configs_utils import MoveItConfigsBuilder
 
 
 def generate_launch_description():
-
     # Command-line arguments
     tutorial_arg = DeclareLaunchArgument(
         "rviz_tutorial", default_value="False", description="Tutorial flag"
@@ -56,10 +55,10 @@ def generate_launch_description():
     # RViz
     tutorial_mode = LaunchConfiguration("rviz_tutorial")
     rviz_base = os.path.join(
-        get_package_share_directory("moveit_resources_panda_moveit_config"), "launch"
+        get_package_share_directory("moveit_resources_panda_moveit_config")
     )
-    rviz_full_config = os.path.join(rviz_base, "moveit.rviz")
-    rviz_empty_config = os.path.join(rviz_base, "moveit_empty.rviz")
+    rviz_full_config = os.path.join(rviz_base, "rviz", "move_group.rviz")
+    rviz_empty_config = os.path.join(rviz_base, "launch", "moveit_empty.rviz")
     rviz_node_tutorial = Node(
         package="rviz2",
         executable="rviz2",
