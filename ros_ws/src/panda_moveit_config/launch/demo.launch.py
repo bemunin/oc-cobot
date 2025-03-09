@@ -40,6 +40,11 @@ def generate_launch_description():
         .planning_pipelines(
             pipelines=["ompl", "chomp", "pilz_industrial_motion_planner"]
         )
+        .planning_scene_monitor(
+            publish_robot_description=False,
+            publish_robot_description_semantic=True,
+            publish_planning_scene=True,
+        )
         .to_moveit_configs()
     )
 
