@@ -50,6 +50,7 @@ function(demo name)
 endfunction()
 
 demo(alternative_path_costs)
+demo(cartesian)
 
 install (
   DIRECTORY launch rviz
