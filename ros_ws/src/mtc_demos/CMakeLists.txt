@@ -51,6 +51,7 @@ endfunction()
 
 demo(alternative_path_costs)
 demo(cartesian)
+demo(fallbacks_move_to)
 
 install (
   DIRECTORY launch rviz
